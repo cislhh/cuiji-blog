@@ -98,6 +98,22 @@ const siteMetadata = {
     //   indexName: 'docsearch',
     // },
   },
+  // Hero section configuration
+  hero: {
+    tagline: 'Building the Future',
+    subtitle: 'One line of code at a time',
+    introduction:
+      "I'm a passionate developer crafting beautiful digital experiences. Exploring the intersection of design and technology, one project at a time.",
+  },
+  // Tech stack for learning panel
+  techStack: [
+    { name: 'React', icon: '', color: 'hover:text-cyan-400' },
+    { name: 'Next.js', icon: '', color: 'hover:text-white' },
+    { name: 'TypeScript', icon: '', color: 'hover:text-blue-400' },
+    { name: 'Tailwind', icon: '', color: 'hover:text-teal-400' },
+    { name: 'Node.js', icon: '', color: 'hover:text-green-400' },
+    { name: 'Vue', icon: '', color: 'hover:text-green-500' },
+  ],
 }
 
 module.exports = siteMetadata

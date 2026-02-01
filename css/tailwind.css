@@ -46,6 +46,36 @@
   --z-60: 60;
   --z-70: 70;
   --z-80: 80;
+
+  /* Dark Gradient Theme Colors */
+  --color-dark-bg-start: #0a0a0f;
+  --color-dark-bg-end: #1a1a2e;
+  --color-primary-glow: #fbbf24;
+  --color-secondary-glow: #60a5fa;
+  --color-tech-border: rgba(96, 165, 250, 0.2);
+  --color-glass-bg: rgba(26, 26, 46, 0.6);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark gradient background utility */
+.bg-dark-gradient {
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+}
+
+/* Glass morphism utility */
+.glass-panel {
+  background: rgba(26, 26, 46, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Glow effect utilities */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
 }
 
 /*
