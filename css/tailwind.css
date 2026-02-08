@@ -92,7 +92,7 @@
 }
 
 /* Glow effect utilities */
-.glow-primary {
+.glow-primary-amber {
   box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
 }
 

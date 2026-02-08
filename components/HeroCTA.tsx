@@ -22,7 +22,7 @@ export default function HeroCTA() {
     >
       <Link href="/blog">
         <motion.button
-          className="glow-primary rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 px-8 py-3 font-semibold text-black"
+          className="glow-primary-amber rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 px-8 py-3 font-semibold text-black"
           whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(251, 191, 36, 0.5)' }}
           whileTap={{ scale: 0.95 }}
         >
