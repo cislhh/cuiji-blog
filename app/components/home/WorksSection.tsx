@@ -19,14 +19,14 @@ function WorkCard({ title, description, tags, link }: WorkCardProps) {
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="border-vscode bg-bg-secondary p-6 h-full glow-primary-hover transition-all duration-300">
-        <h3 className="text-xl font-semibold text-text-primary mb-3">{title}</h3>
+      <div className="border-vscode bg-bg-secondary glow-primary-hover h-full p-6 transition-all duration-300">
+        <h3 className="text-text-primary mb-3 text-xl font-semibold">{title}</h3>
         <p className="text-text-secondary mb-4">{description}</p>
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="text-xs px-3 py-1 border-vscode-light text-vscode-primary rounded-full"
+              className="border-vscode-light text-vscode-primary rounded-full px-3 py-1 text-xs"
             >
               {tag}
             </span>
@@ -70,19 +70,19 @@ export default function WorksSection() {
   ]
 
   return (
-    <section className="min-h-screen flex items-center justify-center px-6 py-20">
-      <div className="max-w-6xl mx-auto">
+    <section className="flex min-h-screen items-center justify-center px-6 py-20">
+      <div className="mx-auto max-w-6xl">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-4xl font-bold text-text-primary mb-12 text-center"
+          className="text-text-primary mb-12 text-center text-4xl font-bold"
         >
           Featured Projects
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {projects.map((project, index) => (
             <motion.div
               key={project.title}

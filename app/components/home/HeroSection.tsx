@@ -5,18 +5,18 @@ import { motion } from 'motion/react'
 
 export default function HeroSection() {
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 relative">
+    <section className="relative flex min-h-screen flex-col items-center justify-center px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-center max-w-4xl"
+        className="max-w-4xl text-center"
       >
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl font-bold mb-6 text-text-primary"
+          className="text-text-primary mb-6 text-5xl font-bold md:text-7xl"
         >
           I build things for the web.
         </motion.h1>
@@ -25,7 +25,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-xl md:text-2xl text-text-secondary mb-12"
+          className="text-text-secondary mb-12 text-xl md:text-2xl"
         >
           Software Engineer & Open Source Contributor
         </motion.p>
@@ -34,7 +34,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex gap-8 justify-center"
+          className="flex justify-center gap-8"
         >
           <Link
             href="/posts"
@@ -62,7 +62,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1 }}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 transform"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
@@ -70,7 +70,7 @@ export default function HeroSection() {
           className="text-text-secondary"
         >
           <svg
-            className="w-6 h-6"
+            className="h-6 w-6"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"

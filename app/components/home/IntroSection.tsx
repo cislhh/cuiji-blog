@@ -19,11 +19,8 @@ export default function IntroSection() {
   ]
 
   return (
-    <section ref={ref} className="min-h-screen flex items-center justify-center px-6 py-20">
-      <motion.div
-        style={{ opacity }}
-        className="max-w-3xl mx-auto space-y-8"
-      >
+    <section ref={ref} className="flex min-h-screen items-center justify-center px-6 py-20">
+      <motion.div style={{ opacity }} className="mx-auto max-w-3xl space-y-8">
         {paragraphs.map((paragraph, index) => (
           <motion.p
             key={index}
@@ -31,7 +28,7 @@ export default function IntroSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, delay: index * 0.2 }}
-            className="text-lg text-text-secondary leading-relaxed"
+            className="text-text-secondary text-lg leading-relaxed"
           >
             {paragraph}
           </motion.p>

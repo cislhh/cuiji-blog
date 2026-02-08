@@ -7,13 +7,6 @@ interface MagicalUnderlineProps {
   className?: string
 }
 
-export default function MagicalUnderline({
-  children,
-  className = '',
-}: MagicalUnderlineProps) {
-  return (
-    <span className={`underline-magical cursor-pointer ${className}`}>
-      {children}
-    </span>
-  )
+export default function MagicalUnderline({ children, className = '' }: MagicalUnderlineProps) {
+  return <span className={`underline-magical cursor-pointer ${className}`}>{children}</span>
 }
