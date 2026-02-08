@@ -4,8 +4,6 @@ import { useEffect, useRef, useState, ReactNode, Children } from 'react'
 import { motion, type Transition } from 'motion/react'
 import type { ScrollTriggerProps, ScrollAnimationType } from './types'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * 动画变体配置
  * 基于 Motion (Framer Motion) 的动画系统

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 /**
  * DataStatsPanel Component
@@ -24,13 +24,15 @@ export default function DataStatsPanel() {
   const [counts, setCounts] = useState({ posts: 0, projects: 0, experience: 0 })
 
   // These would normally come from actual data
-  const stats: StatItem[] = [
-    { label: 'Blog Posts', value: 12 },
-    { label: 'Projects', value: 8 },
-    { label: 'Years Coding', value: 5, suffix: '+' },
-  ]
+  const stats: StatItem[] = useMemo(
+    () => [
+      { label: 'Blog Posts', value: 12 },
+      { label: 'Projects', value: 8 },
+      { label: 'Years Coding', value: 5, suffix: '+' },
+    ],
+    []
+  )
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (isVisible) {
       // Animate counts
@@ -57,7 +59,7 @@ export default function DataStatsPanel() {
         }, interval)
       })
     }
-  }, [isVisible])
+  }, [isVisible, stats])
 
   return (
     <motion.div

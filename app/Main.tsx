@@ -9,16 +9,14 @@ const MAX_DISPLAY = 5
 export default function Home({ posts }) {
   return (
     <>
-      <div className="bg-dark-gradient divide-y divide-vscode">
+      <div className="divide-vscode bg-dark-gradient divide-y">
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-          <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-text-primary sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+          <h1 className="text-text-primary text-3xl leading-9 font-extrabold tracking-tight sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             Latest
           </h1>
-          <p className="text-lg leading-7 text-text-secondary">
-            {siteMetadata.description}
-          </p>
+          <p className="text-text-secondary text-lg leading-7">{siteMetadata.description}</p>
         </div>
-        <ul className="divide-y divide-vscode">
+        <ul className="divide-vscode divide-y">
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((post) => {
             const { slug, date, title, summary, tags } = post
@@ -28,7 +26,7 @@ export default function Home({ posts }) {
                   <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
                     <dl>
                       <dt className="sr-only">Published on</dt>
-                      <dd className="text-base leading-6 font-medium text-text-secondary">
+                      <dd className="text-text-secondary text-base leading-6 font-medium">
                         <time dateTime={date}>{formatDate(date, siteMetadata.locale)}</time>
                       </dd>
                     </dl>
@@ -36,10 +34,7 @@ export default function Home({ posts }) {
                       <div className="space-y-6">
                         <div>
                           <h2 className="text-2xl leading-8 font-bold tracking-tight">
-                            <Link
-                              href={`/blog/${slug}`}
-                              className="text-text-primary"
-                            >
+                            <Link href={`/blog/${slug}`} className="text-text-primary">
                               {title}
                             </Link>
                           </h2>
@@ -49,9 +44,7 @@ export default function Home({ posts }) {
                             ))}
                           </div>
                         </div>
-                        <div className="prose max-w-none text-text-secondary">
-                          {summary}
-                        </div>
+                        <div className="text-text-secondary prose max-w-none">{summary}</div>
                       </div>
                       <div className="text-base leading-6 font-medium">
                         <Link
