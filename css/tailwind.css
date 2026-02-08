@@ -55,6 +55,28 @@
   --color-tech-border: rgba(96, 165, 250, 0.2);
   --color-glass-bg: rgba(26, 26, 46, 0.6);
   --color-glass-border: rgba(255, 255, 255, 0.1);
+
+  /* === VSCode Dark+ Theme Colors === */
+  /* === 背景色 === */
+  --color-bg-primary: #0d0d0d;
+  --color-bg-secondary: #1e1e1e;
+  --color-bg-tertiary: #252526;
+
+  /* === 主色调（亮绿色） === */
+  --color-vscode-primary: #4ec9b0;
+  --color-vscode-primary-dim: rgba(78, 201, 176, 0.1);
+  --color-vscode-primary-glow: rgba(78, 201, 176, 0.3);
+
+  /* === 文字色 === */
+  --color-text-primary: #cccccc;
+  --color-text-secondary: #858585;
+  --color-text-tertiary: #6e6e6e;
+
+  /* === 强调色 === */
+  --color-accent-blue: #569cd6;
+  --color-accent-purple: #c586c0;
+  --color-accent-yellow: #dcdcaa;
+  --color-accent-orange: #ce9178;
 }
 
 /* Dark gradient background utility */
