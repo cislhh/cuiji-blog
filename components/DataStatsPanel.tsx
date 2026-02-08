@@ -67,7 +67,7 @@ export default function DataStatsPanel() {
       transition={{ duration: 0.6, delay: 0.4 }}
       onViewportEnter={() => setIsVisible(true)}
     >
-      <h3 className="text-lg font-semibold text-gray-300 mb-4">Site Statistics</h3>
+      <h3 className="mb-4 text-lg font-semibold text-gray-300">Site Statistics</h3>
       <div className="grid grid-cols-3 gap-4">
         <motion.div
           className="text-center"
@@ -75,7 +75,7 @@ export default function DataStatsPanel() {
           transition={{ type: 'spring', stiffness: 300 }}
         >
           <div className="text-3xl font-bold text-amber-400">{counts.posts}</div>
-          <div className="text-sm text-gray-400 mt-1">Blog Posts</div>
+          <div className="mt-1 text-sm text-gray-400">Blog Posts</div>
         </motion.div>
         <motion.div
           className="text-center"
@@ -83,7 +83,7 @@ export default function DataStatsPanel() {
           transition={{ type: 'spring', stiffness: 300 }}
         >
           <div className="text-3xl font-bold text-blue-400">{counts.projects}</div>
-          <div className="text-sm text-gray-400 mt-1">Projects</div>
+          <div className="mt-1 text-sm text-gray-400">Projects</div>
         </motion.div>
         <motion.div
           className="text-center"
@@ -94,7 +94,7 @@ export default function DataStatsPanel() {
             {counts.experience}
             {stats[2].suffix}
           </div>
-          <div className="text-sm text-gray-400 mt-1">Years Coding</div>
+          <div className="mt-1 text-sm text-gray-400">Years Coding</div>
         </motion.div>
       </div>
     </motion.div>

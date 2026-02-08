@@ -19,12 +19,10 @@ export default function PersonalTagline() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
-      <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-transparent">
+      <h1 className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-5xl font-bold text-transparent md:text-7xl">
         Building the Future
       </h1>
-      <p className="mt-4 text-xl md:text-2xl text-gray-400">
-        One line of code at a time
-      </p>
+      <p className="mt-4 text-xl text-gray-400 md:text-2xl">One line of code at a time</p>
     </motion.div>
   )
 }

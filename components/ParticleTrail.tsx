@@ -45,49 +45,49 @@ export default function ParticleTrail() {
    * Creates a new particle at the current mouse position.
    * Randomizes size, color, and lifetime for variety.
    */
-  const createParticle = useCallback(
-    (x: number, y: number) => {
-      // Color palette for particles (warm amber/gold tones)
-      const colors = [
-        'rgba(251, 191, 36, 0.6)', // amber-400
-        'rgba(252, 211, 77, 0.5)', // amber-300
-        'rgba(245, 158, 11, 0.7)', // amber-500
-      ]
-      return {
-        id: particleIdRef.current++,
-        x,
-        y,
-        size: Math.random() * 4 + 2, // 2-6px
-        opacity: Math.random() * 0.4 + 0.4, // 0.4-0.8
-        color: colors[Math.floor(Math.random() * colors.length)],
-      }
-    },
-    []
-  )
+  const createParticle = useCallback((x: number, y: number) => {
+    // Color palette for particles (warm amber/gold tones)
+    const colors = [
+      'rgba(251, 191, 36, 0.6)', // amber-400
+      'rgba(252, 211, 77, 0.5)', // amber-300
+      'rgba(245, 158, 11, 0.7)', // amber-500
+    ]
+    return {
+      id: particleIdRef.current++,
+      x,
+      y,
+      size: Math.random() * 4 + 2, // 2-6px
+      opacity: Math.random() * 0.4 + 0.4, // 0.4-0.8
+      color: colors[Math.floor(Math.random() * colors.length)],
+    }
+  }, [])
 
   /**
    * Handles mouse movement and spawns particles.
    * Throttled to prevent excessive particle creation.
    */
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    mouseX.set(e.clientX)
-    mouseY.set(e.clientY)
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      mouseX.set(e.clientX)
+      mouseY.set(e.clientY)
 
-    // Spawn 1-3 particles per movement
-    const particleCount = Math.floor(Math.random() * 3) + 1
-    const newParticles = Array.from({ length: particleCount }, () =>
-      createParticle(e.clientX, e.clientY)
-    )
+      // Spawn 1-3 particles per movement
+      const particleCount = Math.floor(Math.random() * 3) + 1
+      const newParticles = Array.from({ length: particleCount }, () =>
+        createParticle(e.clientX, e.clientY)
+      )
 
-    setParticles((prev) => {
-      // Limit total particles to prevent performance issues
-      const combined = [...prev, ...newParticles]
-      if (combined.length > 100) {
-        return combined.slice(combined.length - 100)
-      }
-      return combined
-    })
-  }, [mouseX, mouseY, createParticle])
+      setParticles((prev) => {
+        // Limit total particles to prevent performance issues
+        const combined = [...prev, ...newParticles]
+        if (combined.length > 100) {
+          return combined.slice(combined.length - 100)
+        }
+        return combined
+      })
+    },
+    [mouseX, mouseY, createParticle]
+  )
 
   /**
    * Removes a particle after its animation completes.
