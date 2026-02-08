@@ -230,3 +230,37 @@ input:-webkit-autofill:focus {
   display: inline-block;
   vertical-align: middle;
 }
+
+/* === VSCode 主题工具类 === */
+
+.bg-vscode-dark {
+  background: linear-gradient(180deg, #0d0d0d 0%, #1e1e1e 100%);
+}
+
+.glow-primary-vscode {
+  box-shadow: 0 0 20px rgba(78, 201, 176, 0.3);
+}
+
+.glow-primary-vscode-hover:hover {
+  box-shadow: 0 0 30px rgba(78, 201, 176, 0.5);
+}
+
+.underline-magical {
+  background: linear-gradient(to right, #4ec9b0, #4ec9b0);
+  background-size: 0 0.2em;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+
+.underline-magical:hover {
+  background-size: 100% 0.2em;
+}
+
+.border-vscode {
+  border: 1px solid #252526;
+}
+
+.border-vscode-light {
+  border: 1px solid rgba(78, 201, 176, 0.2);
+}
