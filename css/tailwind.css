@@ -237,11 +237,11 @@ input:-webkit-autofill:focus {
   background: linear-gradient(180deg, #0d0d0d 0%, #1e1e1e 100%);
 }
 
-.glow-primary-vscode {
+.glow-primary {
   box-shadow: 0 0 20px rgba(78, 201, 176, 0.3);
 }
 
-.glow-primary-vscode-hover:hover {
+.glow-primary-hover:hover {
   box-shadow: 0 0 30px rgba(78, 201, 176, 0.5);
 }
 
