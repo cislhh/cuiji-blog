@@ -1,15 +1,15 @@
-import { sortPosts, allCoreContent } from 'pliny/utils/contentlayer'
-import { allBlogs } from 'contentlayer/generated'
-import Main from './Main'
-import HeroSection from '@/components/HeroSection'
+import SmoothScroll from '@/components/SmoothScroll'
+import { HeroSection, IntroSection, WorksSection, ContactSection } from './components/home'
 
-export default async function Page() {
-  const sortedPosts = sortPosts(allBlogs)
-  const posts = allCoreContent(sortedPosts)
+export default function HomePage() {
   return (
-    <>
-      <HeroSection />
-      <Main posts={posts} />
-    </>
+    <SmoothScroll>
+      <main>
+        <HeroSection />
+        <IntroSection />
+        <WorksSection />
+        <ContactSection />
+      </main>
+    </SmoothScroll>
   )
 }
