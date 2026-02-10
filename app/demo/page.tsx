@@ -2,6 +2,7 @@
 
 import { ParallaxSection, ScrollTrigger, StaggerScroll } from '@/components/scroll'
 import { useScrollProgress } from '@/components/scroll'
+import HorizontalScroll from '@/components/scroll/HorizontalScroll'
 
 /**
  * 滚动效果演示页面
@@ -10,6 +11,40 @@ import { useScrollProgress } from '@/components/scroll'
  */
 export default function DemoPage() {
   const progress = useScrollProgress()
+
+  // 自定义卡片数据
+  const customCards = [
+    {
+      id: 1,
+      title: 'Ibicash',
+      description: 'darkroom.engineering',
+      category: 'Finance',
+    },
+    {
+      id: 2,
+      title: 'Grand Theft Auto VI',
+      description: 'Rockstar Games',
+      category: 'Gaming',
+    },
+    {
+      id: 3,
+      title: 'Getty - Sculpting Harmony',
+      description: 'Resn',
+      category: 'Art',
+    },
+    {
+      id: 4,
+      title: 'Microsoft Design',
+      description: 'Microsoft',
+      category: 'Technology',
+    },
+    {
+      id: 5,
+      title: 'Shopify Supply',
+      description: 'Shopify',
+      category: 'E-commerce',
+    },
+  ]
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
@@ -27,6 +62,19 @@ export default function DemoPage() {
           <h1 className="mb-4 text-6xl font-bold">滚动效果演示</h1>
           <p className="text-xl text-gray-400">向下滚动查看各种效果</p>
         </ScrollTrigger>
+      </section>
+
+      {/* HorizontalScroll 演示 - 核心功能 */}
+      <section>
+        <div className="mb-12 px-4 pt-20 text-center">
+          <ScrollTrigger animation="fade-up">
+            <h2 className="mb-4 text-4xl font-bold">水平滚动 (Horizontal Scroll)</h2>
+            <p className="text-gray-400">
+              参考 lenis.darkroom.engineering 实现，当滚动到中心时触发水平滚动
+            </p>
+          </ScrollTrigger>
+        </div>
+        <HorizontalScroll cards={customCards} />
       </section>
 
       {/* ScrollTrigger 演示 */}
