@@ -109,6 +109,9 @@ export function HorizontalScroll({
   // 计算 gap（视口宽度的百分比）
   const gapPx = (dimensions.viewportWidth * gapPercent) / 100
 
+  // 计算初始偏移量，使第一个card居中
+  const initialOffset = cardSize > 0 ? (dimensions.viewportWidth - cardSize) / 2 : 0
+
   // 计算水平滚动的总距离
   // 初始状态：第一个card在视口中心
   // 结束状态：最后一个card在视口中心
@@ -121,6 +124,12 @@ export function HorizontalScroll({
     const height = dimensions.viewportHeight + scrollDistance
     setContainerHeight(height)
   }, [dimensions.viewportHeight, scrollDistance])
+
+  // 设置初始 transform 偏移
+  useEffect(() => {
+    if (!horizontalWrapperRef.current || cardSize === 0) return
+    horizontalWrapperRef.current.style.transform = `translateX(${initialOffset}px)`
+  }, [initialOffset, cardSize])
 
   // 水平滚动逻辑
   useEffect(() => {
@@ -142,9 +151,12 @@ export function HorizontalScroll({
         const progress = Math.min(1, Math.max(0, currentScroll / scrollDistance))
         setScrollProgress(progress)
 
-        // 转换为水平滚动（向左移动）
-        const translateX = -(progress * scrollDistance)
+        // 转换为水平滚动：初始偏移 - 滚动移动
+        const translateX = initialOffset - progress * scrollDistance
         horizontalElement.style.transform = `translateX(${translateX}px)`
+      } else {
+        // 未到达滚动区域时，保持初始偏移
+        horizontalElement.style.transform = `translateX(${initialOffset}px)`
       }
     }
 
@@ -153,35 +165,26 @@ export function HorizontalScroll({
     return () => {
       lenis.off('scroll', handleScroll)
     }
-  }, [lenis, scrollDistance])
-
-  // 计算内边距，使第一个card居中
-  const paddingX = (dimensions.viewportWidth - cardSize) / 2
+  }, [lenis, scrollDistance, initialOffset])
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative ${className}`}
-      style={{ height: containerHeight }}
-    >
+    <div ref={containerRef} className={`relative ${className}`} style={{ height: containerHeight }}>
       {/* Sticky 容器 - 固定在视口顶部，内容垂直居中 */}
       <div
         ref={stickyWrapperRef}
         className="sticky top-0 z-10 flex h-screen w-full items-center justify-center bg-white dark:bg-gray-950"
       >
-        {/* 水平滚动的内容容器 - 使用 max-width 限制内容宽度 */}
+        {/* 水平滚动的内容容器 - 限制宽度并隐藏溢出 */}
         <div
-          className="relative w-full"
+          className="relative w-full overflow-hidden"
           style={{ maxWidth: `${dimensions.viewportWidth}px` }}
         >
-          {/* 实际滚动的卡片容器 */}
+          {/* 实际滚动的卡片容器 - 不使用 padding，用 transform 初始偏移 */}
           <div
             ref={horizontalWrapperRef}
             className="flex will-change-transform"
             style={{
               gap: `${gapPx}px`,
-              paddingLeft: `${paddingX}px`,
-              paddingRight: `${paddingX}px`,
             }}
           >
             {cards.map((card) => (
