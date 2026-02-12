@@ -65,7 +65,7 @@ export default function AboutSection() {
   const activeData = categories.find((cat) => cat.id === activeCategory)!
 
   return (
-    <section className="relative grid min-h-screen grid-cols-1 bg-white md:h-screen md:grid-cols-13 dark:bg-gray-900">
+    <section className="relative grid min-h-screen grid-cols-1 bg-white md:min-h-screen md:grid-cols-13 dark:bg-gray-900">
       {/* 左侧展示区域 - 4fr */}
       <div className="relative md:col-span-4">
         <div className="sticky top-0 flex h-screen items-center justify-center px-8">
