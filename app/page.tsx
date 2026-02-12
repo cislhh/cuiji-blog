@@ -1,13 +1,13 @@
 import SmoothScroll from '@/components/SmoothScroll'
-import { HeroSection, IntroSection, WorksSection, ContactSection } from './components/home'
+import { HeroSection, AboutSection, TimelineSection, ContactSection } from './components/home'
 
 export default function HomePage() {
   return (
     <SmoothScroll>
       <main>
         <HeroSection />
-        <IntroSection />
-        <WorksSection />
+        <AboutSection />
+        <TimelineSection />
         <ContactSection />
       </main>
     </SmoothScroll>
