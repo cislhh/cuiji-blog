@@ -1,5 +1,6 @@
 export { default as HeroSection } from './HeroSection'
-export { default as IntroSection } from './IntroSection'
-export { default as WorksSection } from './WorksSection'
+export { default as AboutSection } from './AboutSection'
 export { default as ContactSection } from './ContactSection'
 export { default as MagicalUnderline } from './MagicalUnderline'
+export { default as IntroSection } from './IntroSection'
+export { default as WorksSection } from './WorksSection'
