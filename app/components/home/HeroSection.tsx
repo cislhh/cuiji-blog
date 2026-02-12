@@ -6,13 +6,13 @@ import { Github, Twitter } from 'lucide-react'
 
 // 社交图标组件（暂时留空）
 const WechatIcon = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
     <path d="M8.5,4C4.9,4,2,6.5,2,9.5c0,2,1.5,3.8,3,5c0,0-0.5,1.5-1.5,2c0,0,1.5,0,3-1c1,0.5,2,0.5,3,0c3.6,0,6.5-2.5,6.5-5.5S12.1,4,8.5,4z M18.5,12c-2.9,0-5.2,2.1-5.2,4.7c0,1.7,1.2,3.2,2.6,4.1c0,0-0.4,1.3-1.3,1.7c0,0,1.3,0,2.5-0.9c0.8,0.4,1.7,0.6,2.6,0.6c2.9,0,5.2-2.1,5.2-4.7S21.4,12,18.5,12z" />
   </svg>
 )
 
 const XiaohongshuIcon = () => (
-  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
     <rect x="4" y="4" width="16" height="16" rx="2" />
   </svg>
 )
@@ -33,15 +33,15 @@ const navLinks = [
 
 export default function HeroSection() {
   return (
-    <section className="relative h-screen grid grid-cols-13">
+    <section className="relative grid h-screen grid-cols-13">
       {/* 左侧内容区域 - 8fr */}
-      <div className="col-span-13 md:col-span-8 flex flex-col justify-center px-6 md:px-12 lg:px-20">
+      <div className="col-span-13 flex flex-col justify-center px-6 md:col-span-8 md:px-12 lg:px-20">
         {/* 姓名 */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-left text-gray-900 dark:text-gray-100"
+          className="mb-8 text-left text-5xl font-bold text-gray-900 md:text-6xl lg:text-7xl dark:text-gray-100"
         >
           CuiJi
         </motion.h1>
@@ -51,7 +51,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-10 md:mb-12 max-w-2xl text-left leading-relaxed"
+          className="mb-10 max-w-2xl text-left text-base leading-relaxed text-gray-600 md:mb-12 md:text-lg dark:text-gray-400"
         >
           欢迎来到我的个人作品集 —— 或者说，我在网络上的游乐场。
           我是一名软件工程师，永远专注于学习这门手艺。我喜欢为网络构建事物，
@@ -63,14 +63,14 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex gap-6 mb-8 md:mb-12"
+          className="mb-8 flex gap-6 md:mb-12"
         >
           {socialLinks.map((social) => (
             <a
               key={social.name}
               href={social.href}
               aria-label={social.label}
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+              className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
             >
               <social.icon />
             </a>
@@ -88,7 +88,7 @@ export default function HeroSection() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-base md:text-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className="text-base transition-colors hover:text-blue-600 md:text-lg dark:hover:text-blue-400"
             >
               {link.title}
             </Link>
@@ -97,7 +97,7 @@ export default function HeroSection() {
       </div>
 
       {/* 右侧内容区域 - 5fr */}
-      <div className="hidden md:block md:col-span-5 relative flex items-center justify-center">
+      <div className="relative flex hidden items-center justify-center md:col-span-5 md:block">
         {/* 浅色背景图片 - 若隐若现效果 */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -105,7 +105,7 @@ export default function HeroSection() {
           transition={{ duration: 1.5, delay: 0.8 }}
           className="absolute inset-0 flex items-center justify-center"
         >
-          <div className="w-64 h-64 lg:w-80 lg:h-80 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-full blur-3xl" />
+          <div className="h-64 w-64 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 blur-3xl lg:h-80 lg:w-80 dark:from-gray-700 dark:to-gray-800" />
         </motion.div>
       </div>
     </section>
