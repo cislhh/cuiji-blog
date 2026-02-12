@@ -110,3 +110,21 @@ export function Bluesky(svgProps: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function Wechat(svgProps: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...svgProps}>
+      <title>WeChat</title>
+      <path d="M8.5,4C4.9,4,2,6.5,2,9.5c0,2,1.5,3.8,3,5c0,0-0.5,1.5-1.5,2c0,0,1.5,0,3-1c1,0.5,2,0.5,3,0c3.6,0,6.5-2.5,6.5-5.5S12.1,4,8.5,4z M18.5,12c-2.9,0-5.2,2.1-5.2,4.7c0,1.7,1.2,3.2,2.6,4.1c0,0-0.4,1.3-1.3,1.7c0,0,1.3,0,2.5-0.9c0.8,0.4,1.7,0.6,2.6,0.6c2.9,0,5.2-2.1,5.2-4.7S21.4,12,18.5,12z" />
+    </svg>
+  )
+}
+
+export function Xiaohongshu(svgProps: SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...svgProps}>
+      <title>Xiaohongshu</title>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+    </svg>
+  )
+}
