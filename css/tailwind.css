@@ -47,6 +47,9 @@
   --z-70: 70;
   --z-80: 80;
 
+  /* Grid template columns */
+  --grid-template-columns-13: repeat(13, minmax(0, 1fr));
+
   /* Dark Gradient Theme Colors */
   --color-dark-bg-start: #0a0a0f;
   --color-dark-bg-end: #1a1a2e;
