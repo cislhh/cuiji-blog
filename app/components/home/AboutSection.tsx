@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef, useState, useEffect } from 'react'
-import { CodeBriefcase, Heart, Sparkles } from 'lucide-react'
+import { Briefcase, Heart, Sparkles } from 'lucide-react'
 
 // 数据内容
 const categories = [
@@ -21,7 +21,7 @@ const categories = [
   {
     id: 'experience',
     title: '经历',
-    icon: CodeBriefcase,
+    icon: Briefcase,
     content: [
       { company: '某科技公司', position: '前端工程师', period: '2023 - 至今' },
       { company: '某互联网公司', position: '实习工程师', period: '2022 - 2023' },
@@ -65,10 +65,10 @@ export default function AboutSection() {
   const activeData = categories.find((cat) => cat.id === activeCategory)!
 
   return (
-    <section className="relative min-h-screen md:h-screen grid grid-cols-1 md:grid-cols-13 bg-white dark:bg-gray-900">
+    <section className="relative grid min-h-screen grid-cols-1 bg-white md:h-screen md:grid-cols-13 dark:bg-gray-900">
       {/* 左侧展示区域 - 4fr */}
-      <div className="md:col-span-4 relative">
-        <div className="sticky top-0 h-screen flex items-center justify-center px-8">
+      <div className="relative md:col-span-4">
+        <div className="sticky top-0 flex h-screen items-center justify-center px-8">
           <motion.div
             key={activeCategory}
             initial={{ opacity: 0, y: 20 }}
@@ -77,17 +77,19 @@ export default function AboutSection() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <activeData.icon className="w-16 h-16 mx-auto mb-6 text-gray-900 dark:text-gray-100" />
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">{activeData.title}</h2>
+            <activeData.icon className="mx-auto mb-6 h-16 w-16 text-gray-900 dark:text-gray-100" />
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              {activeData.title}
+            </h2>
           </motion.div>
         </div>
       </div>
 
       {/* 右侧内容区域 - 9fr */}
-      <div ref={containerRef} className="md:col-span-9 px-6 md:px-12 py-20">
+      <div ref={containerRef} className="px-6 py-20 md:col-span-9 md:px-12">
         {/* 技能部分 */}
         <div className="min-h-[50vh] py-12">
-          <h3 className="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100">技能</h3>
+          <h3 className="mb-8 text-2xl font-bold text-gray-900 dark:text-gray-100">技能</h3>
           <div className="space-y-4">
             {categories[0].content.map((skill, index) => (
               <motion.div
@@ -95,9 +97,9 @@ export default function AboutSection() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg"
+                className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800"
               >
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <span className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     {skill.name}
                   </span>
@@ -110,7 +112,7 @@ export default function AboutSection() {
 
         {/* 经历部分 */}
         <div className="min-h-[50vh] py-12">
-          <h3 className="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100">经历</h3>
+          <h3 className="mb-8 text-2xl font-bold text-gray-900 dark:text-gray-100">经历</h3>
           <div className="space-y-4">
             {categories[1].content.map((exp, index) => (
               <motion.div
@@ -118,13 +120,13 @@ export default function AboutSection() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg"
+                className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800"
               >
                 <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   {exp.position}
                 </h4>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">{exp.company}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">{exp.period}</p>
+                <p className="mt-1 text-gray-600 dark:text-gray-400">{exp.company}</p>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-500">{exp.period}</p>
               </motion.div>
             ))}
           </div>
@@ -132,7 +134,7 @@ export default function AboutSection() {
 
         {/* 生活部分 */}
         <div className="min-h-[50vh] py-12">
-          <h3 className="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100">生活</h3>
+          <h3 className="mb-8 text-2xl font-bold text-gray-900 dark:text-gray-100">生活</h3>
           <div className="space-y-4">
             {categories[2].content.map((life, index) => (
               <motion.div
@@ -140,10 +142,10 @@ export default function AboutSection() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg"
+                className="rounded-lg bg-gray-50 p-6 dark:bg-gray-800"
               >
                 <h4 className="text-lg font-bold text-gray-900 dark:text-gray-100">{life.hobby}</h4>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">{life.description}</p>
+                <p className="mt-1 text-gray-600 dark:text-gray-400">{life.description}</p>
               </motion.div>
             ))}
           </div>
