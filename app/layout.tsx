@@ -104,7 +104,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
             <div className="w-full">
               <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-                <Header />
                 <main className="mb-auto w-full">{children}</main>
               </SearchProvider>
               <Footer />
