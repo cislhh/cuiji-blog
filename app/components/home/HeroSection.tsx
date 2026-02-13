@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'motion/react'
 import { Github, Twitter } from 'lucide-react'
 
@@ -97,15 +98,25 @@ export default function HeroSection() {
       </div>
 
       {/* 右侧内容区域 - 5fr */}
-      <div className="relative flex hidden items-center justify-center md:col-span-5 md:block">
-        {/* 浅色背景图片 - 若隐若现效果 */}
+      <div className="relative hidden md:col-span-5 md:block">
+        {/* 背景图片 - 在 5fr 区域内中心定位 */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
+          animate={{ opacity: 0.2 }}
           transition={{ duration: 1.5, delay: 0.8 }}
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute top-1/2 right-0 flex h-full w-full -translate-y-1/2 -translate-x-[60px] items-center justify-center"
         >
-          <div className="h-64 w-64 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 blur-3xl lg:h-80 lg:w-80 dark:from-gray-700 dark:to-gray-800" />
+          <div className="relative flex h-full w-full items-center justify-center">
+            <Image
+              src="/images/bg_TS.png"
+              alt="背景"
+              width={500}
+              height={500}
+              className="object-contain"
+              style={{ objectFit: 'contain' }}
+              priority
+            />
+          </div>
         </motion.div>
       </div>
     </section>
