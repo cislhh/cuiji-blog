@@ -82,12 +82,6 @@ export default function TimelineSection() {
                       </div>
                     </motion.div>
                   </div>
-
-                  {/* 时间节点圆点 */}
-                  <div className="absolute left-1/2 z-10 hidden h-4 w-4 -translate-x-1/2 transform rounded-full border-4 border-white bg-gray-900 md:block dark:border-gray-900 dark:bg-gray-100" />
-
-                  {/* 移动端节点圆点 */}
-                  <div className="absolute left-8 z-10 h-3 w-3 -translate-x-1/2 transform rounded-full border-4 border-white bg-gray-900 md:hidden dark:border-gray-900 dark:bg-gray-100" />
                 </motion.div>
               )
             })}
