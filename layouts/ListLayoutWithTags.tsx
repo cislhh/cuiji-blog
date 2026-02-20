@@ -9,6 +9,8 @@ import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import tagData from 'app/tag-data.json'
+import { motion } from 'motion/react'
+import { Calendar, Clock, ArrowRight, Folder } from 'lucide-react'
 
 interface PaginationProps {
   totalPages: number
@@ -34,31 +36,40 @@ function Pagination({ totalPages, currentPage }: PaginationProps) {
 
   return (
     <div className="space-y-2 pt-6 pb-8 md:space-y-5">
-      <nav className="flex justify-between">
-        {!prevPage && (
-          <button className="cursor-auto disabled:opacity-50" disabled={!prevPage}>
-            Previous
+      <nav className="flex justify-between items-center gap-4">
+        {!prevPage ? (
+          <button
+            className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed transition-all duration-200"
+            disabled
+          >
+            上一页
           </button>
-        )}
-        {prevPage && (
+        ) : (
           <Link
             href={currentPage - 1 === 1 ? `/${basePath}/` : `/${basePath}/page/${currentPage - 1}`}
             rel="prev"
+            className="px-4 py-2 rounded-lg bg-primary-500/10 hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
           >
-            Previous
+            上一页
           </Link>
         )}
-        <span>
-          {currentPage} of {totalPages}
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          第 {currentPage} / {totalPages} 页
         </span>
-        {!nextPage && (
-          <button className="cursor-auto disabled:opacity-50" disabled={!nextPage}>
-            Next
+        {!nextPage ? (
+          <button
+            className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed transition-all duration-200"
+            disabled
+          >
+            下一页
           </button>
-        )}
-        {nextPage && (
-          <Link href={`/${basePath}/page/${currentPage + 1}`} rel="next">
-            Next
+        ) : (
+          <Link
+            href={`/${basePath}/page/${currentPage + 1}`}
+            rel="next"
+            className="px-4 py-2 rounded-lg bg-primary-500/10 hover:bg-primary-500/20 text-primary-600 dark:text-primary-400 transition-all duration-200 cursor-pointer inline-flex items-center gap-2"
+          >
+            下一页
           </Link>
         )}
       </nav>
@@ -80,90 +91,189 @@ export default function ListLayoutWithTags({
   const displayPosts = initialDisplayPosts.length > 0 ? initialDisplayPosts : posts
 
   return (
-    <>
-      <div>
-        <div className="pt-6 pb-6">
-          <h1 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:hidden sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 dark:text-gray-100">
-            {title}
-          </h1>
-        </div>
-        <div className="flex sm:space-x-24">
-          <div className="hidden h-full max-h-screen max-w-[280px] min-w-[280px] flex-wrap overflow-auto rounded-sm bg-gray-50 pt-5 shadow-md sm:flex dark:bg-gray-900/70 dark:shadow-gray-800/40">
-            <div className="px-6 py-4">
-              {pathname.startsWith('/blog') ? (
-                <h3 className="text-primary-500 font-bold uppercase">All Posts</h3>
-              ) : (
-                <Link
-                  href={`/blog`}
-                  className="hover:text-primary-500 dark:hover:text-primary-500 font-bold text-gray-700 uppercase dark:text-gray-300"
-                >
-                  All Posts
-                </Link>
-              )}
-              <ul>
-                {sortedTags.map((t) => {
-                  return (
-                    <li key={t} className="my-3">
-                      {decodeURI(pathname.split('/tags/')[1]) === slug(t) ? (
-                        <h3 className="text-primary-500 inline px-3 py-2 text-sm font-bold uppercase">
-                          {`${t} (${tagCounts[t]})`}
-                        </h3>
-                      ) : (
-                        <Link
-                          href={`/tags/${slug(t)}`}
-                          className="hover:text-primary-500 dark:hover:text-primary-500 px-3 py-2 text-sm font-medium text-gray-500 uppercase dark:text-gray-300"
-                          aria-label={`View posts tagged ${t}`}
-                        >
-                          {`${t} (${tagCounts[t]})`}
-                        </Link>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-bg-start dark:to-dark-bg-end">
+      {/* 页面标题 */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="relative pt-16 pb-12 px-4 sm:px-6 lg:px-8"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+            >
+              {title}
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-lg text-gray-600 dark:text-gray-400"
+            >
+              探索技术文章与思考记录
+            </motion.p>
           </div>
-          <div>
-            <ul>
-              {displayPosts.map((post) => {
-                const { path, date, title, summary, tags } = post
+        </div>
+      </motion.div>
+
+      {/* 主内容区 */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* 侧边栏标签 */}
+          <motion.aside
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="lg:w-72 flex-shrink-0"
+          >
+            <div className="sticky top-24 space-y-6">
+              {/* 分类卡片 */}
+              <div className="glass-panel rounded-xl p-6 shadow-lg">
+                <div className="flex items-center gap-2 mb-4">
+                  <Folder className="w-5 h-5 text-primary-500" />
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100">文章分类</h3>
+                </div>
+                <nav className="space-y-2">
+                  {pathname.startsWith('/blog') ? (
+                    <div className="px-3 py-2 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium">
+                      全部文章
+                    </div>
+                  ) : (
+                    <Link
+                      href={`/blog`}
+                      className="block px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors duration-200 cursor-pointer"
+                    >
+                      全部文章
+                    </Link>
+                  )}
+                  {sortedTags.map((t) => {
+                    const isActive = decodeURI(pathname.split('/tags/')[1]) === slug(t)
+                    return (
+                      <Link
+                        key={t}
+                        href={`/tags/${slug(t)}`}
+                        className={`block px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer ${
+                          isActive
+                            ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium'
+                            : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
+                        }`}
+                        aria-label={`查看标签 ${t} 的文章`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="uppercase text-sm">{t}</span>
+                          <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+                            {tagCounts[t]}
+                          </span>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </nav>
+              </div>
+
+              {/* 统计信息卡片 */}
+              <div className="glass-panel rounded-xl p-6 shadow-lg">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">博客统计</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">总文章数</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{posts.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">标签数量</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{sortedTags.length}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.aside>
+
+          {/* 文章列表 */}
+          <div className="flex-1 min-w-0">
+            <motion.ul
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="space-y-6"
+            >
+              {displayPosts.map((post, index) => {
+                const { path, date, title, summary, tags, readingTime } = post
                 return (
-                  <li key={path} className="py-5">
-                    <article className="flex flex-col space-y-2 xl:space-y-0">
-                      <dl>
-                        <dt className="sr-only">Published on</dt>
-                        <dd className="text-base leading-6 font-medium text-gray-500 dark:text-gray-400">
-                          <time dateTime={date} suppressHydrationWarning>
-                            {formatDate(date, siteMetadata.locale)}
-                          </time>
-                        </dd>
-                      </dl>
-                      <div className="space-y-3">
-                        <div>
-                          <h2 className="text-2xl leading-8 font-bold tracking-tight">
-                            <Link href={`/${path}`} className="text-gray-900 dark:text-gray-100">
-                              {title}
-                            </Link>
-                          </h2>
-                          <div className="flex flex-wrap">
-                            {tags?.map((tag) => <Tag key={tag} text={tag} />)}
+                  <motion.li
+                    key={path}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 * index }}
+                    whileHover={{ y: -4 }}
+                    className="group"
+                  >
+                    <Link href={`/${path}`} className="block cursor-pointer">
+                      <article className="glass-panel rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 h-full border border-transparent hover:border-primary-500/30">
+                        {/* 元信息 */}
+                        <div className="flex flex-wrap items-center gap-4 mb-4 text-sm text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            <time dateTime={date} suppressHydrationWarning>
+                              {formatDate(date, siteMetadata.locale)}
+                            </time>
                           </div>
+                          {readingTime && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-4 h-4" />
+                              <span>{readingTime.text}</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="prose max-w-none text-gray-500 dark:text-gray-400">
+
+                        {/* 标题 */}
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
+                          {title}
+                        </h2>
+
+                        {/* 摘要 */}
+                        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
                           {summary}
+                        </p>
+
+                        {/* 标签 */}
+                        {tags && tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {tags.slice(0, 5).map((tag) => (
+                              <Tag key={tag} text={tag} />
+                            ))}
+                          </div>
+                        )}
+
+                        {/* 阅读更多指示器 */}
+                        <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          阅读全文
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                         </div>
-                      </div>
-                    </article>
-                  </li>
+                      </article>
+                    </Link>
+                  </motion.li>
                 )
               })}
-            </ul>
+            </motion.ul>
+
+            {/* 分页 */}
             {pagination && pagination.totalPages > 1 && (
-              <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} />
+              </motion.div>
             )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
