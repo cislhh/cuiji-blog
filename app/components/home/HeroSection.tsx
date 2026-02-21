@@ -104,7 +104,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.2 }}
           transition={{ duration: 1.5, delay: 0.8 }}
-          className="absolute top-1/2 right-0 flex h-full w-full -translate-y-1/2 -translate-x-[60px] items-center justify-center"
+          className="absolute top-1/2 right-0 flex h-full w-full -translate-x-[60px] -translate-y-1/2 items-center justify-center"
         >
           <div className="relative flex h-full w-full items-center justify-center">
             <Image

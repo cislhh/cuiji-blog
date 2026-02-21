@@ -18,26 +18,27 @@
 ```tsx
 import { ParallaxSection } from '@/components/scroll'
 
-<ParallaxSection
+;<ParallaxSection
   height="100vh"
   layers={[
     {
-      speed: 0,  // 背景层 - 不动
-      children: <Background />
+      speed: 0, // 背景层 - 不动
+      children: <Background />,
     },
     {
-      speed: 0.5,  // 中间层 - 半速
-      children: <MiddleContent />
+      speed: 0.5, // 中间层 - 半速
+      children: <MiddleContent />,
     },
     {
-      speed: 1,  // 前景层 - 正常速度
-      children: <Foreground />
-    }
+      speed: 1, // 前景层 - 正常速度
+      children: <Foreground />,
+    },
   ]}
 />
 ```
 
 **参数：**
+
 - `layers`: 视差层数组
   - `speed`: 视差速度 (0-1)，0 表示不动，1 表示正常速度
   - `children`: 层内容
@@ -52,7 +53,7 @@ import { ParallaxSection } from '@/components/scroll'
 ```tsx
 import { HorizontalScroll } from '@/components/scroll'
 
-<HorizontalScroll itemWidth={500} gap={32}>
+;<HorizontalScroll itemWidth={500} gap={32}>
   <div>项目 1</div>
   <div>项目 2</div>
   <div>项目 3</div>
@@ -60,6 +61,7 @@ import { HorizontalScroll } from '@/components/scroll'
 ```
 
 **参数：**
+
 - `itemWidth`: 每个项目宽度（默认 `400px`）
 - `gap`: 项目间距（默认 `24`）
 - `className`: 自定义类名
@@ -72,12 +74,13 @@ import { HorizontalScroll } from '@/components/scroll'
 ```tsx
 import { ScrollTrigger } from '@/components/scroll'
 
-<ScrollTrigger animation="fade-up" delay={200}>
+;<ScrollTrigger animation="fade-up" delay={200}>
   <h1>标题</h1>
 </ScrollTrigger>
 ```
 
 **动画类型：**
+
 - `fade-up` - 从下方淡入
 - `fade-down` - 从上方淡入
 - `fade-left` - 从左侧淡入
@@ -89,6 +92,7 @@ import { ScrollTrigger } from '@/components/scroll'
 - `rotate` - 旋转进入
 
 **参数：**
+
 - `animation`: 动画类型（默认 `"fade-up"`）
 - `threshold`: 触发阈值 0-1（默认 `0.1`）
 - `delay`: 动画延迟毫秒（默认 `0`）
@@ -103,7 +107,7 @@ import { ScrollTrigger } from '@/components/scroll'
 ```tsx
 import { StaggerScroll } from '@/components/scroll'
 
-<StaggerScroll stagger={0.1} animation="fade-up">
+;<StaggerScroll stagger={0.1} animation="fade-up">
   <div>项目 1</div>
   <div>项目 2</div>
   <div>项目 3</div>
@@ -111,6 +115,7 @@ import { StaggerScroll } from '@/components/scroll'
 ```
 
 **参数：**
+
 - `stagger`: 每个子元素延迟间隔秒数（默认 `0.1`）
 - `animation`: 动画类型（默认 `"fade-up"`）
 - `threshold`: 触发阈值（默认 `0.1`）

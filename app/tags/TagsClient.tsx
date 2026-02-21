@@ -35,24 +35,24 @@ export default function TagsClient({ sortedTags, tagCounts }: TagsClientProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-bg-start dark:to-dark-bg-end">
+    <div className="dark:from-dark-bg-start dark:to-dark-bg-end min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* 页面标题 */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative pt-16 pb-12 px-4 sm:px-6 lg:px-8"
+        className="relative px-4 pt-16 pb-12 sm:px-6 lg:px-8"
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center justify-center gap-3 mb-4"
+              className="mb-4 flex items-center justify-center gap-3"
             >
-              <Hash className="w-10 h-10 text-primary-500" />
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-100">
+              <Hash className="text-primary-500 h-10 w-10" />
+              <h1 className="text-5xl font-bold text-gray-900 md:text-6xl dark:text-gray-100">
                 标签云
               </h1>
             </motion.div>
@@ -73,12 +73,10 @@ export default function TagsClient({ sortedTags, tagCounts }: TagsClientProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"
+        className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8"
       >
         {sortedTags.length === 0 ? (
-          <div className="text-center text-gray-500 dark:text-gray-400 py-12">
-            暂无标签
-          </div>
+          <div className="py-12 text-center text-gray-500 dark:text-gray-400">暂无标签</div>
         ) : (
           <div className="glass-panel rounded-xl p-8 md:p-12">
             <div className="flex flex-wrap justify-center gap-4">
@@ -99,10 +97,10 @@ export default function TagsClient({ sortedTags, tagCounts }: TagsClientProps) {
                     <Link
                       href={`/tags/${slug(t)}`}
                       aria-label={`查看标签 ${t} 的文章`}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 dark:bg-black/30 hover:shadow-lg transition-all duration-200 cursor-pointer font-medium uppercase"
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-white/50 px-4 py-2 font-medium uppercase transition-all duration-200 hover:shadow-lg dark:bg-black/30"
                     >
                       <span className={size}>{t}</span>
-                      <span className="text-xs bg-white/50 dark:bg-black/30 px-2 py-0.5 rounded-full font-bold">
+                      <span className="rounded-full bg-white/50 px-2 py-0.5 text-xs font-bold dark:bg-black/30">
                         {count}
                       </span>
                     </Link>
@@ -116,24 +114,20 @@ export default function TagsClient({ sortedTags, tagCounts }: TagsClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700"
+              className="mt-12 border-t border-gray-200 pt-8 dark:border-gray-700"
             >
               <div className="flex justify-center gap-8 text-center">
                 <div>
                   <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                     {sortedTags.length}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    标签总数
-                  </div>
+                  <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">标签总数</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                     {Object.values(tagCounts).reduce((a, b) => a + b, 0)}
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    文章总数
-                  </div>
+                  <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">文章总数</div>
                 </div>
               </div>
             </motion.div>

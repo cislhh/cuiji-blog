@@ -11,7 +11,6 @@ keywords: [微前端, 架构设计, 性能优化, 模块联邦, 前端工程化]
 
 但微前端不是银弹，它带来便利的同时也引入了新的挑战：如何保证应用间的隔离性？如何优化加载性能？如何管理状态共享？本文将深入探讨这些实际问题。
 
-
 ---
 
 ## 一、微前端架构的本质：为什么需要拆分？
@@ -27,7 +26,7 @@ keywords: [微前端, 架构设计, 性能优化, 模块联邦, 前端工程化]
 src/
 ├── components/
 │   ├── ProductList.jsx      // 商品模块
-│   ├── UserProfile.jsx     // 用户模块  
+│   ├── UserProfile.jsx     // 用户模块
 │   ├── OrderList.jsx       // 订单模块
 │   └── PaymentForm.jsx     // 支付模块
 ├── pages/
@@ -36,6 +35,7 @@ src/
 ```
 
 **问题**：
+
 - 团队A修改商品模块，可能影响团队B的用户模块
 - 整个应用必须一起部署，风险集中
 - 技术栈被锁定，难以局部升级
@@ -60,6 +60,7 @@ apps/
 ```
 
 **优势**：
+
 - 每个应用独立开发、测试、部署
 - 技术栈可以不同，团队可以选择最适合的技术
 - 故障隔离，一个应用出问题不影响其他应用
@@ -73,20 +74,17 @@ apps/
 ```html
 <!-- 主应用中使用 iframe -->
 <div class="micro-app-container">
-  <iframe 
-    src="http://localhost:3001/product" 
-    width="100%" 
-    height="600px"
-    frameborder="0">
-  </iframe>
+  <iframe src="http://localhost:3001/product" width="100%" height="600px" frameborder="0"> </iframe>
 </div>
 ```
 
 **优点**：
+
 - 实现简单，隔离性最好
 - 技术栈完全独立
 
 **缺点**：
+
 - 用户体验差（刷新、前进后退问题）
 - 通信复杂
 - SEO 不友好
@@ -99,7 +97,7 @@ qiankun 是基于 single-spa 的微前端框架，使用简单且功能强大。
 
 ```javascript
 // main.js - 主应用入口
-import { registerMicroApps, start } from 'qiankun';
+import { registerMicroApps, start } from 'qiankun'
 
 // 注册微应用
 registerMicroApps([
@@ -110,41 +108,46 @@ registerMicroApps([
     activeRule: '/product',
   },
   {
-    name: 'user-app', 
+    name: 'user-app',
     entry: '//localhost:3002',
     container: '#user-container',
     activeRule: '/user',
-  }
-]);
+  },
+])
 
 // 启动微前端
-start();
+start()
 ```
 
 #### 微应用配置
 
 ```javascript
 // 微应用入口文件
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
 
 // 独立运行时的渲染
 if (!window.__POWERED_BY_QIANKUN__) {
-  ReactDOM.render(<App />, document.getElementById('root'));
+  ReactDOM.render(<App />, document.getElementById('root'))
 }
 
 // 导出生命周期函数
 export async function bootstrap() {
-  console.log('微应用启动');
+  console.log('微应用启动')
 }
 
 export async function mount(props) {
-  ReactDOM.render(<App />, props.container ? props.container.querySelector('#root') : document.getElementById('root'));
+  ReactDOM.render(
+    <App />,
+    props.container ? props.container.querySelector('#root') : document.getElementById('root')
+  )
 }
 
 export async function unmount(props) {
-  ReactDOM.unmountComponentAtNode(props.container ? props.container.querySelector('#root') : document.getElementById('root'));
+  ReactDOM.unmountComponentAtNode(
+    props.container ? props.container.querySelector('#root') : document.getElementById('root')
+  )
 }
 ```
 
@@ -152,7 +155,7 @@ export async function unmount(props) {
 
 ```javascript
 // webpack.config.js - 主应用
-const ModuleFederationPlugin = require('@module-federation/webpack');
+const ModuleFederationPlugin = require('@module-federation/webpack')
 
 module.exports = {
   plugins: [
@@ -164,11 +167,11 @@ module.exports = {
       },
     }),
   ],
-};
+}
 
 // 使用远程模块
-import ProductList from 'productApp/ProductList';
-import UserProfile from 'userApp/UserProfile';
+import ProductList from 'productApp/ProductList'
+import UserProfile from 'userApp/UserProfile'
 ```
 
 ---
@@ -184,59 +187,59 @@ class GlobalStore {
     this.state = {
       user: null,
       cart: [],
-      theme: 'light'
-    };
-    this.listeners = [];
+      theme: 'light',
+    }
+    this.listeners = []
   }
 
   // 获取状态
   getState() {
-    return this.state;
+    return this.state
   }
 
   // 设置状态
   setState(newState) {
-    this.state = { ...this.state, ...newState };
-    this.notifyListeners();
+    this.state = { ...this.state, ...newState }
+    this.notifyListeners()
   }
 
   // 订阅状态变化
   subscribe(listener) {
-    this.listeners.push(listener);
+    this.listeners.push(listener)
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
-    };
+      this.listeners = this.listeners.filter((l) => l !== listener)
+    }
   }
 
   // 通知所有监听器
   notifyListeners() {
-    this.listeners.forEach(listener => listener(this.state));
+    this.listeners.forEach((listener) => listener(this.state))
   }
 }
 
 // 创建全局实例
-window.globalStore = new GlobalStore();
+window.globalStore = new GlobalStore()
 ```
 
 ### 在微应用中使用全局状态
 
 ```javascript
 // 商品应用中使用全局状态
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 
 function ProductList() {
-  const [globalState, setGlobalState] = useState(window.globalStore.getState());
+  const [globalState, setGlobalState] = useState(window.globalStore.getState())
 
   useEffect(() => {
     // 订阅全局状态变化
-    const unsubscribe = window.globalStore.subscribe(setGlobalState);
-    return unsubscribe;
-  }, []);
+    const unsubscribe = window.globalStore.subscribe(setGlobalState)
+    return unsubscribe
+  }, [])
 
   const addToCart = (product) => {
-    const newCart = [...globalState.cart, product];
-    window.globalStore.setState({ cart: newCart });
-  };
+    const newCart = [...globalState.cart, product]
+    window.globalStore.setState({ cart: newCart })
+  }
 
   return (
     <div>
@@ -244,7 +247,7 @@ function ProductList() {
       <p>购物车商品数量: {globalState.cart.length}</p>
       {/* 商品列表渲染 */}
     </div>
-  );
+  )
 }
 ```
 
@@ -254,34 +257,34 @@ function ProductList() {
 // shared/eventBus.js - 事件总线
 class EventBus {
   constructor() {
-    this.events = {};
+    this.events = {}
   }
 
   // 监听事件
   on(event, callback) {
     if (!this.events[event]) {
-      this.events[event] = [];
+      this.events[event] = []
     }
-    this.events[event].push(callback);
+    this.events[event].push(callback)
   }
 
   // 触发事件
   emit(event, data) {
     if (this.events[event]) {
-      this.events[event].forEach(callback => callback(data));
+      this.events[event].forEach((callback) => callback(data))
     }
   }
 
   // 移除监听
   off(event, callback) {
     if (this.events[event]) {
-      this.events[event] = this.events[event].filter(cb => cb !== callback);
+      this.events[event] = this.events[event].filter((cb) => cb !== callback)
     }
   }
 }
 
 // 创建全局事件总线
-window.eventBus = new EventBus();
+window.eventBus = new EventBus()
 ```
 
 ---
@@ -292,13 +295,13 @@ window.eventBus = new EventBus();
 
 ```javascript
 // 主应用中预加载微应用
-import { prefetchApps } from 'qiankun';
+import { prefetchApps } from 'qiankun'
 
 // 预加载微应用资源
 prefetchApps([
   { name: 'product-app', entry: '//localhost:3001' },
-  { name: 'user-app', entry: '//localhost:3002' }
-]);
+  { name: 'user-app', entry: '//localhost:3002' },
+])
 ```
 
 ### 资源缓存优化
@@ -323,7 +326,7 @@ module.exports = {
       },
     },
   },
-};
+}
 ```
 
 ### 懒加载微应用
@@ -338,16 +341,16 @@ const routes = [
   {
     path: '/user',
     component: () => import('./components/UserContainer'),
-  }
-];
+  },
+]
 
 // ProductContainer.jsx
-import React, { useEffect, useRef } from 'react';
-import { loadMicroApp } from 'qiankun';
+import React, { useEffect, useRef } from 'react'
+import { loadMicroApp } from 'qiankun'
 
 function ProductContainer() {
-  const containerRef = useRef(null);
-  const microAppRef = useRef(null);
+  const containerRef = useRef(null)
+  const microAppRef = useRef(null)
 
   useEffect(() => {
     // 懒加载微应用
@@ -355,16 +358,16 @@ function ProductContainer() {
       name: 'product-app',
       entry: '//localhost:3001',
       container: containerRef.current,
-    });
+    })
 
     return () => {
       if (microAppRef.current) {
-        microAppRef.current.unmount();
+        microAppRef.current.unmount()
       }
-    };
-  }, []);
+    }
+  }, [])
 
-  return <div ref={containerRef} />;
+  return <div ref={containerRef} />
 }
 ```
 
@@ -389,14 +392,14 @@ function ProductContainer() {
 
 ```javascript
 // 在组件中使用
-import styles from './ProductApp.module.css';
+import styles from './ProductApp.module.css'
 
 function ProductApp() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>商品应用</h1>
     </div>
-  );
+  )
 }
 ```
 
@@ -406,8 +409,8 @@ function ProductApp() {
 // 使用 Shadow DOM 隔离样式
 class MicroAppElement extends HTMLElement {
   constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
+    super()
+    this.attachShadow({ mode: 'open' })
   }
 
   connectedCallback() {
@@ -421,11 +424,11 @@ class MicroAppElement extends HTMLElement {
       <div class="container">
         <h1>微应用内容</h1>
       </div>
-    `;
+    `
   }
 }
 
-customElements.define('micro-app', MicroAppElement);
+customElements.define('micro-app', MicroAppElement)
 ```
 
 ---
@@ -436,36 +439,36 @@ customElements.define('micro-app', MicroAppElement);
 
 ```javascript
 // 主应用错误处理
-import { addGlobalUncaughtErrorHandler } from 'qiankun';
+import { addGlobalUncaughtErrorHandler } from 'qiankun'
 
 // 全局错误处理
 addGlobalUncaughtErrorHandler((event) => {
-  console.error('微应用错误:', event);
+  console.error('微应用错误:', event)
   // 发送错误到监控系统
-  sendErrorToMonitoring(event);
-});
+  sendErrorToMonitoring(event)
+})
 
 // 微应用错误边界
 class MicroAppErrorBoundary extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = { hasError: false };
+    super(props)
+    this.state = { hasError: false }
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    return { hasError: true }
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('微应用渲染错误:', error, errorInfo);
+    console.error('微应用渲染错误:', error, errorInfo)
   }
 
   render() {
     if (this.state.hasError) {
-      return <div>微应用加载失败，请刷新页面重试</div>;
+      return <div>微应用加载失败，请刷新页面重试</div>
     }
 
-    return this.props.children;
+    return this.props.children
   }
 }
 ```
@@ -476,31 +479,31 @@ class MicroAppErrorBoundary extends React.Component {
 // 性能监控工具
 class MicroAppMonitor {
   static trackAppLoad(appName, startTime) {
-    const loadTime = performance.now() - startTime;
-    console.log(`${appName} 加载时间: ${loadTime}ms`);
-    
+    const loadTime = performance.now() - startTime
+    console.log(`${appName} 加载时间: ${loadTime}ms`)
+
     // 发送到监控系统
     this.sendMetrics({
       type: 'app_load',
       app: appName,
-      duration: loadTime
-    });
+      duration: loadTime,
+    })
   }
 
   static trackAppError(appName, error) {
     this.sendMetrics({
       type: 'app_error',
       app: appName,
-      error: error.message
-    });
+      error: error.message,
+    })
   }
 
   static sendMetrics(data) {
     // 发送到监控系统
     fetch('/api/metrics', {
       method: 'POST',
-      body: JSON.stringify(data)
-    });
+      body: JSON.stringify(data),
+    })
   }
 }
 ```
@@ -564,7 +567,7 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
+      - '80:80'
     volumes:
       - ./dist:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/nginx.conf
@@ -572,12 +575,12 @@ services:
   product-app:
     build: ./apps/product
     ports:
-      - "3001:80"
+      - '3001:80'
 
   user-app:
     build: ./apps/user
     ports:
-      - "3002:80"
+      - '3002:80'
 ```
 
 ---
@@ -591,14 +594,14 @@ services:
 const loadMicroAppWithRetry = async (config, maxRetries = 3) => {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return await loadMicroApp(config);
+      return await loadMicroApp(config)
     } catch (error) {
-      console.warn(`微应用加载失败，重试第 ${i + 1} 次:`, error);
-      if (i === maxRetries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      console.warn(`微应用加载失败，重试第 ${i + 1} 次:`, error)
+      if (i === maxRetries - 1) throw error
+      await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)))
     }
   }
-};
+}
 ```
 
 ### 问题2：样式冲突
@@ -624,25 +627,25 @@ const loadMicroAppWithRetry = async (config, maxRetries = 3) => {
 // 解决方案：使用发布订阅模式
 class StateManager {
   constructor() {
-    this.state = {};
-    this.subscribers = new Map();
+    this.state = {}
+    this.subscribers = new Map()
   }
 
   setState(key, value) {
-    this.state[key] = value;
-    this.notify(key, value);
+    this.state[key] = value
+    this.notify(key, value)
   }
 
   subscribe(key, callback) {
     if (!this.subscribers.has(key)) {
-      this.subscribers.set(key, []);
+      this.subscribers.set(key, [])
     }
-    this.subscribers.get(key).push(callback);
+    this.subscribers.get(key).push(callback)
   }
 
   notify(key, value) {
-    const callbacks = this.subscribers.get(key) || [];
-    callbacks.forEach(callback => callback(value));
+    const callbacks = this.subscribers.get(key) || []
+    callbacks.forEach((callback) => callback(value))
   }
 }
 ```

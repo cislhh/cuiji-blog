@@ -7,9 +7,8 @@ tags: [react, useContext, useReducer]
 keywords: [react, useContext, useReducer]
 description: useContext和useReducer心得
 ---
+
 在React开发中，状态管理是一个永恒的话题。随着应用规模的增大，组件间的数据传递变得越来越复杂。传统的props drilling（属性钻取）方式不仅让代码变得冗长，还降低了组件的可维护性。而useContext和useReducer这两个Hook的出现，为我们提供了更优雅的状态管理解决方案。
-
-
 
 # React useContext和useReducer心得
 
@@ -20,9 +19,11 @@ useContext解决了跨组件数据共享的问题，useReducer则为复杂状态
 ## 官网知识点概念
 
 ### useContext
+
 useContext是React提供的一个Hook，用于在函数组件中订阅React Context。它接收一个context对象（React.createContext的返回值）并返回该context的当前值。当Provider更新时，使用该Hook的组件会重新渲染。
 
 ### useReducer
+
 useReducer是useState的替代方案，适用于复杂的状态逻辑。它接收一个reducer函数和初始状态，返回当前状态和一个dispatch函数。reducer函数接收当前状态和action，返回新的状态。
 
 ## 代码示例
@@ -271,6 +272,7 @@ export function App() {
 **问题描述**：Context更新时，所有使用该Context的组件都会重新渲染，即使数据没有变化。
 
 **解决方案**：
+
 - 使用React.memo包装组件
 - 拆分Context，将不同用途的状态放在不同的Context中
 - 使用useMemo缓存计算结果
@@ -280,6 +282,7 @@ export function App() {
 **问题描述**：在某些情况下，状态更新可能不是同步的，导致组件渲染时状态不一致。
 
 **解决方案**：
+
 - 使用useEffect监听状态变化
 - 确保dispatch调用的时机正确
 - 在复杂场景下考虑使用useCallback优化函数引用
@@ -289,6 +292,7 @@ export function App() {
 **问题描述**：在TypeScript项目中，Context和Reducer的类型定义可能不够精确，导致类型错误。
 
 **解决方案**：
+
 - 为所有状态和Action定义明确的接口
 - 使用泛型来增强类型安全
 - 利用TypeScript的联合类型和交叉类型
@@ -298,6 +302,7 @@ export function App() {
 **问题描述**：使用Context和Reducer的组件在单元测试中可能难以测试，因为需要模拟Context环境。
 
 **解决方案**：
+
 - 为测试创建专门的Provider
 - 使用React Testing Library的render方法包装Provider
 - 测试reducer函数的纯函数特性
@@ -307,6 +312,7 @@ export function App() {
 **问题描述**：在开发过程中，状态变化可能难以追踪，特别是当有多个reducer和Context时。
 
 **解决方案**：
+
 - 使用React DevTools的Profiler功能
 - 在reducer中添加日志输出
 - 使用Redux DevTools（如果项目支持）
@@ -316,6 +322,7 @@ export function App() {
 useContext和useReducer是React中非常强大的状态管理工具，它们结合使用可以构建出清晰、可维护的状态管理架构。通过合理的设计和优化，可以避免常见的性能问题和维护困难。
 
 在实际项目中，建议：
+
 1. 根据应用规模选择合适的Context粒度
 2. 为复杂状态逻辑使用useReducer
 3. 保持良好的类型定义和错误处理

@@ -3,15 +3,17 @@ slug: Zustand 基础封装
 title: Zustand 基础封装
 date: 2025-08-31
 authors: [cuiji]
-tags: [react, Zustand,nextjs]
-keywords: [react, Zustand,nextjs]
+tags: [react, Zustand, nextjs]
+keywords: [react, Zustand, nextjs]
 description: Zustand, Zustand 基础封装
 ---
+
 Zustand 基础封装以及nextjs使用补充
 
 # Next.js + Zustand 状态管理最佳实践
 
 ## 目录
+
 1. [项目背景](#项目背景)
 2. [Zustand 基础使用](#zustand-基础使用)
 3. [中间件封装](#中间件封装)
@@ -24,13 +26,14 @@ Zustand 基础封装以及nextjs使用补充
 ## 高级封装方案
 
 ### 核心封装实现
-```typescript
-import type { StateCreator } from 'zustand';
-import type { DevtoolsOptions, PersistOptions } from 'zustand/middleware';
 
-import { createStore as createStoreFunction } from 'zustand';
-import { devtools, persist, redux, subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+```typescript
+import type { StateCreator } from 'zustand'
+import type { DevtoolsOptions, PersistOptions } from 'zustand/middleware'
+
+import { createStore as createStoreFunction } from 'zustand'
+import { devtools, persist, redux, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 /**
  * 创建包含订阅、immer 以及 devtools 功能的普通状态商店
@@ -39,20 +42,18 @@ import { immer } from 'zustand/middleware/immer';
  * @returns Zustand store
  */
 export const createStore = <T extends object>(
-    creator: StateCreator<
-        T,
-        [
-            ['zustand/subscribeWithSelector', never],
-            ['zustand/immer', never],
-            ['zustand/devtools', never],
-        ]
-    >,
-    devtoolsOptions?: DevtoolsOptions,
+  creator: StateCreator<
+    T,
+    [
+      ['zustand/subscribeWithSelector', never],
+      ['zustand/immer', never],
+      ['zustand/devtools', never],
+    ]
+  >,
+  devtoolsOptions?: DevtoolsOptions
 ) => {
-    return createStoreFunction<T>()(
-        subscribeWithSelector(immer(devtools(creator, devtoolsOptions))),
-    );
-};
+  return createStoreFunction<T>()(subscribeWithSelector(immer(devtools(creator, devtoolsOptions))))
+}
 
 /**
  * 创建包含订阅、immer 以及 devtools 功能的持久化状态商店
@@ -63,24 +64,24 @@ export const createStore = <T extends object>(
  * @returns Zustand store
  */
 export const createPersistStore = <T extends object, P = T>(
-    creator: StateCreator<
-        T,
-        [
-            ['zustand/subscribeWithSelector', never],
-            ['zustand/immer', never],
-            ['zustand/devtools', never],
-            ['zustand/persist', P],
-        ]
-    >,
-    persistOptions: PersistOptions<T, P>,
-    devtoolsOptions?: DevtoolsOptions,
+  creator: StateCreator<
+    T,
+    [
+      ['zustand/subscribeWithSelector', never],
+      ['zustand/immer', never],
+      ['zustand/devtools', never],
+      ['zustand/persist', P],
+    ]
+  >,
+  persistOptions: PersistOptions<T, P>,
+  devtoolsOptions?: DevtoolsOptions
 ) => {
-    return createStoreFunction<T>()(
-        subscribeWithSelector(
-            immer(devtools(persist(creator as unknown as any, persistOptions), devtoolsOptions)),
-        ),
-    );
-};
+  return createStoreFunction<T>()(
+    subscribeWithSelector(
+      immer(devtools(persist(creator as unknown as any, persistOptions), devtoolsOptions))
+    )
+  )
+}
 
 /**
  * 创建包含订阅、immer 以及 devtools 功能的 reducer 状态商店
@@ -91,18 +92,18 @@ export const createPersistStore = <T extends object, P = T>(
  * @returns Zustand store
  */
 export const createReduxStore = <
-    T extends object,
-    A extends {
-        type: string;
-    },
+  T extends object,
+  A extends {
+    type: string
+  },
 >(
-    reducer: (state: T, action: A) => T,
-    initialState: T,
-    devtoolsOptions?: DevtoolsOptions,
+  reducer: (state: T, action: A) => T,
+  initialState: T,
+  devtoolsOptions?: DevtoolsOptions
 ) =>
-    createStoreFunction(
-        subscribeWithSelector(immer(devtools(redux(reducer, initialState), devtoolsOptions))),
-    );
+  createStoreFunction(
+    subscribeWithSelector(immer(devtools(redux(reducer, initialState), devtoolsOptions)))
+  )
 
 /**
  * 创建包含订阅、immer 以及 devtools 功能的持久化 reducer 状态商店
@@ -114,90 +115,83 @@ export const createReduxStore = <
  * @returns Zustand store
  */
 export const createPersistReduxStore = <
-    T extends object,
-    A extends {
-        type: string;
-    },
-    P = T,
+  T extends object,
+  A extends {
+    type: string
+  },
+  P = T,
 >(
-    reducer: (state: T, action: A) => T,
-    initialState: T,
-    persistOptions: PersistOptions<T, P>,
-    devtoolsOptions?: DevtoolsOptions,
+  reducer: (state: T, action: A) => T,
+  initialState: T,
+  persistOptions: PersistOptions<T, P>,
+  devtoolsOptions?: DevtoolsOptions
 ) =>
-    createStoreFunction(
-        subscribeWithSelector(
-            immer(
-                devtools(
-                    persist(redux(reducer, initialState), persistOptions as any),
-                    devtoolsOptions,
-                ),
-            ),
-        ),
-    );
+  createStoreFunction(
+    subscribeWithSelector(
+      immer(devtools(persist(redux(reducer, initialState), persistOptions as any), devtoolsOptions))
+    )
+  )
 ```
 
 ### 类型定义补充
+
 ```typescript
 // src/libs/store/types.ts
-import type { StateCreator, StoreApi } from 'zustand';
-import type { DevtoolsOptions, PersistOptions } from 'zustand/middleware';
+import type { StateCreator, StoreApi } from 'zustand'
+import type { DevtoolsOptions, PersistOptions } from 'zustand/middleware'
 
 /**
  * 基础 Store 类型（无持久化）
  */
 export type BaseStoreCreator<T> = StateCreator<
-    T,
-    [
-        ['zustand/subscribeWithSelector', never],
-        ['zustand/immer', never],
-        ['zustand/devtools', never],
-    ]
->;
+  T,
+  [['zustand/subscribeWithSelector', never], ['zustand/immer', never], ['zustand/devtools', never]]
+>
 
 /**
  * 持久化 Store 类型
  */
 export type PersistStoreCreator<T, P = T> = StateCreator<
-    T,
-    [
-        ['zustand/subscribeWithSelector', never],
-        ['zustand/immer', never],
-        ['zustand/devtools', never],
-        ['zustand/persist', P],
-    ]
->;
+  T,
+  [
+    ['zustand/subscribeWithSelector', never],
+    ['zustand/immer', never],
+    ['zustand/devtools', never],
+    ['zustand/persist', P],
+  ]
+>
 
 /**
  * Redux Action 类型
  */
 export interface ReduxAction {
-    type: string;
-    [key: string]: any;
+  type: string
+  [key: string]: any
 }
 
 /**
  * Redux Reducer 类型
  */
-export type ReduxReducer<T, A extends ReduxAction> = (state: T, action: A) => T;
+export type ReduxReducer<T, A extends ReduxAction> = (state: T, action: A) => T
 
 /**
  * Store 实例类型
  */
-export type StoreInstance<T> = StoreApi<T>;
+export type StoreInstance<T> = StoreApi<T>
 ```
 
 ### 使用示例补充
 
 #### 1. 基础 Store 使用
+
 ```typescript
 // src/stores/counter.ts
-import { createStore } from '@/libs/store';
+import { createStore } from '@/libs/store'
 
 interface CounterState {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
+  count: number
+  increment: () => void
+  decrement: () => void
 }
 
 export const useCounterStore = createStore<CounterState>(
@@ -210,22 +204,23 @@ export const useCounterStore = createStore<CounterState>(
     name: 'Counter Store',
     enabled: process.env.NODE_ENV === 'development',
   }
-);
+)
 ```
 
 #### 2. 持久化 Store 使用
+
 ```typescript
 // src/stores/user.ts
-import { createPersistStore } from '@/libs/store';
+import { createPersistStore } from '@/libs/store'
 
 interface UserState {
   user: {
-    id: string;
-    name: string;
-    email: string;
-  } | null;
-  setUser: (user: UserState['user']) => void;
-  logout: () => void;
+    id: string
+    name: string
+    email: string
+  } | null
+  setUser: (user: UserState['user']) => void
+  logout: () => void
 }
 
 export const useUserStore = createPersistStore<UserState>(
@@ -242,21 +237,22 @@ export const useUserStore = createPersistStore<UserState>(
     name: 'User Store',
     enabled: process.env.NODE_ENV === 'development',
   }
-);
+)
 ```
 
 #### 3. Redux 风格 Store 使用
+
 ```typescript
 // src/stores/todo.ts
-import { createReduxStore } from '@/libs/store';
+import { createReduxStore } from '@/libs/store'
 
 interface TodoState {
-  todos: Array<{ id: string; text: string; completed: boolean }>;
+  todos: Array<{ id: string; text: string; completed: boolean }>
 }
 
 interface TodoAction {
-  type: 'ADD_TODO' | 'TOGGLE_TODO' | 'REMOVE_TODO';
-  payload?: any;
+  type: 'ADD_TODO' | 'TOGGLE_TODO' | 'REMOVE_TODO'
+  payload?: any
 }
 
 const todoReducer: ReduxReducer<TodoState, TodoAction> = (state, action) => {
@@ -272,92 +268,87 @@ const todoReducer: ReduxReducer<TodoState, TodoAction> = (state, action) => {
             completed: false,
           },
         ],
-      };
+      }
     case 'TOGGLE_TODO':
       return {
         ...state,
         todos: state.todos.map((todo) =>
-          todo.id === action.payload.id
-            ? { ...todo, completed: !todo.completed }
-            : todo
+          todo.id === action.payload.id ? { ...todo, completed: !todo.completed } : todo
         ),
-      };
+      }
     case 'REMOVE_TODO':
       return {
         ...state,
         todos: state.todos.filter((todo) => todo.id !== action.payload.id),
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
 const initialState: TodoState = {
   todos: [],
-};
+}
 
-export const useTodoStore = createReduxStore<TodoState, TodoAction>(
-  todoReducer,
-  initialState,
-  {
-    name: 'Todo Store',
-    enabled: process.env.NODE_ENV === 'development',
-  }
-);
+export const useTodoStore = createReduxStore<TodoState, TodoAction>(todoReducer, initialState, {
+  name: 'Todo Store',
+  enabled: process.env.NODE_ENV === 'development',
+})
 
 // 创建 action creators
 export const todoActions = {
   addTodo: (text: string) => ({ type: 'ADD_TODO' as const, payload: { text } }),
   toggleTodo: (id: string) => ({ type: 'TOGGLE_TODO' as const, payload: { id } }),
   removeTodo: (id: string) => ({ type: 'REMOVE_TODO' as const, payload: { id } }),
-};
+}
 
 // 在组件中使用
 export const useTodoActions = () => {
-  const store = useTodoStore.getState();
-  
+  const store = useTodoStore.getState()
+
   return {
     addTodo: (text: string) => store.dispatch(todoActions.addTodo(text)),
     toggleTodo: (id: string) => store.dispatch(todoActions.toggleTodo(id)),
     removeTodo: (id: string) => store.dispatch(todoActions.removeTodo(id)),
-  };
-};
+  }
+}
 ```
 
 #### 4. 持久化 Redux Store 使用
+
 ```typescript
 // src/stores/settings.ts
-import { createPersistReduxStore } from '@/libs/store';
+import { createPersistReduxStore } from '@/libs/store'
 
 interface SettingsState {
-  theme: 'light' | 'dark';
-  language: 'zh' | 'en';
-  notifications: boolean;
+  theme: 'light' | 'dark'
+  language: 'zh' | 'en'
+  notifications: boolean
 }
 
 interface SettingsAction {
-  type: 'SET_THEME' | 'SET_LANGUAGE' | 'TOGGLE_NOTIFICATIONS';
-  payload?: any;
+  type: 'SET_THEME' | 'SET_LANGUAGE' | 'TOGGLE_NOTIFICATIONS'
+  payload?: any
 }
 
 const settingsReducer: ReduxReducer<SettingsState, SettingsAction> = (state, action) => {
   switch (action.type) {
     case 'SET_THEME':
-      return { ...state, theme: action.payload.theme };
+      return { ...state, theme: action.payload.theme }
     case 'SET_LANGUAGE':
-      return { ...state, language: action.payload.language };
+      return { ...state, language: action.payload.language }
     case 'TOGGLE_NOTIFICATIONS':
-      return { ...state, notifications: !state.notifications };
+      return { ...state, notifications: !state.notifications }
     default:
-      return state;
+      return state
   }
-};
+}
 
 const initialState: SettingsState = {
   theme: 'light',
   language: 'zh',
   notifications: true,
-};
+}
 
 export const useSettingsStore = createPersistReduxStore<SettingsState, SettingsAction>(
   settingsReducer,
@@ -374,24 +365,26 @@ export const useSettingsStore = createPersistReduxStore<SettingsState, SettingsA
     name: 'Settings Store',
     enabled: process.env.NODE_ENV === 'development',
   }
-);
+)
 ```
 
 ### 高级特性说明
 
 #### 1. **类型安全**
+
 ```typescript
 // 完整的类型推导
 const store = createStore<CounterState>((set) => ({
   count: 0,
   increment: () => set((state) => ({ count: state.count + 1 })),
-}));
+}))
 
 // TypeScript 会自动推导出正确的类型
-const { count, increment } = store.getState();
+const { count, increment } = store.getState()
 ```
 
 #### 2. **中间件组合优势**
+
 ```typescript
 // 中间件按顺序组合，每个都有特定作用
 subscribeWithSelector(immer(devtools(creator)))
@@ -402,27 +395,29 @@ subscribeWithSelector(immer(devtools(creator)))
 ```
 
 #### 3. **Redux 兼容性**
+
 ```typescript
 // 支持传统的 Redux 模式
-const store = createReduxStore(reducer, initialState);
+const store = createReduxStore(reducer, initialState)
 
 // 可以使用标准的 Redux 工具
-store.dispatch(action);
-store.getState();
-store.subscribe(listener);
+store.dispatch(action)
+store.getState()
+store.subscribe(listener)
 ```
 
 #### 4. **性能优化**
+
 ```typescript
 // 使用 subscribeWithSelector 进行精确订阅
-const store = useStore.getState();
+const store = useStore.getState()
 
 store.subscribe(
   (state) => state.todos, // 只订阅 todos 变化
   (todos) => {
-    console.log('Todos updated:', todos);
+    console.log('Todos updated:', todos)
   }
-);
+)
 ```
 
 ## 总结

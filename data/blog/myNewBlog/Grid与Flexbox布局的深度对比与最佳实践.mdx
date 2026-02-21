@@ -11,7 +11,6 @@ keywords: [Grid布局, Flexbox布局, CSS布局, 响应式设计, 前端布局]
 
 本文将从架构思维出发，深入剖析两种布局的本质差异，提供生产环境下的最佳实践指导。
 
-
 ---
 
 ## 一、布局哲学：一维 vs 二维的思维差异
@@ -66,11 +65,13 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 ```
 
 **优势**：
+
 - 渲染性能优秀，适合动态内容
 - 浏览器支持度高，兼容性好
 - 内存占用相对较小
 
 **劣势**：
+
 - 复杂二维布局需要嵌套实现
 - 跨行/跨列控制能力有限
 
@@ -80,20 +81,22 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 /* 性能优化：合理使用网格区域 */
 .grid-optimized {
   display: grid;
-  grid-template-areas: 
-    "header header header"
-    "sidebar main main"
-    "footer footer footer";
+  grid-template-areas:
+    'header header header'
+    'sidebar main main'
+    'footer footer footer';
   contain: layout style; /* 布局和样式隔离 */
 }
 ```
 
 **优势**：
+
 - 二维布局能力强大，减少嵌套
 - 精确的空间控制能力
 - 响应式设计更加直观
 
 **劣势**：
+
 - 复杂网格计算可能影响性能
 - 老版本浏览器支持有限
 
@@ -132,6 +135,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 ```
 
 **为什么选择 Flexbox**：
+
 - 一维线性排列，符合导航逻辑
 - 响应式处理简单（flex-wrap）
 - 性能开销小，适合频繁更新
@@ -152,7 +156,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
   display: grid;
   grid-template-rows: auto 1fr auto;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
@@ -172,6 +176,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 ```
 
 **为什么选择 Grid**：
+
 - 二维空间控制，布局更精确
 - 响应式网格自动适应
 - 减少 DOM 嵌套，提升可维护性
@@ -244,8 +249,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 @media (min-width: 1024px) {
   .responsive-layout {
     grid-template-columns: 1fr 2fr 1fr;
-    grid-template-areas: 
-      "sidebar main aside";
+    grid-template-areas: 'sidebar main aside';
   }
 }
 ```
@@ -318,17 +322,26 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 
 ```css
 /* Grid 布局命名 */
-.grid-layout { }
-.grid-item { }
-.grid-area-header { }
-.grid-area-main { }
-.grid-area-sidebar { }
+.grid-layout {
+}
+.grid-item {
+}
+.grid-area-header {
+}
+.grid-area-main {
+}
+.grid-area-sidebar {
+}
 
 /* Flexbox 布局命名 */
-.flex-container { }
-.flex-item { }
-.flex-main { }
-.flex-sidebar { }
+.flex-container {
+}
+.flex-item {
+}
+.flex-main {
+}
+.flex-sidebar {
+}
 ```
 
 ### 组件化思维
@@ -381,7 +394,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-  
+
   .fallback-layout > * {
     display: block;
     width: auto;
@@ -397,6 +410,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 ### 选择 Grid 的情况
 
 ✅ **推荐使用 Grid**：
+
 - 需要精确控制元素在二维空间的位置
 - 布局结构相对固定，变化较少
 - 需要实现复杂的响应式网格
@@ -405,6 +419,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 ### 选择 Flexbox 的情况
 
 ✅ **推荐使用 Flexbox**：
+
 - 一维线性排列的组件
 - 需要动态调整内容分布
 - 对浏览器兼容性要求较高
@@ -413,6 +428,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 ### 混合使用的策略
 
 🔄 **混合使用**：
+
 - 外层容器使用 Grid 定义整体结构
 - 内层组件使用 Flexbox 处理细节对齐
 - 根据组件复杂度灵活选择
@@ -460,6 +476,7 @@ Grid 基于"行"和"列"的二维概念，适合处理**复杂空间布局**：
 Grid 和 Flexbox 并非竞争关系，而是互补的布局工具。在生产环境中，最佳实践是根据具体场景选择合适的布局方案，甚至混合使用。
 
 对于后端工程师而言，理解这两种布局的本质差异有助于：
+
 - 更好地与前端团队协作
 - 合理评估布局实现的复杂度
 - 在技术选型时做出明智决策

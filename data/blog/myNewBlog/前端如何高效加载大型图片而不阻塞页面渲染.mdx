@@ -15,7 +15,6 @@ keywords: [图片优化, 懒加载, CDN, 图片压缩, 响应式图片, Base64]
 
 优化图片加载是一件细活，既要权衡性能，又要保证清晰度和视觉体验。
 
-
 ---
 
 ## 一、从架构出发：图片服务解耦
@@ -32,21 +31,21 @@ keywords: [图片优化, 懒加载, CDN, 图片压缩, 响应式图片, Base64]
 
 不同图片格式的性能和适用场景差异明显：
 
-| 格式 | 优点 | 缺点 | 推荐场景 |
-|------|------|------|-----------|
-| JPEG | 压缩比高，支持广泛 | 有损压缩，不透明 | 摄影类图片 |
-| PNG  | 支持透明，无损压缩 | 体积大 | 图标、插画 |
-| WebP | 压缩强，支持透明 | 老浏览器需兼容 | 通用展示图 |
-| AVIF | 压缩强，支持 HDR | 支持还不普及 | 现代浏览环境 |
-| SVG  | 无限缩放，体积小 | 复杂图像难用 | 图标、Logo |
-| GIF  | 支持动画，透明 | 色彩有限，体积大 | 简单动效图 |
+| 格式 | 优点               | 缺点             | 推荐场景     |
+| ---- | ------------------ | ---------------- | ------------ |
+| JPEG | 压缩比高，支持广泛 | 有损压缩，不透明 | 摄影类图片   |
+| PNG  | 支持透明，无损压缩 | 体积大           | 图标、插画   |
+| WebP | 压缩强，支持透明   | 老浏览器需兼容   | 通用展示图   |
+| AVIF | 压缩强，支持 HDR   | 支持还不普及     | 现代浏览环境 |
+| SVG  | 无限缩放，体积小   | 复杂图像难用     | 图标、Logo   |
+| GIF  | 支持动画，透明     | 色彩有限，体积大 | 简单动效图   |
 
 ### 示例：WebP 回退方案
 
 ```html
 <picture>
-  <source srcset="example.webp" type="image/webp">
-  <img src="example.jpg" alt="回退 JPEG 图片">
+  <source srcset="example.webp" type="image/webp" />
+  <img src="example.jpg" alt="回退 JPEG 图片" />
 </picture>
 ```
 
@@ -79,19 +78,21 @@ jpegoptim --max=80 example.jpg
 为适配多设备，应使用 `srcset` 和 `sizes`。
 
 ```html
-<img src="example.jpg"
-     srcset="small.jpg 480w, medium.jpg 768w, large.jpg 1024w"
-     sizes="(max-width: 600px) 480px, (max-width: 900px) 768px, 1024px"
-     alt="响应式图片">
+<img
+  src="example.jpg"
+  srcset="small.jpg 480w, medium.jpg 768w, large.jpg 1024w"
+  sizes="(max-width: 600px) 480px, (max-width: 900px) 768px, 1024px"
+  alt="响应式图片"
+/>
 ```
 
 或者使用 `<picture>` 元素按格式优先加载：
 
 ```html
 <picture>
-  <source srcset="example.avif" type="image/avif">
-  <source srcset="example.webp" type="image/webp">
-  <img src="fallback.jpg" alt="响应式图像">
+  <source srcset="example.avif" type="image/avif" />
+  <source srcset="example.webp" type="image/webp" />
+  <img src="fallback.jpg" alt="响应式图像" />
 </picture>
 ```
 
@@ -104,29 +105,29 @@ jpegoptim --max=80 example.jpg
 ### 方法一：浏览器原生懒加载
 
 ```html
-<img src="example.jpg" loading="lazy" alt="懒加载图片">
+<img src="example.jpg" loading="lazy" alt="懒加载图片" />
 ```
 
 ### 方法二：JavaScript + Intersection Observer
 
 ```html
-<img data-src="example.jpg" class="lazy" alt="懒加载图片">
+<img data-src="example.jpg" class="lazy" alt="懒加载图片" />
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const lazyImages = document.querySelectorAll(".lazy");
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        img.src = img.dataset.src;
-        img.classList.remove("lazy");
-        observer.unobserve(img);
-      }
-    });
-  });
-  lazyImages.forEach(img => observer.observe(img));
-});
+  document.addEventListener('DOMContentLoaded', () => {
+    const lazyImages = document.querySelectorAll('.lazy')
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const img = entry.target
+          img.src = img.dataset.src
+          img.classList.remove('lazy')
+          observer.unobserve(img)
+        }
+      })
+    })
+    lazyImages.forEach((img) => observer.observe(img))
+  })
 </script>
 ```
 
@@ -137,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 嵌入小图标到 HTML/CSS，减少 HTTP 请求：
 
 ```html
-<img src="data:image/png;base64,iVBORw0KGgo..." alt="Base64 图标">
+<img src="data:image/png;base64,iVBORw0KGgo..." alt="Base64 图标" />
 ```
 
 ⚠️ 不推荐用于中大型图片，会导致 HTML/CSS 文件膨胀。
@@ -152,16 +153,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 ```js
 const preloadImage = (src) => {
-  const img = new Image();
-  img.src = src;
-};
+  const img = new Image()
+  img.src = src
+}
 ```
 
 展示当前图片时执行：
 
 ```js
-preloadImage(nextSrc);
-preloadImage(prevSrc);
+preloadImage(nextSrc)
+preloadImage(prevSrc)
 ```
 
 ---
@@ -171,7 +172,7 @@ preloadImage(prevSrc);
 把图片资源部署到 CDN，可以根据用户地理位置就近加载，显著加快图片加载时间。
 
 ```html
-<img src="https://cdn.example.com/images/photo.jpg" alt="CDN 加速图">
+<img src="https://cdn.example.com/images/photo.jpg" alt="CDN 加速图" />
 ```
 
 ---
@@ -187,19 +188,17 @@ Cache-Control: max-age=31536000
 ### Service Worker 离线资源缓存
 
 ```js
-self.addEventListener("install", event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open("assets").then(cache => {
-      return cache.addAll(["/img/example.jpg", "/style.css"]);
+    caches.open('assets').then((cache) => {
+      return cache.addAll(['/img/example.jpg', '/style.css'])
     })
-  );
-});
+  )
+})
 
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
-  );
-});
+self.addEventListener('fetch', (event) => {
+  event.respondWith(caches.match(event.request).then((res) => res || fetch(event.request)))
+})
 ```
 
 ---
@@ -209,7 +208,7 @@ self.addEventListener("fetch", event => {
 ### 动态裁剪请求
 
 ```html
-<img src="https://img.example.com/photo?width=800&height=600" alt="裁剪图">
+<img src="https://img.example.com/photo?width=800&height=600" alt="裁剪图" />
 ```
 
 适合：展示区尺寸确定，减少带宽。
@@ -217,7 +216,7 @@ self.addEventListener("fetch", event => {
 ### CSS 缩放（仅视觉效果）
 
 ```html
-<img src="highres.jpg" style="width: 400px; height: auto;" alt="缩放图">
+<img src="highres.jpg" style="width: 400px; height: auto;" alt="缩放图" />
 ```
 
 ⚠️ 实际图片大小未变，传输体积仍大。

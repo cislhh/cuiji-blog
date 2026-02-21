@@ -12,7 +12,7 @@ const Card = ({ title, description, imgSrc, href }) => (
     transition={{ duration: 0.5 }}
     className="md max-w-[544px] p-4 md:w-1/2"
   >
-    <div className="glass-panel h-full overflow-hidden rounded-xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary-500/30 group">
+    <div className="glass-panel hover:border-primary-500/30 group h-full overflow-hidden rounded-xl border border-transparent transition-all duration-300 hover:shadow-xl">
       {imgSrc &&
         (href ? (
           <Link href={href} aria-label={`链接到 ${title}`} className="block cursor-pointer">
@@ -20,11 +20,11 @@ const Card = ({ title, description, imgSrc, href }) => (
               <Image
                 alt={title}
                 src={imgSrc}
-                className="object-cover object-center md:h-36 lg:h-48 w-full transition-transform duration-300 group-hover:scale-105"
+                className="w-full object-cover object-center transition-transform duration-300 group-hover:scale-105 md:h-36 lg:h-48"
                 width={544}
                 height={306}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
           </Link>
         ) : (
@@ -32,7 +32,7 @@ const Card = ({ title, description, imgSrc, href }) => (
             <Image
               alt={title}
               src={imgSrc}
-              className="object-cover object-center md:h-36 lg:h-48 w-full"
+              className="w-full object-cover object-center md:h-36 lg:h-48"
               width={544}
               height={306}
             />
@@ -44,7 +44,7 @@ const Card = ({ title, description, imgSrc, href }) => (
             <Link
               href={href}
               aria-label={`链接到 ${title}`}
-              className="text-gray-900 dark:text-gray-100 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 cursor-pointer"
+              className="hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer text-gray-900 transition-colors duration-200 dark:text-gray-100"
             >
               {title}
             </Link>
@@ -52,18 +52,18 @@ const Card = ({ title, description, imgSrc, href }) => (
             <span className="text-gray-900 dark:text-gray-100">{title}</span>
           )}
         </h2>
-        <p className="prose mb-4 max-w-none text-gray-600 dark:text-gray-400 line-clamp-2">
+        <p className="prose mb-4 line-clamp-2 max-w-none text-gray-600 dark:text-gray-400">
           {description}
         </p>
         {href && (
           <div className="flex items-center gap-3">
             <Link
               href={href}
-              className="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-base font-medium transition-colors duration-200 cursor-pointer"
+              className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 inline-flex cursor-pointer items-center gap-2 text-base font-medium transition-colors duration-200"
               aria-label={`链接到 ${title}`}
             >
               查看详情
-              <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              <ExternalLink className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </div>
         )}

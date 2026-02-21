@@ -38,7 +38,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
   const basePath = path?.split('/')[0] || ''
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-bg-start dark:to-dark-bg-end">
+    <div className="dark:from-dark-bg-start dark:to-dark-bg-end min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <SectionContainer>
         <ScrollTopAndComment />
         <motion.article
@@ -51,7 +51,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-panel rounded-xl p-8 md:p-12 mb-8"
+            className="glass-panel mb-8 rounded-xl p-8 md:p-12"
           >
             <div className="space-y-6 text-center">
               {/* 发布日期 */}
@@ -61,7 +61,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 transition={{ duration: 0.6, delay: 0.3 }}
                 className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400"
               >
-                <Calendar className="w-4 h-4" />
+                <Calendar className="h-4 w-4" />
                 <time dateTime={date} className="text-base font-medium">
                   {new Date(date).toLocaleDateString(siteMetadata.locale, postDateTemplate)}
                 </time>
@@ -85,18 +85,18 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                         width={40}
                         height={40}
                         alt="avatar"
-                        className="h-10 w-10 rounded-full ring-2 ring-primary-500/20"
+                        className="ring-primary-500/20 h-10 w-10 rounded-full ring-2"
                       />
                     )}
                     <div className="text-left">
-                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-1">
-                        <User className="w-3 h-3" />
+                      <div className="flex items-center gap-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <User className="h-3 w-3" />
                         {author.name}
                       </div>
                       {author.twitter && (
                         <Link
                           href={author.twitter}
-                          className="text-xs text-primary-600 dark:text-primary-400 hover:underline cursor-pointer"
+                          className="text-primary-600 dark:text-primary-400 cursor-pointer text-xs hover:underline"
                         >
                           {author.twitter
                             .replace('https://twitter.com/', '@')
@@ -113,7 +113,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
           {/* 文章内容 */}
           <div className="xl:grid xl:grid-cols-4 xl:gap-x-6">
             {/* 侧边栏（桌面端） */}
-            <aside className="hidden xl:block xl:col-span-1">
+            <aside className="hidden xl:col-span-1 xl:block">
               <div className="sticky top-24 space-y-6">
                 {/* 标签 */}
                 {tags && tags.length > 0 && (
@@ -123,7 +123,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     transition={{ duration: 0.6, delay: 0.5 }}
                     className="glass-panel rounded-xl p-6"
                   >
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                    <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-900 uppercase dark:text-gray-100">
                       标签
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -141,30 +141,28 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   transition={{ duration: 0.6, delay: 0.6 }}
                   className="glass-panel rounded-xl p-6"
                 >
-                  <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                  <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-900 uppercase dark:text-gray-100">
                     操作
                   </h3>
                   <div className="space-y-3 text-sm">
                     <Link
                       href={discussUrl(path)}
                       rel="nofollow"
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
+                      className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-600 transition-colors dark:text-gray-400"
                     >
-                      <MessageCircle className="w-4 h-4" />
-                      在 Twitter 讨论
+                      <MessageCircle className="h-4 w-4" />在 Twitter 讨论
                     </Link>
                     <Link
                       href={editUrl(filePath)}
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
+                      className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-600 transition-colors dark:text-gray-400"
                     >
-                      <Github className="w-4 h-4" />
-                      在 GitHub 查看
+                      <Github className="h-4 w-4" />在 GitHub 查看
                     </Link>
                     <Link
                       href={`/${basePath}`}
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
+                      className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-600 transition-colors dark:text-gray-400"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="h-4 w-4" />
                       返回博客
                     </Link>
                   </div>
@@ -180,16 +178,14 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               className="xl:col-span-3"
             >
               <div className="glass-panel rounded-xl p-8 md:p-12">
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                  {children}
-                </div>
+                <div className="prose prose-lg dark:prose-invert max-w-none">{children}</div>
               </div>
 
               {/* 移动端标签和操作 */}
-              <div className="xl:hidden mt-8 space-y-6">
+              <div className="mt-8 space-y-6 xl:hidden">
                 {tags && tags.length > 0 && (
                   <div className="glass-panel rounded-xl p-6">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                    <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-900 uppercase dark:text-gray-100">
                       标签
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -200,30 +196,28 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   </div>
                 )}
                 <div className="glass-panel rounded-xl p-6">
-                  <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-4">
+                  <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-900 uppercase dark:text-gray-100">
                     操作
                   </h3>
                   <div className="space-y-3 text-sm">
                     <Link
                       href={discussUrl(path)}
                       rel="nofollow"
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
+                      className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-600 transition-colors dark:text-gray-400"
                     >
-                      <MessageCircle className="w-4 h-4" />
-                      在 Twitter 讨论
+                      <MessageCircle className="h-4 w-4" />在 Twitter 讨论
                     </Link>
                     <Link
                       href={editUrl(filePath)}
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
+                      className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-600 transition-colors dark:text-gray-400"
                     >
-                      <Github className="w-4 h-4" />
-                      在 GitHub 查看
+                      <Github className="h-4 w-4" />在 GitHub 查看
                     </Link>
                     <Link
                       href={`/${basePath}`}
-                      className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-pointer"
+                      className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-600 transition-colors dark:text-gray-400"
                     >
-                      <ArrowLeft className="w-4 h-4" />
+                      <ArrowLeft className="h-4 w-4" />
                       返回博客
                     </Link>
                   </div>
@@ -253,18 +247,18 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              className="mt-8 grid md:grid-cols-2 gap-6"
+              className="mt-8 grid gap-6 md:grid-cols-2"
             >
               {prev && prev.path && (
                 <Link
                   href={`/${prev.path}`}
-                  className="glass-panel rounded-xl p-6 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                  className="glass-panel group cursor-pointer rounded-xl p-6 transition-all duration-300 hover:shadow-xl"
                 >
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
-                    <ArrowLeft className="w-4 h-4" />
+                  <div className="mb-2 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                    <ArrowLeft className="h-4 w-4" />
                     <span>上一篇</span>
                   </div>
-                  <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                  <div className="group-hover:text-primary-600 dark:group-hover:text-primary-400 text-lg font-semibold text-gray-900 transition-colors dark:text-gray-100">
                     {prev.title}
                   </div>
                 </Link>
@@ -272,13 +266,13 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               {next && next.path && (
                 <Link
                   href={`/${next.path}`}
-                  className="glass-panel rounded-xl p-6 hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                  className="glass-panel group cursor-pointer rounded-xl p-6 transition-all duration-300 hover:shadow-xl"
                 >
-                  <div className="flex items-center justify-end gap-2 text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  <div className="mb-2 flex items-center justify-end gap-2 text-sm text-gray-500 dark:text-gray-400">
                     <span>下一篇</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="h-4 w-4" />
                   </div>
-                  <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors text-right">
+                  <div className="group-hover:text-primary-600 dark:group-hover:text-primary-400 text-right text-lg font-semibold text-gray-900 transition-colors dark:text-gray-100">
                     {next.title}
                   </div>
                 </Link>

@@ -7,8 +7,8 @@ tags: [react, Zustand]
 keywords: [react, Zustand]
 description: Zustand
 ---
-Zustand 是一个轻量级的 React 状态管理库，由 React 生态知名开发者创建。
 
+Zustand 是一个轻量级的 React 状态管理库，由 React 生态知名开发者创建。
 
 # Zustand 学习笔记
 
@@ -42,7 +42,7 @@ yarn add zustand
 ### 基础引入
 
 ```javascript
-import { create } from "zustand";
+import { create } from 'zustand'
 ```
 
 ## 3. 创建第一个 Store
@@ -50,7 +50,7 @@ import { create } from "zustand";
 ### 基础 Store 创建
 
 ```javascript
-import { create } from "zustand";
+import { create } from 'zustand'
 
 // 创建 store
 const useStore = create((set, get) => ({
@@ -64,16 +64,16 @@ const useStore = create((set, get) => ({
 
   // 异步 action 示例
   incrementAsync: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    set((state) => ({ count: state.count + 1 }));
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    set((state) => ({ count: state.count + 1 }))
   },
 
   // 使用 get 函数访问当前状态
   logCount: () => {
-    const currentCount = get().count;
-    console.log("Current count:", currentCount);
+    const currentCount = get().count
+    console.log('Current count:', currentCount)
   },
-}));
+}))
 ```
 
 ## 4. 在组件中使用 Store
@@ -81,12 +81,12 @@ const useStore = create((set, get) => ({
 ### 基础使用
 
 ```jsx
-import React from "react";
-import useStore from "./store";
+import React from 'react'
+import useStore from './store'
 
 function Counter() {
   // 获取整个 store
-  const { count, increment, decrement } = useStore();
+  const { count, increment, decrement } = useStore()
 
   return (
     <div>
@@ -94,7 +94,7 @@ function Counter() {
       <button onClick={increment}>+</button>
       <button onClick={decrement}>-</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -103,15 +103,15 @@ function Counter() {
 ```jsx
 function Counter() {
   // 只订阅 count 状态，避免不必要的重渲染
-  const count = useStore((state) => state.count);
-  const increment = useStore((state) => state.increment);
+  const count = useStore((state) => state.count)
+  const increment = useStore((state) => state.increment)
 
   return (
     <div>
       <h1>Count: {count}</h1>
       <button onClick={increment}>+</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -125,24 +125,24 @@ export const createCountSlice = (set, get) => ({
   count: 0,
   increment: () => set((state) => ({ count: state.count + 1 })),
   decrement: () => set((state) => ({ count: state.count - 1 })),
-});
+})
 
 // store/userStore.js
 export const createUserSlice = (set, get) => ({
   user: null,
   setUser: (user) => set({ user }),
   clearUser: () => set({ user: null }),
-});
+})
 
 // store/index.js - 合并多个 slice
-import { create } from "zustand";
-import { createCountSlice } from "./countStore";
-import { createUserSlice } from "./userStore";
+import { create } from 'zustand'
+import { createCountSlice } from './countStore'
+import { createUserSlice } from './userStore'
 
 export const useStore = create((...a) => ({
   ...createCountSlice(...a),
   ...createUserSlice(...a),
-}));
+}))
 ```
 
 ### 使用 Immer 处理嵌套状态（可选）
@@ -152,16 +152,16 @@ npm install immer
 ```
 
 ```javascript
-import { produce } from "immer";
+import { produce } from 'immer'
 
 const useStore = create((set) => ({
   user: {
     profile: {
-      name: "",
+      name: '',
       age: 0,
       address: {
-        city: "",
-        country: "",
+        city: '',
+        country: '',
       },
     },
   },
@@ -170,7 +170,7 @@ const useStore = create((set) => ({
   updateProfile: (updates) =>
     set(
       produce((state) => {
-        state.user.profile = { ...state.user.profile, ...updates };
+        state.user.profile = { ...state.user.profile, ...updates }
       })
     ),
 
@@ -180,10 +180,10 @@ const useStore = create((set) => ({
         state.user.profile.address = {
           ...state.user.profile.address,
           ...address,
-        };
+        }
       })
     ),
-}));
+}))
 ```
 
 ## 6. 实战示例
@@ -194,7 +194,7 @@ const useStore = create((set) => ({
 // store/todoStore.js
 export const useTodoStore = create((set, get) => ({
   todos: [],
-  filter: "all", // all, active, completed
+  filter: 'all', // all, active, completed
 
   // Actions
   addTodo: (text) =>
@@ -204,22 +204,22 @@ export const useTodoStore = create((set, get) => ({
           id: Date.now(),
           text,
           completed: false,
-        });
+        })
       })
     ),
 
   toggleTodo: (id) =>
     set(
       produce((state) => {
-        const todo = state.todos.find((todo) => todo.id === id);
-        if (todo) todo.completed = !todo.completed;
+        const todo = state.todos.find((todo) => todo.id === id)
+        if (todo) todo.completed = !todo.completed
       })
     ),
 
   removeTodo: (id) =>
     set(
       produce((state) => {
-        state.todos = state.todos.filter((todo) => todo.id !== id);
+        state.todos = state.todos.filter((todo) => todo.id !== id)
       })
     ),
 
@@ -227,45 +227,44 @@ export const useTodoStore = create((set, get) => ({
 
   // 计算属性
   get filteredTodos() {
-    const { todos, filter } = get();
+    const { todos, filter } = get()
     switch (filter) {
-      case "active":
-        return todos.filter((todo) => !todo.completed);
-      case "completed":
-        return todos.filter((todo) => todo.completed);
+      case 'active':
+        return todos.filter((todo) => !todo.completed)
+      case 'completed':
+        return todos.filter((todo) => todo.completed)
       default:
-        return todos;
+        return todos
     }
   },
 
   // 统计
   get stats() {
-    const todos = get().todos;
+    const todos = get().todos
     return {
       total: todos.length,
       completed: todos.filter((t) => t.completed).length,
       active: todos.filter((t) => !t.completed).length,
-    };
+    }
   },
-}));
+}))
 ```
 
 ### 在组件中使用
 
 ```jsx
 function TodoApp() {
-  const { filteredTodos, addTodo, toggleTodo, removeTodo, setFilter, stats } =
-    useTodoStore();
+  const { filteredTodos, addTodo, toggleTodo, removeTodo, setFilter, stats } = useTodoStore()
 
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('')
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (input.trim()) {
-      addTodo(input.trim());
-      setInput("");
+      addTodo(input.trim())
+      setInput('')
     }
-  };
+  }
 
   return (
     <div>
@@ -279,29 +278,24 @@ function TodoApp() {
       </form>
 
       <div>
-        <button onClick={() => setFilter("all")}>All</button>
-        <button onClick={() => setFilter("active")}>Active</button>
-        <button onClick={() => setFilter("completed")}>Completed</button>
+        <button onClick={() => setFilter('all')}>All</button>
+        <button onClick={() => setFilter('active')}>Active</button>
+        <button onClick={() => setFilter('completed')}>Completed</button>
       </div>
 
       <div>
         <p>
-          Total: {stats.total} | Completed: {stats.completed} | Active:{" "}
-          {stats.active}
+          Total: {stats.total} | Completed: {stats.completed} | Active: {stats.active}
         </p>
       </div>
 
       <ul>
         {filteredTodos.map((todo) => (
           <li key={todo.id}>
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo.id)}
-            />
+            <input type="checkbox" checked={todo.completed} onChange={() => toggleTodo(todo.id)} />
             <span
               style={{
-                textDecoration: todo.completed ? "line-through" : "none",
+                textDecoration: todo.completed ? 'line-through' : 'none',
               }}
             >
               {todo.text}
@@ -311,7 +305,7 @@ function TodoApp() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
 ```
 
@@ -321,53 +315,49 @@ function TodoApp() {
 
 ```javascript
 // store/store.js
-import { create } from "zustand";
+import { create } from 'zustand'
 
 export const useStore = create((set) => ({
   count: 0,
   increment: () => set((state) => ({ count: state.count + 1 })),
-}));
+}))
 ```
 
 ### 处理服务端渲染 (SSR)
 
 ```javascript
 // 使用 zustand/context 处理 SSR
-import { createStore } from "zustand";
-import { createContext } from "react";
-import { useStoreWithEqualityFn } from "zustand/traditional";
+import { createStore } from 'zustand'
+import { createContext } from 'react'
+import { useStoreWithEqualityFn } from 'zustand/traditional'
 
 // 创建 store 初始化函数
 export const createMyStore = () =>
   createStore((set) => ({
     count: 0,
     increment: () => set((state) => ({ count: state.count + 1 })),
-  }));
+  }))
 
 // 创建 React context
-export const StoreContext = createContext(null);
+export const StoreContext = createContext(null)
 
 // Provider 组件
 export const StoreProvider = ({ children, initialState }) => {
-  const storeRef = useRef();
+  const storeRef = useRef()
   if (!storeRef.current) {
-    storeRef.current = createMyStore(initialState);
+    storeRef.current = createMyStore(initialState)
   }
-  return (
-    <StoreContext.Provider value={storeRef.current}>
-      {children}
-    </StoreContext.Provider>
-  );
-};
+  return <StoreContext.Provider value={storeRef.current}>{children}</StoreContext.Provider>
+}
 
 // Hook 用于在组件中访问 store
 export const useStore = (selector, equalityFn) => {
-  const store = useContext(StoreContext);
+  const store = useContext(StoreContext)
   if (!store) {
-    throw new Error("Missing StoreProvider");
+    throw new Error('Missing StoreProvider')
   }
-  return useStoreWithEqualityFn(store, selector, equalityFn);
-};
+  return useStoreWithEqualityFn(store, selector, equalityFn)
+}
 ```
 
 ### 在 Next.js 页面中使用
@@ -404,8 +394,8 @@ export default function HomePage() {
 
 ```javascript
 // 解决 SSR hydration 不匹配问题
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 export const useStore = create(
   persist(
@@ -414,7 +404,7 @@ export const useStore = create(
       increment: () => set((state) => ({ count: state.count + 1 })),
     }),
     {
-      name: "app-storage", // 存储名称
+      name: 'app-storage', // 存储名称
       storage: createJSONStorage(() => localStorage), // 或 sessionStorage
       // 在 Next.js 中，你可能需要自定义存储以避免 SSR 问题
       // onRehydrateStorage: () => (state) => {
@@ -422,7 +412,7 @@ export const useStore = create(
       // }
     }
   )
-);
+)
 ```
 
 ## 8. 性能优化技巧
@@ -431,17 +421,17 @@ export const useStore = create(
 
 ```jsx
 // 不好：组件会在任何状态变化时重渲染
-const { count, user } = useStore();
+const { count, user } = useStore()
 
 // 好：只在 count 变化时重渲染
-const count = useStore((state) => state.count);
+const count = useStore((state) => state.count)
 
 // 好：使用 shallow 比较对象
-import { shallow } from "zustand/shallow";
+import { shallow } from 'zustand/shallow'
 const { user, profile } = useStore(
   (state) => ({ user: state.user, profile: state.profile }),
   shallow
-);
+)
 ```
 
 ### 2. 使用 Derive 状态
@@ -449,14 +439,14 @@ const { user, profile } = useStore(
 ```javascript
 const useStore = create((set, get) => ({
   items: [],
-  filter: "",
+  filter: '',
 
   // 使用 getter 计算派生状态
   get filteredItems() {
-    const { items, filter } = get();
-    return items.filter((item) => item.includes(filter));
+    const { items, filter } = get()
+    return items.filter((item) => item.includes(filter))
   },
-}));
+}))
 ```
 
 ### 3. 批量更新
@@ -474,10 +464,10 @@ const useStore = create((set) => ({
   // 或者使用函数式更新
   updateMultiple: () =>
     set((state) => ({
-      user: { ...state.user, name: "New Name" },
+      user: { ...state.user, name: 'New Name' },
       profile: { ...state.profile, age: 30 },
     })),
-}));
+}))
 ```
 
 ## 9. 调试与开发工具
@@ -491,7 +481,7 @@ npm install @redux-devtools/extension
 ### 启用 DevTools
 
 ```javascript
-import { devtools } from "zustand/middleware";
+import { devtools } from 'zustand/middleware'
 
 const useStore = create(
   devtools(
@@ -499,9 +489,9 @@ const useStore = create(
       count: 0,
       increment: () => set((state) => ({ count: state.count + 1 })),
     }),
-    { name: "MyStore" }
+    { name: 'MyStore' }
   )
-);
+)
 ```
 
 ## 10. 学习笔记文档
@@ -546,16 +536,16 @@ const useStore = create(
 
 ```typescript
 interface StoreState {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
+  count: number
+  increment: () => void
+  decrement: () => void
 }
 
 const useStore = create<StoreState>()((set) => ({
   count: 0,
   increment: () => set((state) => ({ count: state.count + 1 })),
   decrement: () => set((state) => ({ count: state.count - 1 })),
-}));
+}))
 ```
 
 ## 常见问题解决
@@ -569,18 +559,18 @@ const useStore = create<StoreState>()((set) => ({
 
 ```javascript
 // 测试 store
-import { act } from "@testing-library/react";
-import { useStore } from "./store";
+import { act } from '@testing-library/react'
+import { useStore } from './store'
 
-test("increment increases count by 1", () => {
-  const { increment, getState } = useStore;
+test('increment increases count by 1', () => {
+  const { increment, getState } = useStore
 
   act(() => {
-    increment();
-  });
+    increment()
+  })
 
-  expect(getState().count).toBe(1);
-});
+  expect(getState().count).toBe(1)
+})
 ```
 
 ### 3. 服务端渲染

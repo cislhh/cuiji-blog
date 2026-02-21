@@ -16,21 +16,21 @@ interface ProjectsClientProps {
 
 export default function ProjectsClient({ projectsData }: ProjectsClientProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-dark-bg-start dark:to-dark-bg-end">
+    <div className="dark:from-dark-bg-start dark:to-dark-bg-end min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* 页面标题 */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative pt-16 pb-12 px-4 sm:px-6 lg:px-8"
+        className="relative px-4 pt-16 pb-12 sm:px-6 lg:px-8"
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+              className="mb-4 text-5xl font-bold text-gray-900 md:text-6xl dark:text-gray-100"
             >
               项目作品
             </motion.h1>
@@ -51,7 +51,7 @@ export default function ProjectsClient({ projectsData }: ProjectsClientProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"
+        className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8"
       >
         <div className="-m-4 flex flex-wrap">
           {projectsData.map((d, index) => (

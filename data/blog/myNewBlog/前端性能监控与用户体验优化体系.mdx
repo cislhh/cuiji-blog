@@ -11,7 +11,6 @@ keywords: [性能监控, Core Web Vitals, 用户体验, 性能优化, 前端监�
 
 但性能优化不是盲目的，我们需要建立完整的监控体系，用数据驱动优化决策。本文将深入探讨如何构建前端性能监控系统，以及如何基于监控数据优化用户体验。
 
-
 ---
 
 ## 一、性能监控的核心指标：Core Web Vitals
@@ -34,23 +33,24 @@ LCP 测量页面主要内容加载完成的时间。
 // 监控 LCP
 function measureLCP() {
   const observer = new PerformanceObserver((list) => {
-    const entries = list.getEntries();
-    const lastEntry = entries[entries.length - 1];
-    
-    console.log('LCP:', lastEntry.startTime);
-    
+    const entries = list.getEntries()
+    const lastEntry = entries[entries.length - 1]
+
+    console.log('LCP:', lastEntry.startTime)
+
     // 发送到监控系统
-    sendMetric('lcp', lastEntry.startTime);
-  });
-  
-  observer.observe({ entryTypes: ['largest-contentful-paint'] });
+    sendMetric('lcp', lastEntry.startTime)
+  })
+
+  observer.observe({ entryTypes: ['largest-contentful-paint'] })
 }
 
 // 页面加载完成后开始监控
-window.addEventListener('load', measureLCP);
+window.addEventListener('load', measureLCP)
 ```
 
 **LCP 评分标准**：
+
 - 良好：≤ 2.5 秒
 - 需要改进：2.5 - 4.0 秒
 - 差：> 4.0 秒
@@ -63,23 +63,24 @@ FID 测量用户首次与页面交互时的响应时间。
 // 监控 FID
 function measureFID() {
   const observer = new PerformanceObserver((list) => {
-    const entries = list.getEntries();
+    const entries = list.getEntries()
     entries.forEach((entry) => {
-      console.log('FID:', entry.processingStart - entry.startTime);
-      
+      console.log('FID:', entry.processingStart - entry.startTime)
+
       // 发送到监控系统
-      sendMetric('fid', entry.processingStart - entry.startTime);
-    });
-  });
-  
-  observer.observe({ entryTypes: ['first-input'] });
+      sendMetric('fid', entry.processingStart - entry.startTime)
+    })
+  })
+
+  observer.observe({ entryTypes: ['first-input'] })
 }
 
 // 页面加载完成后开始监控
-window.addEventListener('load', measureFID);
+window.addEventListener('load', measureFID)
 ```
 
 **FID 评分标准**：
+
 - 良好：≤ 100 毫秒
 - 需要改进：100 - 300 毫秒
 - 差：> 300 毫秒
@@ -91,31 +92,32 @@ CLS 测量页面布局的稳定性。
 ```javascript
 // 监控 CLS
 function measureCLS() {
-  let clsValue = 0;
-  let clsEntries = [];
-  
+  let clsValue = 0
+  let clsEntries = []
+
   const observer = new PerformanceObserver((list) => {
     for (const entry of list.getEntries()) {
       if (!entry.hadRecentInput) {
-        clsEntries.push(entry);
-        clsValue += entry.value;
+        clsEntries.push(entry)
+        clsValue += entry.value
       }
     }
-    
-    console.log('CLS:', clsValue);
-    
+
+    console.log('CLS:', clsValue)
+
     // 发送到监控系统
-    sendMetric('cls', clsValue);
-  });
-  
-  observer.observe({ entryTypes: ['layout-shift'] });
+    sendMetric('cls', clsValue)
+  })
+
+  observer.observe({ entryTypes: ['layout-shift'] })
 }
 
 // 页面加载完成后开始监控
-window.addEventListener('load', measureCLS);
+window.addEventListener('load', measureCLS)
 ```
 
 **CLS 评分标准**：
+
 - 良好：≤ 0.1
 - 需要改进：0.1 - 0.25
 - 差：> 0.25
@@ -133,34 +135,34 @@ class PerformanceMonitor {
       apiEndpoint: config.apiEndpoint || '/api/metrics',
       sampleRate: config.sampleRate || 1.0,
       debug: config.debug || false,
-      ...config
-    };
-    
-    this.metrics = new Map();
-    this.observers = [];
-    
-    this.init();
+      ...config,
+    }
+
+    this.metrics = new Map()
+    this.observers = []
+
+    this.init()
   }
-  
+
   init() {
     // 监控页面加载性能
-    this.measurePageLoad();
-    
+    this.measurePageLoad()
+
     // 监控 Core Web Vitals
-    this.measureCoreWebVitals();
-    
+    this.measureCoreWebVitals()
+
     // 监控资源加载性能
-    this.measureResourceTiming();
-    
+    this.measureResourceTiming()
+
     // 监控用户交互性能
-    this.measureUserInteraction();
+    this.measureUserInteraction()
   }
-  
+
   // 测量页面加载性能
   measurePageLoad() {
     window.addEventListener('load', () => {
-      const navigation = performance.getEntriesByType('navigation')[0];
-      
+      const navigation = performance.getEntriesByType('navigation')[0]
+
       const metrics = {
         // DNS 查询时间
         dns: navigation.domainLookupEnd - navigation.domainLookupStart,
@@ -173,161 +175,161 @@ class PerformanceMonitor {
         // 页面完全加载时间
         loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
         // 总加载时间
-        total: navigation.loadEventEnd - navigation.navigationStart
-      };
-      
-      this.sendMetrics('page-load', metrics);
-    });
+        total: navigation.loadEventEnd - navigation.navigationStart,
+      }
+
+      this.sendMetrics('page-load', metrics)
+    })
   }
-  
+
   // 测量 Core Web Vitals
   measureCoreWebVitals() {
     // LCP
-    this.measureLCP();
-    
+    this.measureLCP()
+
     // FID
-    this.measureFID();
-    
+    this.measureFID()
+
     // CLS
-    this.measureCLS();
+    this.measureCLS()
   }
-  
+
   measureLCP() {
     const observer = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
-      const lastEntry = entries[entries.length - 1];
-      
-      this.sendMetric('lcp', lastEntry.startTime);
-    });
-    
-    observer.observe({ entryTypes: ['largest-contentful-paint'] });
-    this.observers.push(observer);
+      const entries = list.getEntries()
+      const lastEntry = entries[entries.length - 1]
+
+      this.sendMetric('lcp', lastEntry.startTime)
+    })
+
+    observer.observe({ entryTypes: ['largest-contentful-paint'] })
+    this.observers.push(observer)
   }
-  
+
   measureFID() {
     const observer = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
+      const entries = list.getEntries()
       entries.forEach((entry) => {
-        const fid = entry.processingStart - entry.startTime;
-        this.sendMetric('fid', fid);
-      });
-    });
-    
-    observer.observe({ entryTypes: ['first-input'] });
-    this.observers.push(observer);
+        const fid = entry.processingStart - entry.startTime
+        this.sendMetric('fid', fid)
+      })
+    })
+
+    observer.observe({ entryTypes: ['first-input'] })
+    this.observers.push(observer)
   }
-  
+
   measureCLS() {
-    let clsValue = 0;
-    
+    let clsValue = 0
+
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (!entry.hadRecentInput) {
-          clsValue += entry.value;
+          clsValue += entry.value
         }
       }
-      
-      this.sendMetric('cls', clsValue);
-    });
-    
-    observer.observe({ entryTypes: ['layout-shift'] });
-    this.observers.push(observer);
+
+      this.sendMetric('cls', clsValue)
+    })
+
+    observer.observe({ entryTypes: ['layout-shift'] })
+    this.observers.push(observer)
   }
-  
+
   // 测量资源加载性能
   measureResourceTiming() {
     window.addEventListener('load', () => {
-      const resources = performance.getEntriesByType('resource');
-      
+      const resources = performance.getEntriesByType('resource')
+
       resources.forEach((resource) => {
         const metrics = {
           name: resource.name,
           type: resource.initiatorType,
           duration: resource.duration,
           size: resource.transferSize,
-          cached: resource.transferSize === 0
-        };
-        
-        this.sendMetrics('resource-timing', metrics);
-      });
-    });
+          cached: resource.transferSize === 0,
+        }
+
+        this.sendMetrics('resource-timing', metrics)
+      })
+    })
   }
-  
+
   // 测量用户交互性能
   measureUserInteraction() {
-    const events = ['click', 'keydown', 'scroll'];
-    
+    const events = ['click', 'keydown', 'scroll']
+
     events.forEach((eventType) => {
       document.addEventListener(eventType, (event) => {
-        const startTime = performance.now();
-        
+        const startTime = performance.now()
+
         // 使用 requestIdleCallback 在空闲时测量
         requestIdleCallback(() => {
-          const endTime = performance.now();
-          const duration = endTime - startTime;
-          
+          const endTime = performance.now()
+          const duration = endTime - startTime
+
           this.sendMetric('user-interaction', {
             type: eventType,
             duration: duration,
-            timestamp: Date.now()
-          });
-        });
-      });
-    });
+            timestamp: Date.now(),
+          })
+        })
+      })
+    })
   }
-  
+
   // 发送单个指标
   sendMetric(name, value) {
-    if (Math.random() > this.config.sampleRate) return;
-    
+    if (Math.random() > this.config.sampleRate) return
+
     const metric = {
       name,
       value,
       timestamp: Date.now(),
       url: window.location.href,
-      userAgent: navigator.userAgent
-    };
-    
-    this.metrics.set(name, metric);
-    
-    if (this.config.debug) {
-      console.log('Metric:', metric);
+      userAgent: navigator.userAgent,
     }
-    
-    this.sendToServer(metric);
+
+    this.metrics.set(name, metric)
+
+    if (this.config.debug) {
+      console.log('Metric:', metric)
+    }
+
+    this.sendToServer(metric)
   }
-  
+
   // 发送多个指标
   sendMetrics(name, metrics) {
     Object.entries(metrics).forEach(([key, value]) => {
-      this.sendMetric(`${name}.${key}`, value);
-    });
+      this.sendMetric(`${name}.${key}`, value)
+    })
   }
-  
+
   // 发送到服务器
   async sendToServer(metric) {
     try {
       await fetch(this.config.apiEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(metric)
-      });
+        body: JSON.stringify(metric),
+      })
     } catch (error) {
-      console.error('Failed to send metric:', error);
+      console.error('Failed to send metric:', error)
     }
   }
-  
+
   // 获取所有指标
   getAllMetrics() {
-    return Array.from(this.metrics.values());
+    return Array.from(this.metrics.values())
   }
-  
+
   // 清理资源
   destroy() {
-    this.observers.forEach(observer => observer.disconnect());
-    this.observers = [];
+    this.observers.forEach((observer) => observer.disconnect())
+    this.observers = []
   }
 }
 
@@ -335,8 +337,8 @@ class PerformanceMonitor {
 const monitor = new PerformanceMonitor({
   apiEndpoint: '/api/metrics',
   sampleRate: 0.1, // 10% 采样率
-  debug: true
-});
+  debug: true,
+})
 ```
 
 ---
@@ -349,58 +351,58 @@ const monitor = new PerformanceMonitor({
 // 图片懒加载
 class LazyImageLoader {
   constructor() {
-    this.observer = new IntersectionObserver(this.handleIntersection.bind(this));
-    this.images = document.querySelectorAll('img[data-src]');
-    
-    this.images.forEach(img => this.observer.observe(img));
+    this.observer = new IntersectionObserver(this.handleIntersection.bind(this))
+    this.images = document.querySelectorAll('img[data-src]')
+
+    this.images.forEach((img) => this.observer.observe(img))
   }
-  
+
   handleIntersection(entries) {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        const img = entry.target;
-        this.loadImage(img);
-        this.observer.unobserve(img);
+        const img = entry.target
+        this.loadImage(img)
+        this.observer.unobserve(img)
       }
-    });
+    })
   }
-  
+
   loadImage(img) {
-    const src = img.dataset.src;
-    const placeholder = img.src;
-    
+    const src = img.dataset.src
+    const placeholder = img.src
+
     // 创建新的图片对象预加载
-    const newImg = new Image();
+    const newImg = new Image()
     newImg.onload = () => {
-      img.src = src;
-      img.classList.add('loaded');
-    };
+      img.src = src
+      img.classList.add('loaded')
+    }
     newImg.onerror = () => {
-      img.src = placeholder;
-      img.classList.add('error');
-    };
-    newImg.src = src;
+      img.src = placeholder
+      img.classList.add('error')
+    }
+    newImg.src = src
   }
 }
 
 // 图片格式优化
 function optimizeImageFormat() {
-  const images = document.querySelectorAll('img');
-  
-  images.forEach(img => {
+  const images = document.querySelectorAll('img')
+
+  images.forEach((img) => {
     // 检查浏览器支持
     if (window.Modernizr && window.Modernizr.webp) {
-      const src = img.src;
-      const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-      
+      const src = img.src
+      const webpSrc = src.replace(/\.(jpg|jpeg|png)$/i, '.webp')
+
       // 预加载 WebP 格式
-      const webpImg = new Image();
+      const webpImg = new Image()
       webpImg.onload = () => {
-        img.src = webpSrc;
-      };
-      webpImg.src = webpSrc;
+        img.src = webpSrc
+      }
+      webpImg.src = webpSrc
     }
-  });
+  })
 }
 ```
 
@@ -411,34 +413,34 @@ function optimizeImageFormat() {
 const routes = {
   '/': () => import('./pages/Home.js'),
   '/about': () => import('./pages/About.js'),
-  '/contact': () => import('./pages/Contact.js')
-};
+  '/contact': () => import('./pages/Contact.js'),
+}
 
 // 组件懒加载
 class LazyComponentLoader {
   constructor() {
-    this.observer = new IntersectionObserver(this.handleIntersection.bind(this));
-    this.components = document.querySelectorAll('[data-component]');
-    
-    this.components.forEach(component => this.observer.observe(component));
+    this.observer = new IntersectionObserver(this.handleIntersection.bind(this))
+    this.components = document.querySelectorAll('[data-component]')
+
+    this.components.forEach((component) => this.observer.observe(component))
   }
-  
+
   async handleIntersection(entries) {
     for (const entry of entries) {
       if (entry.isIntersecting) {
-        const component = entry.target;
-        const componentName = component.dataset.component;
-        
+        const component = entry.target
+        const componentName = component.dataset.component
+
         try {
-          const module = await import(`./components/${componentName}.js`);
-          const ComponentClass = module.default;
-          
-          const instance = new ComponentClass();
-          component.appendChild(instance.render());
-          
-          this.observer.unobserve(component);
+          const module = await import(`./components/${componentName}.js`)
+          const ComponentClass = module.default
+
+          const instance = new ComponentClass()
+          component.appendChild(instance.render())
+
+          this.observer.unobserve(component)
         } catch (error) {
-          console.error(`Failed to load component ${componentName}:`, error);
+          console.error(`Failed to load component ${componentName}:`, error)
         }
       }
     }
@@ -452,67 +454,62 @@ class LazyComponentLoader {
 // Service Worker 缓存策略
 class CacheManager {
   constructor() {
-    this.cacheName = 'app-cache-v1';
-    this.cacheUrls = [
-      '/',
-      '/static/css/main.css',
-      '/static/js/main.js',
-      '/static/images/logo.png'
-    ];
+    this.cacheName = 'app-cache-v1'
+    this.cacheUrls = ['/', '/static/css/main.css', '/static/js/main.js', '/static/images/logo.png']
   }
-  
+
   async install() {
-    const cache = await caches.open(this.cacheName);
-    await cache.addAll(this.cacheUrls);
+    const cache = await caches.open(this.cacheName)
+    await cache.addAll(this.cacheUrls)
   }
-  
+
   async fetch(request) {
-    const cache = await caches.open(this.cacheName);
-    const cachedResponse = await cache.match(request);
-    
+    const cache = await caches.open(this.cacheName)
+    const cachedResponse = await cache.match(request)
+
     if (cachedResponse) {
-      return cachedResponse;
+      return cachedResponse
     }
-    
-    const networkResponse = await fetch(request);
-    
+
+    const networkResponse = await fetch(request)
+
     // 缓存成功的响应
     if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
+      cache.put(request, networkResponse.clone())
     }
-    
-    return networkResponse;
+
+    return networkResponse
   }
 }
 
 // 内存缓存
 class MemoryCache {
   constructor(maxSize = 100) {
-    this.cache = new Map();
-    this.maxSize = maxSize;
+    this.cache = new Map()
+    this.maxSize = maxSize
   }
-  
+
   get(key) {
     if (this.cache.has(key)) {
       // 移动到末尾（LRU）
-      const value = this.cache.get(key);
-      this.cache.delete(key);
-      this.cache.set(key, value);
-      return value;
+      const value = this.cache.get(key)
+      this.cache.delete(key)
+      this.cache.set(key, value)
+      return value
     }
-    return null;
+    return null
   }
-  
+
   set(key, value) {
     if (this.cache.has(key)) {
-      this.cache.delete(key);
+      this.cache.delete(key)
     } else if (this.cache.size >= this.maxSize) {
       // 删除最旧的项
-      const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
+      const firstKey = this.cache.keys().next().value
+      this.cache.delete(firstKey)
     }
-    
-    this.cache.set(key, value);
+
+    this.cache.set(key, value)
   }
 }
 ```
@@ -527,22 +524,22 @@ class MemoryCache {
 // 加载状态组件
 class LoadingManager {
   constructor() {
-    this.loadingStates = new Map();
-    this.loadingOverlay = this.createLoadingOverlay();
+    this.loadingStates = new Map()
+    this.loadingOverlay = this.createLoadingOverlay()
   }
-  
+
   createLoadingOverlay() {
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
+    const overlay = document.createElement('div')
+    overlay.className = 'loading-overlay'
     overlay.innerHTML = `
       <div class="loading-spinner">
         <div class="spinner"></div>
         <div class="loading-text">加载中...</div>
       </div>
-    `;
-    
+    `
+
     // 添加样式
-    const style = document.createElement('style');
+    const style = document.createElement('style')
     style.textContent = `
       .loading-overlay {
         position: fixed;
@@ -572,49 +569,49 @@ class LoadingManager {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
-    `;
-    document.head.appendChild(style);
-    
-    return overlay;
+    `
+    document.head.appendChild(style)
+
+    return overlay
   }
-  
+
   showLoading(key = 'default') {
-    this.loadingStates.set(key, true);
-    document.body.appendChild(this.loadingOverlay);
+    this.loadingStates.set(key, true)
+    document.body.appendChild(this.loadingOverlay)
   }
-  
+
   hideLoading(key = 'default') {
-    this.loadingStates.set(key, false);
-    
+    this.loadingStates.set(key, false)
+
     // 检查是否还有其他加载状态
-    const hasLoading = Array.from(this.loadingStates.values()).some(state => state);
+    const hasLoading = Array.from(this.loadingStates.values()).some((state) => state)
     if (!hasLoading) {
-      document.body.removeChild(this.loadingOverlay);
+      document.body.removeChild(this.loadingOverlay)
     }
   }
-  
+
   isLoading(key = 'default') {
-    return this.loadingStates.get(key) || false;
+    return this.loadingStates.get(key) || false
   }
 }
 
 // 使用示例
-const loadingManager = new LoadingManager();
+const loadingManager = new LoadingManager()
 
 // 开始加载
-loadingManager.showLoading('data');
+loadingManager.showLoading('data')
 
 // 模拟异步操作
 fetch('/api/data')
-  .then(response => response.json())
-  .then(data => {
+  .then((response) => response.json())
+  .then((data) => {
     // 处理数据
-    console.log(data);
+    console.log(data)
   })
   .finally(() => {
     // 结束加载
-    loadingManager.hideLoading('data');
-  });
+    loadingManager.hideLoading('data')
+  })
 ```
 
 ### 2. 错误处理与重试机制
@@ -623,100 +620,100 @@ fetch('/api/data')
 // 错误处理与重试
 class ErrorHandler {
   constructor() {
-    this.retryCount = 3;
-    this.retryDelay = 1000;
+    this.retryCount = 3
+    this.retryDelay = 1000
   }
-  
+
   async withRetry(fn, context = '') {
-    let lastError;
-    
+    let lastError
+
     for (let i = 0; i < this.retryCount; i++) {
       try {
-        return await fn();
+        return await fn()
       } catch (error) {
-        lastError = error;
-        console.warn(`${context} 第 ${i + 1} 次尝试失败:`, error);
-        
+        lastError = error
+        console.warn(`${context} 第 ${i + 1} 次尝试失败:`, error)
+
         if (i < this.retryCount - 1) {
-          await this.delay(this.retryDelay * Math.pow(2, i)); // 指数退避
+          await this.delay(this.retryDelay * Math.pow(2, i)) // 指数退避
         }
       }
     }
-    
-    throw new Error(`${context} 重试 ${this.retryCount} 次后仍然失败: ${lastError.message}`);
+
+    throw new Error(`${context} 重试 ${this.retryCount} 次后仍然失败: ${lastError.message}`)
   }
-  
+
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
-  
+
   // 全局错误处理
   setupGlobalErrorHandling() {
     window.addEventListener('error', (event) => {
-      this.handleError(event.error, 'JavaScript Error');
-    });
-    
+      this.handleError(event.error, 'JavaScript Error')
+    })
+
     window.addEventListener('unhandledrejection', (event) => {
-      this.handleError(event.reason, 'Unhandled Promise Rejection');
-    });
+      this.handleError(event.reason, 'Unhandled Promise Rejection')
+    })
   }
-  
+
   handleError(error, context) {
-    console.error(`${context}:`, error);
-    
+    console.error(`${context}:`, error)
+
     // 发送错误到监控系统
-    this.sendErrorToMonitoring(error, context);
-    
+    this.sendErrorToMonitoring(error, context)
+
     // 显示用户友好的错误信息
-    this.showUserFriendlyError();
+    this.showUserFriendlyError()
   }
-  
+
   sendErrorToMonitoring(error, context) {
     // 发送到监控系统
     fetch('/api/errors', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         message: error.message,
         stack: error.stack,
         context,
         url: window.location.href,
-        timestamp: Date.now()
-      })
-    });
+        timestamp: Date.now(),
+      }),
+    })
   }
-  
+
   showUserFriendlyError() {
     // 显示用户友好的错误提示
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
+    const errorDiv = document.createElement('div')
+    errorDiv.className = 'error-message'
     errorDiv.innerHTML = `
       <div class="error-content">
         <h3>抱歉，出现了错误</h3>
         <p>请刷新页面重试，或联系技术支持</p>
         <button onclick="window.location.reload()">刷新页面</button>
       </div>
-    `;
-    
-    document.body.appendChild(errorDiv);
+    `
+
+    document.body.appendChild(errorDiv)
   }
 }
 
 // 使用示例
-const errorHandler = new ErrorHandler();
-errorHandler.setupGlobalErrorHandling();
+const errorHandler = new ErrorHandler()
+errorHandler.setupGlobalErrorHandling()
 
 // 带重试的 API 调用
 async function fetchDataWithRetry() {
   return await errorHandler.withRetry(async () => {
-    const response = await fetch('/api/data');
+    const response = await fetch('/api/data')
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
     }
-    return response.json();
-  }, '获取数据');
+    return response.json()
+  }, '获取数据')
 }
 ```
 
@@ -730,14 +727,14 @@ async function fetchDataWithRetry() {
 // 性能监控面板
 class PerformanceDashboard {
   constructor(container) {
-    this.container = container;
-    this.metrics = new Map();
-    this.charts = new Map();
-    
-    this.render();
-    this.startRealTimeUpdates();
+    this.container = container
+    this.metrics = new Map()
+    this.charts = new Map()
+
+    this.render()
+    this.startRealTimeUpdates()
   }
-  
+
   render() {
     this.container.innerHTML = `
       <div class="dashboard">
@@ -776,13 +773,13 @@ class PerformanceDashboard {
           </div>
         </div>
       </div>
-    `;
-    
-    this.addStyles();
+    `
+
+    this.addStyles()
   }
-  
+
   addStyles() {
-    const style = document.createElement('style');
+    const style = document.createElement('style')
     style.textContent = `
       .dashboard {
         padding: 20px;
@@ -831,110 +828,110 @@ class PerformanceDashboard {
         max-width: 100%;
         height: auto;
       }
-    `;
-    document.head.appendChild(style);
+    `
+    document.head.appendChild(style)
   }
-  
+
   updateMetric(name, value) {
-    const element = document.getElementById(name);
+    const element = document.getElementById(name)
     if (element) {
-      element.textContent = this.formatValue(name, value);
-      element.className = `metric-value ${this.getPerformanceClass(name, value)}`;
+      element.textContent = this.formatValue(name, value)
+      element.className = `metric-value ${this.getPerformanceClass(name, value)}`
     }
-    
-    this.metrics.set(name, value);
-    this.updateChart();
+
+    this.metrics.set(name, value)
+    this.updateChart()
   }
-  
+
   formatValue(name, value) {
     switch (name) {
       case 'load-time':
       case 'lcp':
       case 'fid':
-        return `${value.toFixed(2)}ms`;
+        return `${value.toFixed(2)}ms`
       case 'cls':
-        return value.toFixed(3);
+        return value.toFixed(3)
       default:
-        return value.toString();
+        return value.toString()
     }
   }
-  
+
   getPerformanceClass(name, value) {
     switch (name) {
       case 'load-time':
-        return value < 2000 ? 'good' : value < 4000 ? 'warning' : 'bad';
+        return value < 2000 ? 'good' : value < 4000 ? 'warning' : 'bad'
       case 'lcp':
-        return value < 2500 ? 'good' : value < 4000 ? 'warning' : 'bad';
+        return value < 2500 ? 'good' : value < 4000 ? 'warning' : 'bad'
       case 'fid':
-        return value < 100 ? 'good' : value < 300 ? 'warning' : 'bad';
+        return value < 100 ? 'good' : value < 300 ? 'warning' : 'bad'
       case 'cls':
-        return value < 0.1 ? 'good' : value < 0.25 ? 'warning' : 'bad';
+        return value < 0.1 ? 'good' : value < 0.25 ? 'warning' : 'bad'
       default:
-        return 'good';
+        return 'good'
     }
   }
-  
+
   updateChart() {
-    const canvas = document.getElementById('performance-chart');
-    const ctx = canvas.getContext('2d');
-    
+    const canvas = document.getElementById('performance-chart')
+    const ctx = canvas.getContext('2d')
+
     // 清空画布
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
     // 绘制简单的折线图
-    this.drawLineChart(ctx, canvas.width, canvas.height);
+    this.drawLineChart(ctx, canvas.width, canvas.height)
   }
-  
+
   drawLineChart(ctx, width, height) {
-    const data = Array.from(this.metrics.values());
-    if (data.length < 2) return;
-    
-    const padding = 40;
-    const chartWidth = width - 2 * padding;
-    const chartHeight = height - 2 * padding;
-    
+    const data = Array.from(this.metrics.values())
+    if (data.length < 2) return
+
+    const padding = 40
+    const chartWidth = width - 2 * padding
+    const chartHeight = height - 2 * padding
+
     // 绘制坐标轴
-    ctx.strokeStyle = '#dee2e6';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(padding, padding);
-    ctx.lineTo(padding, height - padding);
-    ctx.lineTo(width - padding, height - padding);
-    ctx.stroke();
-    
+    ctx.strokeStyle = '#dee2e6'
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(padding, padding)
+    ctx.lineTo(padding, height - padding)
+    ctx.lineTo(width - padding, height - padding)
+    ctx.stroke()
+
     // 绘制数据线
-    ctx.strokeStyle = '#3498db';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    
+    ctx.strokeStyle = '#3498db'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+
     data.forEach((value, index) => {
-      const x = padding + (index / (data.length - 1)) * chartWidth;
-      const y = height - padding - (value / Math.max(...data)) * chartHeight;
-      
+      const x = padding + (index / (data.length - 1)) * chartWidth
+      const y = height - padding - (value / Math.max(...data)) * chartHeight
+
       if (index === 0) {
-        ctx.moveTo(x, y);
+        ctx.moveTo(x, y)
       } else {
-        ctx.lineTo(x, y);
+        ctx.lineTo(x, y)
       }
-    });
-    
-    ctx.stroke();
+    })
+
+    ctx.stroke()
   }
-  
+
   startRealTimeUpdates() {
     // 模拟实时数据更新
     setInterval(() => {
       // 这里应该从实际的监控系统获取数据
-      this.updateMetric('load-time', Math.random() * 3000 + 1000);
-      this.updateMetric('lcp', Math.random() * 2000 + 1000);
-      this.updateMetric('fid', Math.random() * 200 + 50);
-      this.updateMetric('cls', Math.random() * 0.2);
-    }, 5000);
+      this.updateMetric('load-time', Math.random() * 3000 + 1000)
+      this.updateMetric('lcp', Math.random() * 2000 + 1000)
+      this.updateMetric('fid', Math.random() * 200 + 50)
+      this.updateMetric('cls', Math.random() * 0.2)
+    }, 5000)
   }
 }
 
 // 使用示例
-const dashboard = new PerformanceDashboard(document.getElementById('dashboard'));
+const dashboard = new PerformanceDashboard(document.getElementById('dashboard'))
 ```
 
 ---
@@ -946,54 +943,54 @@ const dashboard = new PerformanceDashboard(document.getElementById('dashboard'))
 ```javascript
 // 性能预算配置
 const performanceBudget = {
-  lcp: 2500,      // 2.5秒
-  fid: 100,       // 100毫秒
-  cls: 0.1,       // 0.1
+  lcp: 2500, // 2.5秒
+  fid: 100, // 100毫秒
+  cls: 0.1, // 0.1
   loadTime: 3000, // 3秒
-  bundleSize: 500000 // 500KB
-};
+  bundleSize: 500000, // 500KB
+}
 
 // 性能预算检查
 class PerformanceBudget {
   constructor(budget) {
-    this.budget = budget;
-    this.violations = [];
+    this.budget = budget
+    this.violations = []
   }
-  
+
   checkMetric(name, value) {
     if (value > this.budget[name]) {
       this.violations.push({
         metric: name,
         value: value,
         budget: this.budget[name],
-        violation: value - this.budget[name]
-      });
-      
+        violation: value - this.budget[name],
+      })
+
       console.warn(`性能预算违反: ${name}`, {
         actual: value,
         budget: this.budget[name],
-        violation: value - this.budget[name]
-      });
+        violation: value - this.budget[name],
+      })
     }
   }
-  
+
   getViolations() {
-    return this.violations;
+    return this.violations
   }
-  
+
   hasViolations() {
-    return this.violations.length > 0;
+    return this.violations.length > 0
   }
 }
 
 // 使用示例
-const budget = new PerformanceBudget(performanceBudget);
+const budget = new PerformanceBudget(performanceBudget)
 
 // 检查 LCP
-budget.checkMetric('lcp', 3000); // 违反预算
+budget.checkMetric('lcp', 3000) // 违反预算
 
 if (budget.hasViolations()) {
-  console.log('性能预算违反:', budget.getViolations());
+  console.log('性能预算违反:', budget.getViolations())
 }
 ```
 
@@ -1003,71 +1000,73 @@ if (budget.hasViolations()) {
 // 自动化性能测试
 class PerformanceTest {
   constructor() {
-    this.results = [];
+    this.results = []
   }
-  
+
   async runTest(url, iterations = 5) {
-    console.log(`开始性能测试: ${url}`);
-    
+    console.log(`开始性能测试: ${url}`)
+
     for (let i = 0; i < iterations; i++) {
-      console.log(`第 ${i + 1} 次测试...`);
-      
-      const result = await this.measurePage(url);
-      this.results.push(result);
-      
+      console.log(`第 ${i + 1} 次测试...`)
+
+      const result = await this.measurePage(url)
+      this.results.push(result)
+
       // 等待页面完全加载
-      await this.delay(2000);
+      await this.delay(2000)
     }
-    
-    return this.analyzeResults();
+
+    return this.analyzeResults()
   }
-  
+
   async measurePage(url) {
-    const page = await this.openPage(url);
-    
+    const page = await this.openPage(url)
+
     // 等待页面加载完成
-    await page.waitForLoadState('networkidle');
-    
+    await page.waitForLoadState('networkidle')
+
     // 测量性能指标
     const metrics = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType('navigation')[0];
+      const navigation = performance.getEntriesByType('navigation')[0]
       return {
         loadTime: navigation.loadEventEnd - navigation.navigationStart,
-        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+        domContentLoaded:
+          navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
         firstPaint: performance.getEntriesByName('first-paint')[0]?.startTime || 0,
-        firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0
-      };
-    });
-    
-    await page.close();
-    return metrics;
+        firstContentfulPaint:
+          performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0,
+      }
+    })
+
+    await page.close()
+    return metrics
   }
-  
+
   analyzeResults() {
-    const metrics = Object.keys(this.results[0]);
-    const analysis = {};
-    
-    metrics.forEach(metric => {
-      const values = this.results.map(r => r[metric]);
+    const metrics = Object.keys(this.results[0])
+    const analysis = {}
+
+    metrics.forEach((metric) => {
+      const values = this.results.map((r) => r[metric])
       analysis[metric] = {
         min: Math.min(...values),
         max: Math.max(...values),
         avg: values.reduce((a, b) => a + b, 0) / values.length,
-        median: this.median(values)
-      };
-    });
-    
-    return analysis;
+        median: this.median(values),
+      }
+    })
+
+    return analysis
   }
-  
+
   median(values) {
-    const sorted = values.sort((a, b) => a - b);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+    const sorted = values.sort((a, b) => a - b)
+    const mid = Math.floor(sorted.length / 2)
+    return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
   }
-  
+
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
 ```
