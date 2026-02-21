@@ -1,0 +1,188 @@
+---
+slug: lenis-local-scroll-solution
+title: Lenis平滑滚动库与局部滚动冲突的解决方案
+date: 2025-02-21
+authors: [cuiji]
+tags: [lenis, scroll, frontend, optimization]
+keywords: [lenis, 平滑滚动, 局部滚动, 前端优化, 滚动冲突]
+description: 在项目中使用 Lenis 平滑滚动库时遇到的局部滚动失效问题及解决方案
+---
+
+前几天在优化博客项目时遇到了一个滚动相关的 bug:侧边栏的文章分类模块设置了 `overflow-y: auto` 和高度限制后,虽然出现了滚动条,但鼠标滚轮滚动时完全没反应。经过排查发现是 Lenis 平滑滚动库导致的问题,这里记录一下问题的排查过程和解决方案。
+
+## 问题现象
+
+博客列表页 `/blog` 使用了 `ListLayoutWithTags` 组件,左侧是一个固定定位的侧边栏,包含文章分类和博客统计。当标签数量较多时,侧边栏内容超出可视区域,需要支持局部滚动。
+
+初始实现是这样的:
+
+```tsx
+<nav className="space-y-2">{/* 标签列表 */}</nav>
+```
+
+为了支持滚动,我给容器加了高度限制和 overflow 属性:
+
+```tsx
+<nav className="max-h-[calc(100vh-12rem)] space-y-2 overflow-y-auto">{/* 标签列表 */}</nav>
+```
+
+滚动条确实出现了,但鼠标滚轮在这个区域滚动时完全没反应。用手指在触控板上滑动也无效。
+
+## 排查过程
+
+### 第一步:检查 CSS 样式
+
+首先怀疑是 CSS 层级或者 `pointer-events` 的问题。打开开发者工具检查元素,发现:
+
+- `overflow-y: auto` 正常应用
+- 没有其他样式覆盖
+- 容器的 `height` 计算正确
+
+CSS 没问题,那问题就不在样式层面。
+
+### 第二步:检查事件监听
+
+在控制台打印滚动事件:
+
+```javascript
+document.querySelector('nav').addEventListener('wheel', (e) => {
+  console.log('wheel event', e)
+})
+```
+
+结果完全没有输出,说明 `wheel` 事件根本没有触发到这个元素。
+
+### 第三步:定位 Lenis
+
+项目使用了 Lenis 平滑滚动库,随机想到会不会是 Lenis 为了使实现平滑滚动接管了所有的滚动事件。检查 `layout.tsx`:
+
+```tsx
+<SmoothScroll>
+  <main>{children}</main>
+</SmoothScroll>
+```
+
+再看 `SmoothScroll.tsx` 的实现:
+
+```tsx
+const lenisInstance = new Lenis({
+  autoRaf: false,
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  touchMultiplier: 2,
+  infinite: false,
+  anchors: true,
+  syncTouch: false,
+})
+```
+
+确实,Lenis 默认会接管整个 window 的滚动事件来实现平滑效果,包括 `wheel` 和 `touch` 事件。这就导致局部滚动容器无法接收到滚动事件。
+
+### 第四步:查阅 Lenis 文档
+
+去 Lenis 的 GitHub 仓库翻文档,找到了关于嵌套滚动的说明:
+
+> ### Nested scroll
+>
+> #### Using HTML
+>
+> ```html
+> <div data-lenis-prevent>scrollable content</div>
+> ```
+>
+> #### Using Javascript
+>
+> ```javascript
+> const lenis = new Lenis({
+>   prevent: (node) => node.id === 'modal',
+> })
+> ```
+
+原来 Lenis 官方已经考虑到了这个问题,提供了两种方案排除特定容器的平滑滚动。
+
+## 解决方案
+
+### 方案一:使用 HTML 属性(推荐)
+
+在需要局部滚动的容器上添加 `data-lenis-prevent` 属性:
+
+```tsx
+<nav data-lenis-prevent className="max-h-[calc(100vh-12rem)] space-y-2 overflow-y-auto">
+  {/* 标签列表 */}
+</nav>
+```
+
+这个方案最简单,不需要修改 Lenis 的配置,只需要在 HTML 上加个属性就行。
+
+### 方案二:使用 JavaScript 配置
+
+如果有很多地方需要局部滚动,可以在初始化 Lenis 时统一配置:
+
+```tsx
+const lenisInstance = new Lenis({
+  // ...其他配置
+  prevent: (node) => {
+    // 排除具有特定类名或 ID 的元素
+    return node.classList.contains('local-scroll') || node.id === 'modal'
+  },
+})
+```
+
+然后在需要局部滚动的地方添加对应的类名:
+
+```tsx
+<nav className="local-scroll max-h-[calc(100vh-12rem)] space-y-2 overflow-y-auto">
+  {/* 标签列表 */}
+</nav>
+```
+
+### 最终实现
+
+我选择了方案一,因为项目里只有少数几个地方需要局部滚动,直接加 `data-lenis-prevent`
+
+```tsx
+<nav
+  data-lenis-prevent
+  className="scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500 max-h-[calc(100vh-12rem)] space-y-2 overflow-y-auto pr-2"
+>
+  {/* 标签列表 */}
+</nav>
+```
+
+## 其他注意事项
+
+### 1. 高度计算
+
+`max-h-[calc(100vh-12rem)]` 这个计算需要根据实际情况调整。我是这样算的:
+
+- `100vh`: 视口高度
+- `-12rem`: 减去顶部 padding、标题、以及其他固定的空间
+
+如果算得不准,要么内容被截断,要么还是会出现全局滚动。
+
+### 2. 性能考虑
+
+局部滚动使用原生滚动,不走 Lenis 的平滑动画,但这样性能反而更好。平滑滚动主要用于页面级的滚动体验,局部滚动原生就足够流畅。
+
+### 3. 移动端兼容
+
+Lenis 默认 `syncTouch: false`,在移动端不会同步触摸事件。如果你的局部滚动容器在移动端也要支持滑动,需要确保:
+
+```tsx
+const lenisInstance = new Lenis({
+  // ...
+  syncTouch: false, // 保持 false
+  touchMultiplier: 2,
+})
+```
+
+局部滚动容器用原生滚动就能正常响应触摸事件。
+
+### 4. 避免嵌套 Lenis
+
+如果局部滚动区域也需要平滑滚动效果,不要嵌套 Lenis 实例,这会导致性能问题和冲突。Lenis 官方也不推荐这种做法。
+
+## 参考资料
+
+- [Lenis GitHub Repository](https://github.com/darkroomengineering/lenis)
+- [Lenis 官方文档 - Nested Scroll](https://github.com/darkroomengineering/lenis#nested-scroll)

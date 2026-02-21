@@ -240,7 +240,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   id="comment"
                 >
                   <div className="glass-panel rounded-xl p-8 md:p-12">
-                    <Comments slug={slug} />
+                    <Comments slug={slug || ''} />
                   </div>
                 </motion.div>
               )}

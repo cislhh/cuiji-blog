@@ -138,7 +138,11 @@ export default function ListLayoutWithTags({
                   <Folder className="w-5 h-5 text-primary-500" />
                   <h3 className="font-bold text-gray-900 dark:text-gray-100">文章分类</h3>
                 </div>
-                <nav className="space-y-2">
+                {/* data-lenis-prevent 排除 Lenis 平滑滚动,启用局部原生滚动 */}
+                <nav
+                  data-lenis-prevent
+                  className="space-y-2 max-h-[calc(100vh-12rem)] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500"
+                >
                   {pathname.startsWith('/blog') ? (
                     <div className="px-3 py-2 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400 font-medium">
                       全部文章
