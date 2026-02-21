@@ -69,9 +69,9 @@ module.exports = () => {
     reactStrictMode: true,
     trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-    eslint: {
-      dirs: ['app', 'components', 'layouts', 'scripts'],
-    },
+    // Empty turbopack config to indicate we're aware of webpack config
+    // and want to continue using webpack for SVG processing
+    turbopack: {},
     images: {
       remotePatterns: [
         {
@@ -89,7 +89,7 @@ module.exports = () => {
         },
       ]
     },
-    webpack: (config, options) => {
+    webpack: (config) => {
       config.module.rules.push({
         test: /\.svg$/,
         use: ['@svgr/webpack'],
