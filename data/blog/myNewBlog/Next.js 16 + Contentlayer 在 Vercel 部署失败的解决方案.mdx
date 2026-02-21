@@ -1,0 +1,198 @@
+---
+title: 'Next.js 16 + Contentlayer 在 Vercel 部署失败的解决方案'
+date: '2026-01-21'
+tags: ['nextjs', 'vercel', 'contentlayer', 'deployment', 'troubleshooting']
+draft: false
+summary: '记录本地构建成功但 Vercel 部署失败的排查过程，以及 Next.js 16 Turbopack 与 contentlayer2 的兼容性问题解决方案。'
+---
+
+## 问题背景
+
+最近将博客项目升级到 Next.js 16 后遇到了一个典型的问题：**本地构建完全正常，但在 Vercel 上部署时却失败了**。
+
+错误信息如下：
+
+```
+Error: Turbopack build failed with 8 errors:
+Module not found: Can't resolve 'contentlayer/generated'
+```
+
+这个问题发生在多个页面中：
+
+- `./app/about/page.tsx`
+- `./app/blog/[...slug]/page.tsx`
+- `./app/blog/page.tsx`
+- `./app/sitemap.ts`
+- 等等...
+
+## 问题分析
+
+### 通过分析 Vercel 部署日志，发现关键问题指向Turbopack 是默认构建工具
+
+```
+▲ Next.js 16.1.6 (Turbopack)
+Creating an optimized production build ...
+```
+
+Next.js 16 默认使用 **Turbopack** 作为构建工具，而不是传统的 webpack。
+
+#### Contentlayer 生成流程
+
+项目使用 `contentlayer2` 来处理 MDX 文件，它会：
+
+1. 读取 `data/blog/` 目录下的所有 MDX 文件
+2. 解析 frontmatter 和内容
+3. 生成 TypeScript 类型定义
+4. 输出到 `.contentlayer/generated` 目录
+
+这个目录被 `.gitignore` 忽略，需要在每次构建时重新生成。
+
+#### 兼容性问题
+
+**核心问题：Turbopack 与 contentlayer2 不兼容**
+
+Turbopack 在生产构建时无法正确处理 contentlayer 动态生成的模块。具体表现为：
+
+- 无法解析 `contentlayer/generated` 模块
+- 即使有 `withContentlayer` 包装器也无济于事
+- Turbopack 不支持 webpack 的某些特性
+
+## 解决方案：强制使用 webpack
+
+修改 `package.json` 的 build 脚本：
+
+添加 `--webpack` 标志强制 Next.js 使用 webpack 而不是 Turbopack。
+
+### 方案 2：配置 Next.js
+
+修改 `next.config.js`，添加 `transpilePackages` 配置：
+
+```javascript
+module.exports = () => {
+  const plugins = [withContentlayer, withBundleAnalyzer]
+  return plugins.reduce((acc, next) => next(acc), {
+    // ... 其他配置
+    transpilePackages: ['contentlayer2', 'next-contentlayer2'],
+    // 注释掉 turbopack 配置
+    // turbopack: {},
+  })
+}
+```
+
+### 方案 3：配置 Vercel 部署
+
+创建 `vercel.json` 文件：
+
+```json
+{
+  "buildCommand": "yarn build",
+  "installCommand": "corepack enable && yarn install --frozen-lockfile",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_DISABLE_TURBOPACK_IN_PRODUCTION": "1"
+  }
+}
+```
+
+**关键点：**
+
+1. **使用 Corepack** - 项目使用 Yarn 3.6.1（Yarn Berry），需要通过 `corepack enable` 启用
+2. **锁定 Node 版本** - 创建 `.nvmrc` 文件指定 Node 版本（推荐 20）
+
+```bash
+# .nvmrc
+20
+```
+
+## 验证结果
+
+### 本地构建测试
+
+```bash
+$ yarn build
+
+▲ Next.js 16.1.6 (webpack)
+Creating an optimized production build ...
+Generated 25 documents in .contentlayer
+✓ Compiled successfully in 11.2s
+✓ Generating static pages (135/135) in 1090.1ms
+RSS feed generated...
+```
+
+✅ 成功！
+
+## 技术细节
+
+### 为什么 Turbopack 会导致问题？
+
+Turbopack 是 Next.js 团队开发的新一代构建工具，用 Rust 编写，性能更优。但它目前还有一些限制：
+
+1. **不完全支持所有 webpack 特性** - 特别是自定义的 webpack loaders 和 plugins
+2. **模块解析机制不同** - 对于动态生成的模块支持有限
+3. **生态还在发展中** - 许多第三方包还未完全适配
+
+### 为什么 webpack 可以工作？
+
+webpack 是成熟的构建工具，对以下场景有良好支持：
+
+- ✅ 自定义 loaders（如 `@svgr/webpack`）
+- ✅ 动态代码生成
+- ✅ 复杂的模块解析
+- ✅ Contentlayer 的插件系统
+
+### Next.js 16 的变化
+
+Next.js 16 开始默认启用 Turbopack，但提供了回退选项：
+
+```bash
+# 显式使用 Turbopack
+next build --turbopack
+
+# 显式使用 webpack
+next build --webpack
+```
+
+如果项目依赖于 webpack 特性，需要明确指定使用 webpack。
+
+## 经验总结
+
+### 1. 开发环境 vs 生产环境
+
+这个问题在开发环境中没有出现，原因是：
+
+- 开发模式使用 `next dev`，可能有不同的模块加载机制
+- 生产构建 `next build` 更严格，需要完整的模块依赖树
+- CI/CD 环境与本地环境可能有细微差异
+
+### 2. 升级建议
+
+在升级 Next.js 主版本时，特别是升级到 Next.js 15/16：
+
+1. **阅读发布日志** - 了解 breaking changes
+2. **检查依赖兼容性** - 特别是 contentlayer 这样的关键依赖
+3. **本地测试完整构建** - 不仅仅是 `next dev`
+4. **准备部署配置** - 提前配置 Vercel 或其他平台
+
+### 3. 调试技巧
+
+遇到类似问题时：
+
+```bash
+# 1. 查看详细的构建日志
+yarn build --debug
+
+# 2. 清除缓存重新构建
+rm -rf .next
+yarn build
+
+# 3. 对比本地和 CI 环境
+echo $NODE_VERSION
+node --version
+```
+
+## 相关资源
+
+- [Next.js Documentation - Turbopack](https://nextjs.org/docs/app/api-reference/next-config-js/turbopack)
+- [Contentlayer2 GitHub](https://github.com/contentlayer2/contentlayer2)
+- [Vercel Deployment Guide](https://vercel.com/docs/deployments/overview)
+- [Turbopack build feedback discussion](https://github.com/vercel/next.js/discussions/77721)
