@@ -1,0 +1,6 @@
+{
+  "buildCommand": "yarn build",
+  "installCommand": "corepack enable && yarn install --frozen-lockfile",
+  "framework": "nextjs",
+  "nodeVersion": "20"
+}
