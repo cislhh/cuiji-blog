@@ -69,9 +69,10 @@ module.exports = () => {
     reactStrictMode: true,
     trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-    // Empty turbopack config to indicate we're aware of webpack config
-    // and want to continue using webpack for SVG processing
-    turbopack: {},
+    // Transpile contentlayer packages to ensure proper module resolution
+    transpilePackages: ['contentlayer2', 'next-contentlayer2'],
+    // Disable turbopack for production builds to ensure contentlayer works correctly
+    // turbopack: {},  // Commented out - causes issues with contentlayer2
     images: {
       remotePatterns: [
         {

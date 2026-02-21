@@ -1,5 +1,8 @@
 {
   "buildCommand": "yarn build",
   "installCommand": "corepack enable && yarn install --frozen-lockfile",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "env": {
+    "NEXT_DISABLE_TURBOPACK_IN_PRODUCTION": "1"
+  }
 }
