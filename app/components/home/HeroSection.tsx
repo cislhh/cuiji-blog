@@ -3,17 +3,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'motion/react'
-import { Github, Twitter } from 'lucide-react'
 import EmailDropdown from '@/components/EmailDropdown'
-import WechatQRCode from '@/components/WechatQRCode'
+import QRCodePopup from '@/components/QRCodePopup'
 import { contactConfig } from '@/data/contactConfig'
-import { Qq, Xiaohongshu } from '@/components/social-icons/icons'
+import { Qq, Wechat, Xiaohongshu, Github, Twitter } from '@/components/social-icons/icons'
 
 // Icon component map (for standard links without special behavior)
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   github: Github,
   x: Twitter,
   qq: Qq,
+  wechat: Wechat,
   xiaohongshu: Xiaohongshu,
 }
 
@@ -39,10 +39,31 @@ export default function HeroSection() {
     })
 
   // Render a social link based on its kind
-  const renderSocialLink = (social: typeof heroSocialLinks[0]) => {
+  const renderSocialLink = (social: (typeof heroSocialLinks)[0]) => {
+    // Special handling for QQ (QR code popup)
+    if (social.kind === 'qq') {
+      return (
+        <QRCodePopup
+          key={social.kind}
+          icon={Qq}
+          qrCodeUrl="/images/qq-qr.png"
+          alt="QQ二维码"
+          size={5}
+        />
+      )
+    }
+
     // Special handling for WeChat (QR code popup)
     if (social.kind === 'wechat') {
-      return <WechatQRCode key={social.kind} size={5} />
+      return (
+        <QRCodePopup
+          key={social.kind}
+          icon={Wechat}
+          qrCodeUrl="/images/wechat-qr.png"
+          alt="微信二维码"
+          size={5}
+        />
+      )
     }
 
     // Special handling for Email (dropdown)
@@ -97,7 +118,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-8 flex gap-6 md:mb-12 items-center"
+          className="mb-8 flex items-center gap-6 md:mb-12"
         >
           {/* Social links from config - renders in configured order */}
           {heroSocialLinks.map(renderSocialLink)}

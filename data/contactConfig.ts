@@ -26,7 +26,7 @@ const allSocialLinks: ContactConfig['socialLinks'] = [
   },
   {
     kind: 'github',
-    href: 'https://github.com', // Replace with your GitHub profile
+    href: 'https://github.com/cislhh', // Replace with your GitHub profile
     label: 'GitHub',
     name: 'GitHub',
   },
