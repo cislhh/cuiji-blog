@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "next dev",
-    "dev": "cross-env INIT_CWD=$PWD next dev",
+    "dev": "cross-env INIT_CWD=$PWD next dev --webpack",
     "build": "cross-env INIT_CWD=$PWD next build --webpack && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
@@ -31,7 +31,6 @@
     "motion": "^12.29.2",
     "next": "16.1.6",
     "next-contentlayer2": "0.5.5",
-    "next-themes": "^0.4.6",
     "pliny": "0.4.1",
     "postcss": "^8.4.24",
     "react": "19.0.0",

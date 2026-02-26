@@ -172,7 +172,7 @@ export function HorizontalScroll({
       {/* Sticky 容器 - 固定在视口顶部，内容垂直居中 */}
       <div
         ref={stickyWrapperRef}
-        className="sticky top-0 z-10 flex h-screen w-full items-center justify-center bg-white dark:bg-gray-950"
+        className="sticky top-0 z-10 flex h-screen w-full items-center justify-center bg-gray-950"
       >
         {/* 水平滚动的内容容器 - 限制宽度并隐藏溢出 */}
         <div
@@ -190,13 +190,13 @@ export function HorizontalScroll({
             {cards.map((card) => (
               <div
                 key={card.id}
-                className="group hover:shadow-3xl flex-shrink-0 overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl transition-all duration-300 hover:scale-105 dark:border-gray-700 dark:bg-gray-900"
+                className="group hover:shadow-3xl flex-shrink-0 overflow-hidden rounded-3xl border border-gray-700 bg-gray-900 shadow-2xl transition-all duration-300 hover:scale-105"
                 style={{ width: cardSize }}
               >
                 {/* Card Image/Visual Area */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-800 to-gray-700">
                   {/* Category Badge */}
-                  <div className="absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-gray-900 backdrop-blur-sm dark:bg-gray-900/90 dark:text-white">
+                  <div className="absolute top-4 left-4 rounded-full bg-gray-900/90 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                     {card.category}
                   </div>
 
@@ -218,10 +218,10 @@ export function HorizontalScroll({
 
                 {/* Card Info */}
                 <div className="p-6">
-                  <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className="mb-2 text-xl font-bold text-white">
                     {card.title}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{card.description}</p>
+                  <p className="text-sm text-gray-400">{card.description}</p>
                 </div>
               </div>
             ))}
@@ -229,7 +229,7 @@ export function HorizontalScroll({
         </div>
 
         {/* Scroll Progress Indicator */}
-        <div className="fixed bottom-8 left-1/2 z-20 -translate-x-1/2 rounded-full bg-white/90 px-6 py-3 text-sm font-medium text-gray-900 shadow-lg backdrop-blur-sm dark:bg-gray-900/90 dark:text-white">
+        <div className="fixed bottom-8 left-1/2 z-20 -translate-x-1/2 rounded-full bg-gray-900/90 px-6 py-3 text-sm font-medium text-white shadow-lg backdrop-blur-sm">
           <div className="flex items-center gap-2">
             <span>Scroll</span>
             <span className="text-gray-400">→</span>

@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 
 export default function ContactSection() {
   return (
-    <section className="flex h-screen flex-col items-center justify-center bg-black px-8 dark:bg-black">
+    <section className="flex h-screen flex-col items-center justify-center bg-black px-8">
       {/* 主标题 */}
       <motion.h1
         initial={{ opacity: 0, y: 30 }}

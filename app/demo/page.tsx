@@ -47,9 +47,9 @@ export default function DemoPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-950">
       {/* 滚动进度条 */}
-      <div className="fixed top-0 right-0 left-0 z-50 h-1 bg-gray-200 dark:bg-gray-800">
+      <div className="fixed top-0 right-0 left-0 z-50 h-1 bg-gray-800">
         <div
           className="h-full bg-gradient-to-r from-amber-400 to-amber-600 transition-all duration-75"
           style={{ width: `${progress * 100}%` }}
@@ -89,7 +89,7 @@ export default function DemoPage() {
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div
                 key={i}
-                className="flex aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 text-4xl font-bold dark:from-amber-900 dark:to-amber-800"
+                className="flex aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-amber-900 to-amber-800 text-4xl font-bold"
               >
                 {i}
               </div>
@@ -106,7 +106,7 @@ export default function DemoPage() {
             {
               speed: 0,
               children: (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900">
+                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-900 to-purple-900">
                   <h3 className="text-5xl font-bold text-white opacity-20">背景层</h3>
                 </div>
               ),
@@ -117,7 +117,7 @@ export default function DemoPage() {
                 <div className="flex h-full w-full items-center justify-center">
                   <div className="text-center">
                     <h2 className="mb-4 text-6xl font-bold">视差滚动</h2>
-                    <p className="text-xl text-gray-600 dark:text-gray-400">不同层以不同速度移动</p>
+                    <p className="text-xl text-gray-400">不同层以不同速度移动</p>
                   </div>
                 </div>
               ),
@@ -134,7 +134,7 @@ export default function DemoPage() {
           <div className="grid grid-cols-2 gap-8">
             <ScrollTrigger
               animation="fade-up"
-              className="rounded-2xl bg-gray-100 p-8 dark:bg-gray-800"
+              className="rounded-2xl bg-gray-800 p-8"
             >
               <h3 className="mb-2 text-2xl font-bold">Fade Up</h3>
               <p className="text-gray-400">从下方淡入</p>
@@ -142,7 +142,7 @@ export default function DemoPage() {
 
             <ScrollTrigger
               animation="fade-down"
-              className="rounded-2xl bg-gray-100 p-8 dark:bg-gray-800"
+              className="rounded-2xl bg-gray-800 p-8"
             >
               <h3 className="mb-2 text-2xl font-bold">Fade Down</h3>
               <p className="text-gray-400">从上方淡入</p>
@@ -150,7 +150,7 @@ export default function DemoPage() {
 
             <ScrollTrigger
               animation="zoom-in"
-              className="rounded-2xl bg-gray-100 p-8 dark:bg-gray-800"
+              className="rounded-2xl bg-gray-800 p-8"
             >
               <h3 className="mb-2 text-2xl font-bold">Zoom In</h3>
               <p className="text-gray-400">从小到大缩放</p>
@@ -158,7 +158,7 @@ export default function DemoPage() {
 
             <ScrollTrigger
               animation="rotate"
-              className="rounded-2xl bg-gray-100 p-8 dark:bg-gray-800"
+              className="rounded-2xl bg-gray-800 p-8"
             >
               <h3 className="mb-2 text-2xl font-bold">Rotate</h3>
               <p className="text-gray-400">旋转进入</p>

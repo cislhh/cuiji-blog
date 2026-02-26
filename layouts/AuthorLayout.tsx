@@ -16,7 +16,7 @@ export default function AuthorLayout({ children, content }: Props) {
   const { name, avatar, occupation, company, email, twitter, bluesky, linkedin, github } = content
 
   return (
-    <div className="dark:from-dark-bg-start dark:to-dark-bg-end min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="from-dark-bg-start to-dark-bg-end min-h-screen bg-gradient-to-br">
       {/* 页面标题 */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -30,7 +30,7 @@ export default function AuthorLayout({ children, content }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-4 text-5xl font-bold text-gray-900 md:text-6xl dark:text-gray-100"
+              className="mb-4 text-5xl font-bold text-gray-100 md:text-6xl"
             >
               关于我
             </motion.h1>
@@ -38,7 +38,7 @@ export default function AuthorLayout({ children, content }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg text-gray-600 dark:text-gray-400"
+              className="text-lg text-gray-400"
             >
               了解更多关于我的背景和经历
             </motion.p>
@@ -79,14 +79,14 @@ export default function AuthorLayout({ children, content }: Props) {
                     />
                   </motion.div>
                 )}
-                <h3 className="pt-6 pb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <h3 className="pt-6 pb-2 text-2xl font-bold text-gray-100">
                   {name}
                 </h3>
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-gray-400">
                   <MapPin className="h-4 w-4" />
                   {occupation}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400">{company}</div>
+                <div className="text-gray-400">{company}</div>
 
                 {/* 社交链接 */}
                 <div className="flex space-x-4 pt-6">
@@ -101,12 +101,12 @@ export default function AuthorLayout({ children, content }: Props) {
 
             {/* 快速信息卡片 */}
             <div className="glass-panel w-full max-w-sm rounded-xl p-6">
-              <h4 className="mb-4 font-bold text-gray-900 dark:text-gray-100">联系方式</h4>
+              <h4 className="mb-4 font-bold text-gray-100">联系方式</h4>
               <div className="space-y-3 text-sm">
                 {email && (
                   <a
                     href={`mailto:${email}`}
-                    className="hover:text-primary-600 dark:hover:text-primary-400 flex cursor-pointer items-center gap-3 text-gray-600 transition-colors duration-200 dark:text-gray-400"
+                    className="hover:text-primary-400 flex cursor-pointer items-center gap-3 text-gray-400 transition-colors duration-200"
                   >
                     <Mail className="h-4 w-4" />
                     <span>{email}</span>
@@ -124,7 +124,7 @@ export default function AuthorLayout({ children, content }: Props) {
             className="xl:col-span-2"
           >
             <div className="glass-panel rounded-xl p-8 xl:p-12">
-              <div className="prose prose-lg dark:prose-invert max-w-none">{children}</div>
+              <div className="prose prose-lg prose-invert max-w-none">{children}</div>
             </div>
           </motion.div>
         </motion.div>

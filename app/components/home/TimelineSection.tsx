@@ -5,19 +5,19 @@ import { projects } from '@/data/projects'
 
 export default function TimelineSection() {
   return (
-    <section className="relative min-h-screen bg-white py-20 dark:bg-gray-900">
+    <section className="relative min-h-screen bg-gray-900 py-20">
       <div className="mx-auto max-w-7xl px-8">
-        <h2 className="mb-20 text-center text-4xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="mb-20 text-center text-4xl font-bold text-gray-100">
           项目时间轴
         </h2>
 
         {/* 时间轴容器 */}
         <div className="relative">
           {/* 中心垂直线 */}
-          <div className="absolute left-1/2 hidden h-full w-0.5 -translate-x-1/2 transform bg-gray-300 md:block dark:bg-gray-700" />
+          <div className="absolute left-1/2 hidden h-full w-0.5 -translate-x-1/2 transform bg-gray-700 md:block" />
 
           {/* 移动端左侧线条 */}
-          <div className="absolute left-8 h-full w-0.5 bg-gray-300 md:hidden dark:bg-gray-700" />
+          <div className="absolute left-8 h-full w-0.5 bg-gray-700 md:hidden" />
 
           {/* 项目列表 */}
           <div className="space-y-16">
@@ -36,12 +36,12 @@ export default function TimelineSection() {
                   }`}
                 >
                   {/* 时间标签 */}
-                  <div className="absolute left-1/2 z-10 hidden -translate-x-1/2 transform rounded-full bg-gray-900 px-4 py-2 text-sm font-bold text-white md:block dark:bg-gray-100 dark:text-gray-900">
+                  <div className="absolute left-1/2 z-10 hidden -translate-x-1/2 transform rounded-full bg-gray-100 px-4 py-2 text-sm font-bold text-gray-900 md:block">
                     {project.date}
                   </div>
 
                   {/* 移动端时间标签 */}
-                  <div className="absolute left-8 z-10 -translate-x-1/2 transform rounded-full bg-gray-900 px-3 py-1 text-xs font-bold text-white md:hidden dark:bg-gray-100 dark:text-gray-900">
+                  <div className="absolute left-8 z-10 -translate-x-1/2 transform rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-900 md:hidden">
                     {project.date}
                   </div>
 
@@ -54,7 +54,7 @@ export default function TimelineSection() {
                       className="group relative overflow-hidden rounded-lg shadow-lg"
                     >
                       {/* 项目图片占位 */}
-                      <div className="relative aspect-video bg-gray-200 dark:bg-gray-700">
+                      <div className="relative aspect-video bg-gray-700">
                         {/* 图片后续填充 */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 

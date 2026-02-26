@@ -8,7 +8,6 @@ import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
-import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import SmoothScroll from '@/components/SmoothScroll'
 import ParticleTrail from '@/components/ParticleTrail'
@@ -66,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang={siteMetadata.language}
       className={`${jetbrainsMono.variable} scroll-smooth`}
-      suppressHydrationWarning
     >
       <link
         rel="apple-touch-icon"
@@ -92,22 +90,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         color="#5bbad5"
       />
       <meta name="msapplication-TileColor" content="#000000" />
-      <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
-      <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
+      <meta name="theme-color" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
-      <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-gray-100">
+      <body className="bg-gray-950 pl-[calc(100vw-100%)] text-gray-100 antialiased">
         <ParticleTrail />
-        <ThemeProviders>
-          <SmoothScroll>
-            <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-            <div className="w-full">
-              <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-                <main className="mb-auto w-full">{children}</main>
-              </SearchProvider>
-              <Footer />
-            </div>
-          </SmoothScroll>
-        </ThemeProviders>
+        <SmoothScroll>
+          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+          <div className="w-full">
+            <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+              <main className="mb-auto w-full">{children}</main>
+            </SearchProvider>
+            <Footer />
+          </div>
+        </SmoothScroll>
       </body>
     </html>
   )

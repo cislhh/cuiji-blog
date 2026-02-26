@@ -16,7 +16,7 @@ interface ProjectsClientProps {
 
 export default function ProjectsClient({ projectsData }: ProjectsClientProps) {
   return (
-    <div className="dark:from-dark-bg-start dark:to-dark-bg-end min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-dark-bg-start to-dark-bg-end">
       {/* 页面标题 */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -30,7 +30,7 @@ export default function ProjectsClient({ projectsData }: ProjectsClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="mb-4 text-5xl font-bold text-gray-900 md:text-6xl dark:text-gray-100"
+              className="mb-4 text-5xl font-bold text-gray-100 md:text-6xl"
             >
               项目作品
             </motion.h1>
@@ -38,7 +38,7 @@ export default function ProjectsClient({ projectsData }: ProjectsClientProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg text-gray-600 dark:text-gray-400"
+              className="text-lg text-gray-400"
             >
               我参与开发的一些项目展示
             </motion.p>

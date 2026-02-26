@@ -42,7 +42,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8 text-left text-5xl font-bold text-gray-900 md:text-6xl lg:text-7xl dark:text-gray-100"
+          className="mb-8 text-left text-5xl font-bold text-gray-100 md:text-6xl lg:text-7xl"
         >
           CuiJi
         </motion.h1>
@@ -52,7 +52,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-10 max-w-2xl text-left text-base leading-relaxed text-gray-600 md:mb-12 md:text-lg dark:text-gray-400"
+          className="mb-10 max-w-2xl text-left text-base leading-relaxed text-gray-400 md:mb-12 md:text-lg"
         >
           欢迎来到我的个人作品集 —— 或者说，我在网络上的游乐场。
           我是一名软件工程师，永远专注于学习这门手艺。我喜欢为网络构建事物，
@@ -71,7 +71,7 @@ export default function HeroSection() {
               key={social.name}
               href={social.href}
               aria-label={social.label}
-              className="text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+              className="text-gray-400 transition-colors hover:text-gray-100"
             >
               <social.icon />
             </a>
@@ -89,7 +89,7 @@ export default function HeroSection() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-base transition-colors hover:text-blue-600 md:text-lg dark:hover:text-blue-400"
+              className="text-base transition-colors hover:text-blue-400 md:text-lg"
             >
               {link.title}
             </Link>
