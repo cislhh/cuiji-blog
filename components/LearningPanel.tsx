@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { heroConfig } from '@/data/heroConfig'
 
 /**
  * LearningPanel Component
@@ -8,18 +9,11 @@ import { motion } from 'motion/react'
  * Displays technologies currently being learned/used.
  * Grid layout with hover effects on each tech item.
  *
- * Data source: Can be extended to read from a config file.
+ * Data source: heroConfig.techStack in data/heroConfig.ts
  */
-const techStack = [
-  { name: 'React', icon: '', color: 'hover:text-cyan-400' },
-  { name: 'Next.js', icon: '', color: 'hover:text-white' },
-  { name: 'TypeScript', icon: '', color: 'hover:text-blue-400' },
-  { name: 'Tailwind', icon: '', color: 'hover:text-teal-400' },
-  { name: 'Node.js', icon: '', color: 'hover:text-green-400' },
-  { name: 'Vue', icon: '', color: 'hover:text-green-500' },
-]
-
 export default function LearningPanel() {
+  const techStack = heroConfig.techStack
+
   return (
     <motion.div
       className="glass-panel mb-6 rounded-2xl p-6"

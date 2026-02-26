@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { heroConfig } from '@/data/heroConfig'
 
 /**
  * PersonalTagline Component
@@ -20,9 +21,9 @@ export default function PersonalTagline() {
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       <h1 className="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text text-5xl font-bold text-transparent md:text-7xl">
-        Building the Future
+        {heroConfig.tagline.title}
       </h1>
-      <p className="mt-4 text-xl text-gray-400 md:text-2xl">One line of code at a time</p>
+      <p className="mt-4 text-xl text-gray-400 md:text-2xl">{heroConfig.tagline.subtitle}</p>
     </motion.div>
   )
 }

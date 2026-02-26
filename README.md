@@ -215,7 +215,100 @@ Edit the layout in `app` or content in `data`. With live reloading, the pages au
 
 ## Extend / Customize
 
-`data/siteMetadata.js` - contains most of the site related information which should be modified for a user's need.
+### Configuration Files
+
+**Site Metadata** - `data/siteMetadata.js` contains most of the site related information which should be modified for a user's need.
+
+**Content Configuration** - The following configuration files allow you to customize content without modifying component code:
+
+- `data/contactConfig.ts` - **Unified contact and social links configuration**
+  - Personal info (name, description) displayed in Hero section
+  - Email addresses (supports multiple emails with dropdown selection)
+  - All social media links data (GitHub, Twitter/X, WeChat, Xiaohongshu, etc.)
+  - **Display settings for each section**:
+    - `display.hero.socialLinks` - Control which links appear in Hero section and their order
+    - `display.footer.socialLinks` - Control which links appear in Footer and their order
+    - `display.footer.showSocialLinks` - Master toggle for footer social links
+  - Footer settings (copyright, theme link)
+
+- `data/heroConfig.ts` - Manage homepage hero section content
+  - Modify tagline (title and subtitle)
+  - Update technology stack list
+  - Configure statistics (blog posts, projects, years of experience)
+  - Customize CTA button text and links
+  - Edit about page titles and contact section text
+
+**Example: Configuring Social Links**
+
+Edit `data/contactConfig.ts`:
+
+```typescript
+// 1. Add your social media links in the allSocialLinks array
+const allSocialLinks = [
+  {
+    kind: 'github',
+    href: 'https://github.com/yourusername',
+    label: 'GitHub',
+    name: 'GitHub',
+  },
+  {
+    kind: 'x',
+    href: 'https://twitter.com/yourusername',
+    label: 'X (Twitter)',
+    name: 'Twitter',
+  },
+  // Add more social links here...
+]
+
+// 2. Configure which links to show in Hero section
+display: {
+  hero: {
+    socialLinks: [
+      { kind: 'github', show: true },
+      { kind: 'x', show: true },
+      // Add more links or reorder to change display
+    ],
+  },
+
+  // 3. Configure which links to show in Footer
+  footer: {
+    showSocialLinks: true,
+    socialLinks: [
+      { kind: 'github', show: true },
+      { kind: 'x', show: true },
+      { kind: 'linkedin', show: false }, // Set to false to hide
+    ],
+  },
+}
+```
+
+**Example: Changing Personal Info**
+
+Edit `data/contactConfig.ts`:
+
+```typescript
+export const contactConfig = {
+  name: 'Your Name', // Displayed in Hero section
+  description: 'Your description here...', // Displayed in Hero section
+
+  emails: [
+    { label: 'QQ邮箱', address: 'your@qq.com' },
+    { label: 'Gmail', address: 'your@gmail.com' },
+  ],
+}
+```
+
+**Example: Changing Hero Statistics**
+
+Edit `data/heroConfig.ts`:
+
+```typescript
+statistics: {
+  posts: 25,        // Update with your actual post count
+  projects: 12,     // Update with your project count
+  yearsOfExperience: 3,
+}
+```
 
 `data/authors/default.md` - default author information (required). Additional authors can be added as files in `data/authors`.
 

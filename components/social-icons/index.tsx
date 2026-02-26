@@ -13,6 +13,7 @@ import {
   Bluesky,
   Wechat,
   Xiaohongshu,
+  Qq,
 } from './icons'
 
 const components = {
@@ -30,6 +31,7 @@ const components = {
   bluesky: Bluesky,
   wechat: Wechat,
   xiaohongshu: Xiaohongshu,
+  qq: Qq,
 }
 
 type SocialIconProps = {

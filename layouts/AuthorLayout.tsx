@@ -6,6 +6,9 @@ import SocialIcon from '@/components/social-icons'
 import Image from '@/components/Image'
 import { motion } from 'motion/react'
 import { Mail, MapPin } from 'lucide-react'
+import { heroConfig } from '@/data/heroConfig'
+import EmailDropdown from '@/components/EmailDropdown'
+import { contactConfig } from '@/data/contactConfig'
 
 interface Props {
   children: ReactNode
@@ -32,7 +35,7 @@ export default function AuthorLayout({ children, content }: Props) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mb-4 text-5xl font-bold text-gray-100 md:text-6xl"
             >
-              关于我
+              {heroConfig.about.title}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -40,7 +43,7 @@ export default function AuthorLayout({ children, content }: Props) {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg text-gray-400"
             >
-              了解更多关于我的背景和经历
+              {heroConfig.about.subtitle}
             </motion.p>
           </div>
         </div>
@@ -89,8 +92,12 @@ export default function AuthorLayout({ children, content }: Props) {
                 <div className="text-gray-400">{company}</div>
 
                 {/* 社交链接 */}
-                <div className="flex space-x-4 pt-6">
-                  {email && <SocialIcon kind="mail" href={`mailto:${email}`} size={6} />}
+                <div className="flex space-x-4 pt-6 items-center">
+                  {contactConfig.emails ? (
+                    <EmailDropdown emails={contactConfig.emails} size={6} />
+                  ) : email ? (
+                    <SocialIcon kind="mail" href={`mailto:${email}`} size={6} />
+                  ) : null}
                   {github && <SocialIcon kind="github" href={github} size={6} />}
                   {linkedin && <SocialIcon kind="linkedin" href={linkedin} size={6} />}
                   {twitter && <SocialIcon kind="x" href={twitter} size={6} />}
@@ -101,9 +108,25 @@ export default function AuthorLayout({ children, content }: Props) {
 
             {/* 快速信息卡片 */}
             <div className="glass-panel w-full max-w-sm rounded-xl p-6">
-              <h4 className="mb-4 font-bold text-gray-100">联系方式</h4>
+              <h4 className="mb-4 font-bold text-gray-100">{heroConfig.about.contactSectionTitle}</h4>
               <div className="space-y-3 text-sm">
-                {email && (
+                {contactConfig.emails ? (
+                  // 显示多个邮箱选项
+                  contactConfig.emails.map((emailConfig) => (
+                    <button
+                      key={emailConfig.address}
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(emailConfig.address)
+                      }}
+                      className="hover:text-primary-400 flex w-full cursor-pointer items-center gap-3 text-gray-400 transition-colors duration-200"
+                    >
+                      <Mail className="h-4 w-4" />
+                      <span>{emailConfig.label}</span>
+                      <span className="text-xs text-gray-500">({emailConfig.address})</span>
+                    </button>
+                  ))
+                ) : email ? (
+                  // 回退到单个邮箱
                   <a
                     href={`mailto:${email}`}
                     className="hover:text-primary-400 flex cursor-pointer items-center gap-3 text-gray-400 transition-colors duration-200"
@@ -111,7 +134,7 @@ export default function AuthorLayout({ children, content }: Props) {
                     <Mail className="h-4 w-4" />
                     <span>{email}</span>
                   </a>
-                )}
+                ) : null}
               </div>
             </div>
           </motion.div>

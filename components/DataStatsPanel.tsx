@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
+import { heroConfig } from '@/data/heroConfig'
 
 /**
  * DataStatsPanel Component
@@ -12,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react'
  * - Years of experience
  *
  * Uses intersection observer to trigger animation when visible.
+ * Data source: heroConfig.statistics in data/heroConfig.ts
  */
 interface StatItem {
   label: string
@@ -23,12 +25,12 @@ export default function DataStatsPanel() {
   const [isVisible, setIsVisible] = useState(false)
   const [counts, setCounts] = useState({ posts: 0, projects: 0, experience: 0 })
 
-  // These would normally come from actual data
+  // Statistics from config
   const stats: StatItem[] = useMemo(
     () => [
-      { label: 'Blog Posts', value: 12 },
-      { label: 'Projects', value: 8 },
-      { label: 'Years Coding', value: 5, suffix: '+' },
+      { label: 'Blog Posts', value: heroConfig.statistics.posts },
+      { label: 'Projects', value: heroConfig.statistics.projects },
+      { label: 'Years Coding', value: heroConfig.statistics.yearsOfExperience, suffix: '+' },
     ],
     []
   )
