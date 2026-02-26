@@ -143,12 +143,70 @@ export interface CTAConfig {
   secondary: CTAButton
 }
 
-// About page configuration
-export interface AboutConfig {
+// About page configuration (legacy - for heroConfig)
+export interface AboutConfigSimple {
   title: string
   subtitle: string
   contactSectionTitle: string
 }
+
+// Timeline item for experience/education
+export interface TimelineItem {
+  year: string
+  title: string
+  organization: string
+  description: string
+}
+
+// Skill group
+export interface Skill {
+  category: string
+  items: string[]
+}
+
+// Interest/hobby item
+export interface Interest {
+  name: string
+  icon?: string
+}
+
+// Achievement
+export interface Achievement {
+  title: string
+  description: string
+  year?: string
+}
+
+// Current focus section
+export interface CurrentFocus {
+  title: string
+  description: string
+  technologies: string[]
+}
+
+// Personal information
+export interface PersonalInfo {
+  name: string
+  tagline: string
+  avatar: string
+  location: string
+  bio: string[]
+}
+
+// Full about page configuration (new structure)
+export interface AboutPageConfig {
+  personalInfo: PersonalInfo
+  skills: Skill[]
+  experience: TimelineItem[]
+  education: TimelineItem[]
+  interests: Interest[]
+  achievements: Achievement[]
+  currentFocus: CurrentFocus
+  funFacts: string[]
+}
+
+// Legacy type alias for backward compatibility
+export type AboutConfig = AboutConfigSimple
 
 // Contact section configuration
 export interface ContactSectionConfig {
@@ -163,6 +221,6 @@ export interface HeroConfig {
   techStack: TechStackItem[]
   statistics: StatisticsConfig
   cta: CTAConfig
-  about: AboutConfig
+  about: AboutConfigSimple
   contact: ContactSectionConfig
 }
