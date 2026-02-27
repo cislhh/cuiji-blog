@@ -12,11 +12,9 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import { motion } from 'motion/react'
-import { Github, MessageCircle, ArrowLeft, ArrowRight, Calendar, User } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Calendar, User } from 'lucide-react'
 
 const editUrl = (path: string) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
-const discussUrl = (path: string) =>
-  `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -144,20 +142,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-100 uppercase">
                     操作
                   </h3>
-                  <div className="space-y-3 text-sm">
-                    <Link
-                      href={discussUrl(path)}
-                      rel="nofollow"
-                      className="hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-400 transition-colors"
-                    >
-                      <MessageCircle className="h-4 w-4" />在 Twitter 讨论
-                    </Link>
-                    <Link
-                      href={editUrl(filePath)}
-                      className="hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-400 transition-colors"
-                    >
-                      <Github className="h-4 w-4" />在 GitHub 查看
-                    </Link>
+                  <div className="text-sm">
                     <Link
                       href={`/${basePath}`}
                       className="hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-400 transition-colors"
@@ -199,20 +184,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   <h3 className="mb-4 text-sm font-bold tracking-wider text-gray-100 uppercase">
                     操作
                   </h3>
-                  <div className="space-y-3 text-sm">
-                    <Link
-                      href={discussUrl(path)}
-                      rel="nofollow"
-                      className="hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-400 transition-colors"
-                    >
-                      <MessageCircle className="h-4 w-4" />在 Twitter 讨论
-                    </Link>
-                    <Link
-                      href={editUrl(filePath)}
-                      className="hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-400 transition-colors"
-                    >
-                      <Github className="h-4 w-4" />在 GitHub 查看
-                    </Link>
+                  <div className="text-sm">
                     <Link
                       href={`/${basePath}`}
                       className="hover:text-primary-400 flex cursor-pointer items-center gap-2 text-gray-400 transition-colors"
