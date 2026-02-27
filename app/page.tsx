@@ -1,15 +1,15 @@
-import SmoothScroll from '@/components/SmoothScroll'
+import ClientProviders from './components/ClientProviders'
 import { HeroSection, AboutSection, TimelineSection, ContactSection } from './components/home'
 
 export default function HomePage() {
   return (
-    <SmoothScroll>
+    <ClientProviders>
       <main>
         <HeroSection />
         <AboutSection />
         <TimelineSection />
         <ContactSection />
       </main>
-    </SmoothScroll>
+    </ClientProviders>
   )
 }

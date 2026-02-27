@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { memo } from 'react'
 import Image from '@/components/Image'
 import { projectsConfig } from '@/data/projectsConfig'
 import { Project } from '@/data/projects/types'
@@ -11,7 +12,7 @@ interface ProjectCardProps {
   index: number
 }
 
-export default function ProjectCard({ project, onClick, index }: ProjectCardProps) {
+function ProjectCard({ project, onClick, index }: ProjectCardProps) {
   const isCompany = project.ownershipType === 'company'
 
   return (
@@ -71,3 +72,19 @@ export default function ProjectCard({ project, onClick, index }: ProjectCardProp
     </motion.div>
   )
 }
+
+/**
+ * React.memo 优化
+ *
+ * 防止在父组件重新渲染时不必要地重新渲染 ProjectCard。
+ *
+ * 比较函数：
+ * - 仅当 project.id 或 index 改变时才重新渲染
+ * - project 对象的其他属性变化不会触发重新渲染
+ */
+export default memo(ProjectCard, (prevProps, nextProps) => {
+  return (
+    prevProps.project.id === nextProps.project.id &&
+    prevProps.index === nextProps.index
+  )
+})

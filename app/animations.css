@@ -1,0 +1,321 @@
+/**
+ * CSS Animations
+ *
+ * 使用 CSS 动画替代部分 Motion 动画，减少 JavaScript bundle 大小。
+ *
+ * 适用场景：
+ * - 简单的淡入淡出效果
+ * - 固定的过渡动画
+ * - 不需要动态交互的动画
+ *
+ * 不适用场景：
+ * - 需要根据滚动位置动态调整的动画
+ * - 需要复杂交互的动画
+ * - 需要根据状态变化的动画
+ */
+
+/* ========== Fade In Animations ========== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ========== Scale Animations ========== */
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* ========== Slide Animations ========== */
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ========== Pulse Animations ========== */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulseScale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ========== Shimmer/Loading Animations ========== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ========== Utility Classes ========== */
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.fade-in-down {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in-left {
+  animation: fadeInLeft 0.6s ease-out;
+}
+
+.fade-in-right {
+  animation: fadeInRight 0.6s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ========== Delay Variants ========== */
+
+.fade-in-delayed-100 {
+  animation: fadeIn 0.6s ease-out 0.1s both;
+}
+
+.fade-in-delayed-200 {
+  animation: fadeIn 0.6s ease-out 0.2s both;
+}
+
+.fade-in-delayed-300 {
+  animation: fadeIn 0.6s ease-out 0.3s both;
+}
+
+.fade-in-delayed-400 {
+  animation: fadeIn 0.6s ease-out 0.4s both;
+}
+
+.fade-in-delayed-500 {
+  animation: fadeIn 0.6s ease-out 0.5s both;
+}
+
+/* ========== Duration Variants ========== */
+
+.fade-in-fast {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.fade-in-slow {
+  animation: fadeIn 1s ease-out;
+}
+
+/* ========== Skeleton Loading ========== */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(55, 65, 81, 1) 0%,
+    rgba(75, 85, 99, 1) 50%,
+    rgba(55, 65, 81, 1) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+}
+
+/* ========== Hover Effects ========== */
+
+.hover-lift {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.hover-scale {
+  transition: transform 0.2s ease-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* ========== Glass Panel Animation ========== */
+
+@keyframes glassIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+.glass-panel-animate {
+  animation: glassIn 0.6s ease-out;
+}
+
+/* ========== Stagger Children ========== */
+
+.stagger-children > *:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.stagger-children > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger-children > *:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.stagger-children > *:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.stagger-children > *:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.stagger-children > *:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+/* ========== Preset Animation Sequences ========== */
+
+.animate-in {
+  animation-name: fadeIn;
+  animation-duration: 0.6s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.animate-in-down {
+  animation-name: fadeInDown;
+  animation-duration: 0.6s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+/* ========== Responsive Animation Delays ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

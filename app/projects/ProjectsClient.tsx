@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { projectsConfig } from '@/data/projectsConfig'
 import ProjectCard from '@/components/projects/ProjectCard'
-import ProjectModal from '@/components/projects/ProjectModal'
+import { ProjectModal } from '@/components/DynamicImports'
 import { Project } from '@/data/projects/types'
 import BackToHome from '@/components/BackToHome'
 

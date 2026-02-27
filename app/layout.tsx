@@ -2,6 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 import 'lenis/dist/lenis.css'
+import './animations.css'
 
 import { JetBrains_Mono } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
@@ -9,8 +10,6 @@ import { SearchProvider, SearchConfig } from 'pliny/search'
 import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { Metadata } from 'next'
-import SmoothScroll from '@/components/SmoothScroll'
-import ParticleTrail from '@/components/ParticleTrail'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -93,16 +92,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-gray-950 pl-[calc(100vw-100%)] text-gray-100 antialiased">
-        <ParticleTrail />
-        <SmoothScroll>
-          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-          <div className="w-full">
-            <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-              <main className="mb-auto w-full">{children}</main>
-            </SearchProvider>
-            <Footer />
-          </div>
-        </SmoothScroll>
+        <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+        <div className="w-full">
+          <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+            <main className="mb-auto w-full">{children}</main>
+          </SearchProvider>
+          <Footer />
+        </div>
       </body>
     </html>
   )
