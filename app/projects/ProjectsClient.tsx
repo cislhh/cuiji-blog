@@ -6,6 +6,7 @@ import { projectsConfig } from '@/data/projectsConfig'
 import ProjectCard from '@/components/projects/ProjectCard'
 import ProjectModal from '@/components/projects/ProjectModal'
 import { Project } from '@/data/projects/types'
+import BackToHome from '@/components/BackToHome'
 
 export default function ProjectsClient() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
@@ -31,6 +32,11 @@ export default function ProjectsClient() {
         className="relative px-4 pt-16 pb-12 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
+          {/* 返回首页按钮 */}
+          <div className="mb-8">
+            <BackToHome variant="full" />
+          </div>
+
           <div className="text-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}

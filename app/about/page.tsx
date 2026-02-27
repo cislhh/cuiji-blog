@@ -8,6 +8,7 @@ import { contactConfig } from '@/data/contactConfig'
 import { aboutConfig } from '@/data/aboutConfig'
 import { Qq, Wechat } from '@/components/social-icons/icons'
 import Image from 'next/image'
+import BackToHome from '@/components/BackToHome'
 
 export default function AboutPage() {
   return (
@@ -20,6 +21,11 @@ export default function AboutPage() {
         className="relative px-4 pt-24 pb-12 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
+          {/* 返回首页按钮 */}
+          <div className="mb-8">
+            <BackToHome variant="full" />
+          </div>
+
           <div className="text-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}

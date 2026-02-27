@@ -38,7 +38,8 @@ export const projectsConfig: ProjectsPageConfig = {
     {
       id: 'b2c-ecommerce',
       name: '某电商平台',
-      description: '现代化的前台电商购物网站，支持完整的购物流程，包括商品浏览、购物车、结账和支付集成。',
+      description:
+        '现代化的前台电商购物网站，支持完整的购物流程，包括商品浏览、购物车、结账和支付集成。',
       longDescription:
         '这是一个功能完整的B2C电商平台，支持商品浏览、购物车、结账流程、支付集成等功能。作为核心开发人员，我负责了前端架构设计和主要业务模块的实现。',
       type: 'ecommerce',
@@ -171,6 +172,59 @@ export const projectsConfig: ProjectsPageConfig = {
         {
           title: 'SEO 优化',
           description: '完善的 SEO 配置，提升搜索引擎可见性',
+        },
+      ],
+    },
+    {
+      id: 'umpaas',
+      name: 'UMPaaS',
+      description:
+        '企业级低代码开发平台，通过可视化编辑器和组件库，让非技术人员快速构建定制化应用。',
+      longDescription:
+        '针对客户定制化开发需求频繁、人力投入大的痛点问题，开发的低代码平台。平台内置可视化编辑器、丰富组件库和数据可视化能力，使非开发人员或初级开发人员能够在短时间内完成定制化需求开发，实现快速上架，大幅降低开发成本和交付周期。',
+      type: 'other',
+      ownershipType: 'company',
+      date: '2024.10',
+      coverImage: '/images/umpaas/封面图.png',
+      images: [
+        {
+          src: '/images/umpaas/低代码界面.png',
+          alt: '低代码界面',
+          caption: '可视化页面编辑器',
+        },
+        {
+          src: '/images/umpaas/环境管理.png',
+          alt: '环境管理',
+          caption: '多环境配置管理',
+        },
+        {
+          src: '/images/umpaas/接口管理.png',
+          alt: '接口管理',
+          caption: 'API 接口管理',
+        },
+        {
+          src: '/images/umpaas/流程日志.png',
+          alt: '流程日志',
+          caption: '流程执行日志追踪',
+        },
+      ],
+      tags: ['react', 'TypeScript', 'CSS3', 'ECharts', 'umijs'],
+      highlights: [
+        {
+          title: '可视化编辑',
+          description: '拖拽式页面构建器，所见即所得，无需编写代码即可完成页面搭建',
+        },
+        {
+          title: '组件化架构',
+          description: '提供丰富预置组件库，支持自定义组件扩展，满足多样化业务需求',
+        },
+        {
+          title: '数据可视化',
+          description: '深度集成 ECharts，提供多种图表组件，轻松实现数据可视化展示',
+        },
+        {
+          title: '快速交付',
+          description: '将定制化开发周期从数周缩短至数天，大幅提升项目交付效率',
         },
       ],
     },

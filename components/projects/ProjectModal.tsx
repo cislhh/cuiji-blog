@@ -81,7 +81,14 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                   <X className="h-5 w-5" />
                 </button>
 
-                <div ref={modalRef} className="p-6 md:p-8 overflow-y-auto max-h-[90vh]">
+                <div
+                  ref={modalRef}
+                  className="p-6 md:p-8 overflow-y-auto max-h-[90vh]"
+                  style={{
+                    overscrollBehavior: 'contain',
+                  }}
+                  data-lenis-prevent
+                >
                   {/* Type Badge and Date */}
                   <div className="mb-4 flex items-center gap-3">
                     <span

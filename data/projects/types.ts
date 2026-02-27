@@ -20,7 +20,7 @@ export interface Project {
   type: ProjectType
   ownershipType: OwnershipType // company 或 personal
   date: string // 格式: "2024.07"
-  coverImage: string // 卡片封面图
+  coverImage?: string // 卡片封面图
   images: ProjectScreenshot[] // 所有截图
   tags: string[]
   link?: string

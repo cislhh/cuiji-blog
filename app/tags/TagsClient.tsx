@@ -5,6 +5,7 @@ import { slug } from 'github-slugger'
 import { motion } from 'motion/react'
 import { tagsConfig, getTagColorScheme, getTagSize } from '@/data/tagsConfig'
 import { useState, useMemo } from 'react'
+import BackToHome from '@/components/BackToHome'
 
 interface TagsClientProps {
   sortedTags: string[]
@@ -35,6 +36,11 @@ export default function TagsClient({ sortedTags, tagCounts }: TagsClientProps) {
         className="relative px-4 pt-24 pb-12 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
+          {/* 返回首页按钮 */}
+          <div className="mb-8">
+            <BackToHome variant="full" />
+          </div>
+
           <div className="text-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}

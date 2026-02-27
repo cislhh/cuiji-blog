@@ -11,6 +11,7 @@ import siteMetadata from '@/data/siteMetadata'
 import tagData from 'app/tag-data.json'
 import { motion } from 'motion/react'
 import { Calendar, Clock, ArrowRight, Folder } from 'lucide-react'
+import BackToHome from '@/components/BackToHome'
 
 interface PaginationProps {
   totalPages: number
@@ -100,6 +101,11 @@ export default function ListLayoutWithTags({
         className="relative px-4 pt-16 pb-12 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
+          {/* 返回首页按钮 */}
+          <div className="mb-8">
+            <BackToHome variant="full" />
+          </div>
+
           <div className="text-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
