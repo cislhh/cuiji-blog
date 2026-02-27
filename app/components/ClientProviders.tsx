@@ -2,7 +2,6 @@
 
 import { Suspense, Component, ReactNode } from 'react'
 import SmoothScroll from '@/components/SmoothScroll'
-import ParticleTrail from '@/components/ParticleTrail'
 
 /**
  * ClientProviders Component
@@ -11,7 +10,6 @@ import ParticleTrail from '@/components/ParticleTrail'
  *
  * 职责：
  * - 管理平滑滚动（Lenis）
- * - 管理粒子特效
  * - 提供客户端交互上下文
  * - 错误边界保护
  *
@@ -77,7 +75,6 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
           </div>
         }
       >
-        <ParticleTrail />
         <SmoothScroll>{children}</SmoothScroll>
       </Suspense>
     </ClientErrorBoundary>

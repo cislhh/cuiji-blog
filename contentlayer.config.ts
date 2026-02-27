@@ -134,7 +134,9 @@ function createSearchIndex(allBlogs) {
       `public/${path.basename(siteMetadata.search.kbarConfig.searchDocumentsPath)}`,
       JSON.stringify(allCoreContent(sortPosts(allBlogs)))
     )
-    console.log('Local search index generated...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Local search index generated...')
+    }
   }
 }
 
