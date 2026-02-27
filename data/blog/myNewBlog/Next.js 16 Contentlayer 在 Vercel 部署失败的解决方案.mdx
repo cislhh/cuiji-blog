@@ -2,8 +2,10 @@
 title: 'Next.js 16 + Contentlayer 在 Vercel 部署失败的解决方案'
 date: '2026-01-21'
 tags: ['nextjs', 'vercel', 'contentlayer', 'deployment', 'troubleshooting']
+keywords: [Next.js, Vercel, contentlayer, Turbopack, 部署失败, 构建错误]
 draft: false
 summary: '记录本地构建成功但 Vercel 部署失败的排查过程，以及 Next.js 16 Turbopack 与 contentlayer2 的兼容性问题解决方案。'
+description: '解决 Next.js 16 + contentlayer2 在 Vercel 部署时的 Module not found 错误。本文详细记录了从发现问题、分析日志到最终解决方案的完整排查过程，包括禁用 Turbopack、配置 transpilePackages、调整 next.config.js 等实用技巧。'
 ---
 
 ## 问题背景

@@ -49,26 +49,42 @@ export async function generateMetadata(props: {
     }
   })
 
+  // Use description if available, otherwise fallback to summary
+  const description = post.description || post.summary
+
+  // Construct full canonical URL
+  const canonicalUrl = `${siteMetadata.siteUrl}/blog/${post.slug}`
+
+  // Use custom canonicalUrl if specified (for syndicated content)
+  const finalCanonicalUrl = post.canonicalUrl || canonicalUrl
+
   return {
     title: post.title,
-    description: post.summary,
+    description,
+    keywords: post.keywords,
     openGraph: {
       title: post.title,
-      description: post.summary,
+      description,
       siteName: siteMetadata.title,
-      locale: 'en_US',
+      locale: 'zh_CN',
       type: 'article',
       publishedTime: publishedAt,
       modifiedTime: modifiedAt,
-      url: './',
+      url: canonicalUrl,
       images: ogImages,
       authors: authors.length > 0 ? authors : [siteMetadata.author],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.summary,
+      description,
       images: imageList,
+    },
+    alternates: {
+      canonical: finalCanonicalUrl,
+      types: {
+        'application/rss+xml': `${siteMetadata.siteUrl}/feed.xml`,
+      },
     },
   }
 }
@@ -106,6 +122,32 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
     }
   })
 
+  // BreadcrumbList structured data
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteMetadata.siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: `${siteMetadata.siteUrl}/blog`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `${siteMetadata.siteUrl}/blog/${post.slug}`,
+      },
+    ],
+  }
+
   const Layout = layouts[post.layout || defaultLayout]
 
   return (
@@ -113,6 +155,10 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
         <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />

@@ -5,7 +5,7 @@ const siteMetadata = {
   headerTitle: 'CuiJi Blog',
   description: '使用 Next.js 和 Tailwind.css 构建的个人博客，记录技术学习与生活点滴',
   language: 'zh-cn',
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
+  siteUrl: 'https://www.azocuiji.com',
   siteRepo: 'https://github.com/cislhh/tailwind-nextjs-starter-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
