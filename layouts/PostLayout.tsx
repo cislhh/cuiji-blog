@@ -3,14 +3,12 @@
 import { ReactNode } from 'react'
 import { CoreContent } from 'pliny/utils/contentlayer'
 import type { Blog, Authors } from 'contentlayer/generated'
-import { Comments } from '@/components/DynamicImports'
 import Link from '@/components/Link'
 import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
 import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
-import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import { motion } from 'motion/react'
 import { ArrowLeft, ArrowRight, Calendar, User } from 'lucide-react'
 
@@ -38,7 +36,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
   return (
     <div className="from-dark-bg-start to-dark-bg-end min-h-screen bg-gradient-to-br">
       <SectionContainer>
-        <ScrollTopAndComment />
         <motion.article
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -196,20 +193,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 </div>
               </div>
 
-              {/* 评论区 */}
-              {siteMetadata.comments && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                  className="mt-8"
-                  id="comment"
-                >
-                  <div className="glass-panel rounded-xl p-8 md:p-12">
-                    <Comments slug={slug || ''} />
-                  </div>
-                </motion.div>
-              )}
             </motion.div>
           </div>
 

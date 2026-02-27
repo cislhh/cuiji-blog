@@ -1,5 +1,3 @@
-'use client'
-
 /**
  * Dynamic Imports Configuration
  *
@@ -7,13 +5,16 @@
  *
  * 策略：
  * - 模态框组件延迟加载（用户交互时才加载）
- * - 评论组件延迟加载（SSR 禁用）
  * - 数据面板延迟加载
  * - 提供骨架屏加载状态
  *
  * 注意：ImageCarousel 不需要动态导入，因为它只在 ProjectModal 内部使用，
  * 而 ProjectModal 本身已经是动态导入的。
+ *
+ * 注意：评论功能已移除，不再需要 Comments 动态导入。
  */
+
+'use client'
 
 import dynamic from 'next/dynamic'
 import { ComponentType } from 'react'
@@ -33,29 +34,6 @@ export const ProjectModal = dynamic(
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
         <div className="animate-pulse rounded-lg bg-gray-800 p-8">
           <div className="h-64 w-64 rounded bg-gray-700" />
-        </div>
-      </div>
-    ),
-  }
-) as ComponentType<any>
-
-/**
- * Comments - 评论组件
- * 延迟加载：页面加载后才加载
- * SSR：禁用（评论不需要 SEO）
- */
-export const Comments = dynamic(
-  () => import('./Comments'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="mt-8 rounded-lg border border-gray-700 bg-gray-800/50 p-6">
-        <div className="animate-pulse">
-          <div className="mb-4 h-6 w-32 rounded bg-gray-700" />
-          <div className="space-y-2">
-            <div className="h-4 rounded bg-gray-700" />
-            <div className="h-4 w-3/4 rounded bg-gray-700" />
-          </div>
         </div>
       </div>
     ),

@@ -108,29 +108,27 @@ export const contactConfig: ContactConfig = {
   // ===== Display Configuration =====
   display: {
     // Hero section - which links to show and in what order
-    // Order: QQ, WeChat, GitHub, Xiaohongshu, X, Email
+    // Order: QQ, WeChat, GitHub, Xiaohongshu, Email
     hero: {
       socialLinks: [
         { kind: 'qq', show: true },
         { kind: 'wechat', show: true },
         { kind: 'github', show: true },
         { kind: 'xiaohongshu', show: true },
-        { kind: 'x', show: true },
         { kind: 'mail', show: true },
       ],
     },
 
     // Footer - which links to show and in what order
+    // Unified with Hero section for consistency
     footer: {
       showSocialLinks: true, // Master toggle for footer social links
       socialLinks: [
+        { kind: 'qq', show: true },
+        { kind: 'wechat', show: true },
         { kind: 'github', show: true },
+        { kind: 'xiaohongshu', show: true },
         { kind: 'mail', show: true },
-        { kind: 'x', show: true },
-        { kind: 'bluesky', show: true },
-        { kind: 'linkedin', show: false }, // Set to false to hide
-        { kind: 'youtube', show: false },
-        // Add more links here to display in Footer
       ],
     },
   },
