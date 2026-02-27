@@ -225,6 +225,15 @@ export interface HeroConfig {
   contact: ContactSectionConfig
 }
 
+// Featured works section configuration
+export interface FeaturedWorksConfig {
+  title: string
+  subtitle: string
+  viewMoreText: string
+  projectIds?: string[] // Optional: specific project IDs to feature
+  maxProjects?: number // Default: 3
+}
+
 // Projects page configuration
 export interface ProjectsPageConfig {
   // Page header
@@ -246,6 +255,8 @@ export interface ProjectsPageConfig {
     visitProjectText: string
     screenshotCountText: string // Format: "X 张截图"
   }
+  // Featured works section (homepage)
+  featuredWorks?: FeaturedWorksConfig
   // Projects data
   projects: any[] // Will be typed as Project[] at runtime
 }

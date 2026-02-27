@@ -1,5 +1,5 @@
 import ClientProviders from './components/ClientProviders'
-import { HeroSection, AboutSection, TimelineSection, ContactSection } from './components/home'
+import { HeroSection, AboutSection, FeaturedWorks, ContactSection } from './components/home'
 
 export default function HomePage() {
   return (
@@ -7,7 +7,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <AboutSection />
-        <TimelineSection />
+        <FeaturedWorks />
         <ContactSection />
       </main>
     </ClientProviders>

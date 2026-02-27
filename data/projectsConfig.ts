@@ -33,6 +33,17 @@ export const projectsConfig: ProjectsPageConfig = {
     screenshotCountText: '张截图',
   },
 
+  // Featured works section (homepage)
+  featuredWorks: {
+    title: '精选作品',
+    subtitle: 'Selected Works',
+    viewMoreText: '查看全部作品 →',
+    // Optional: Specify featured projects by ID
+    // If not provided, will use the first 3 projects sorted by date (descending)
+    projectIds: ['umpaas', 'personal-blog', 'admin-dashboard'],
+    maxProjects: 3,
+  },
+
   // Projects data
   projects: [
     {
