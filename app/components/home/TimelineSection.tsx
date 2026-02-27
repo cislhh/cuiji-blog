@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { projects } from '@/data/projects'
+import { projectsConfig } from '@/data/projectsConfig'
 
 export default function TimelineSection() {
   return (
@@ -21,7 +21,7 @@ export default function TimelineSection() {
 
           {/* 项目列表 */}
           <div className="space-y-16">
-            {projects.map((project, index) => {
+            {projectsConfig.projects.map((project, index) => {
               const isLeft = index % 2 === 0
 
               return (

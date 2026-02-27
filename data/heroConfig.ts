@@ -14,22 +14,24 @@ import { HeroConfig } from './types/contact'
 export const heroConfig: HeroConfig = {
   // Main tagline displayed on homepage
   tagline: {
-    title: 'Building the Future',
-    subtitle: 'One line of code at a time',
+    title: '构建未来',
+    subtitle: '一行代码一行代码地',
   },
 
   // Introduction text (if used in your design)
   introduction:
-    "I'm a passionate developer crafting beautiful digital experiences. Exploring the intersection of design and technology, one project at a time.",
+    '我是一名充满激情的软件工程师，专注于构建优雅且高效的数字体验。探索设计与技术的交汇点，一次完成一个项目。',
 
   // Technologies displayed in "Currently Learning & Using" section
   techStack: [
     { name: 'React', icon: '', color: 'hover:text-cyan-400' },
     { name: 'Next.js', icon: '', color: 'hover:text-white' },
+    { name: 'Vue.js', icon: '', color: 'hover:text-green-500' },
     { name: 'TypeScript', icon: '', color: 'hover:text-blue-400' },
-    { name: 'Tailwind', icon: '', color: 'hover:text-teal-400' },
+    { name: 'Tailwind CSS', icon: '', color: 'hover:text-teal-400' },
+    { name: 'Vite', icon: '', color: 'hover:text-purple-400' },
     { name: 'Node.js', icon: '', color: 'hover:text-green-400' },
-    { name: 'Vue', icon: '', color: 'hover:text-green-500' },
+    { name: 'NestJS', icon: '', color: 'hover:text-red-400' },
   ],
 
   // Statistics displayed on homepage
@@ -42,11 +44,11 @@ export const heroConfig: HeroConfig = {
   // Call-to-action buttons
   cta: {
     primary: {
-      text: 'View Blog',
+      text: '查看博客',
       href: '/blog',
     },
     secondary: {
-      text: 'View Projects',
+      text: '查看项目',
       href: '/projects',
     },
   },
@@ -61,6 +63,6 @@ export const heroConfig: HeroConfig = {
   // Contact section on homepage
   contact: {
     title: "Let's make something\ngreat together",
-    email: 'hi@dalelarroder.com',
+    email: '1353761785@qq.com',
   },
 }

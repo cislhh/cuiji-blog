@@ -1,16 +1,16 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Next.js Starter Blog',
-  author: 'Tails Azimuth',
-  headerTitle: 'TailwindBlog',
-  description: 'A blog created with Next.js and Tailwind.css',
-  language: 'en-us',
+  title: 'CuiJi的博客',
+  author: 'CuiJi',
+  headerTitle: 'CuiJi Blog',
+  description: '使用 Next.js 和 Tailwind.css 构建的个人博客，记录技术学习与生活点滴',
+  language: 'zh-cn',
   siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteRepo: 'https://github.com/cislhh/tailwind-nextjs-starter-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
   mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'address@yoursite.com',
+  email: '1353761785@qq.com',
   github: 'https://github.com',
   x: 'https://twitter.com/x',
   // twitter: 'https://twitter.com/Twitter',
@@ -21,7 +21,7 @@ const siteMetadata = {
   instagram: 'https://www.instagram.com',
   medium: 'https://medium.com',
   bluesky: 'https://bsky.app/',
-  locale: 'en-US',
+  locale: 'zh-CN',
   // set to true if you want a navbar fixed to the top
   stickyNav: false,
   analytics: {
@@ -97,19 +97,21 @@ const siteMetadata = {
   },
   // Hero section configuration
   hero: {
-    tagline: 'Building the Future',
-    subtitle: 'One line of code at a time',
+    tagline: '构建未来',
+    subtitle: '一行代码一行代码地',
     introduction:
-      "I'm a passionate developer crafting beautiful digital experiences. Exploring the intersection of design and technology, one project at a time.",
+      '我是一名充满激情的软件工程师，专注于构建优雅且高效的数字体验。探索设计与技术的交汇点，一次完成一个项目。',
   },
   // Tech stack for learning panel
   techStack: [
     { name: 'React', icon: '', color: 'hover:text-cyan-400' },
     { name: 'Next.js', icon: '', color: 'hover:text-white' },
+    { name: 'Vue.js', icon: '', color: 'hover:text-green-500' },
     { name: 'TypeScript', icon: '', color: 'hover:text-blue-400' },
-    { name: 'Tailwind', icon: '', color: 'hover:text-teal-400' },
+    { name: 'Tailwind CSS', icon: '', color: 'hover:text-teal-400' },
+    { name: 'Vite', icon: '', color: 'hover:text-purple-400' },
     { name: 'Node.js', icon: '', color: 'hover:text-green-400' },
-    { name: 'Vue', icon: '', color: 'hover:text-green-500' },
+    { name: 'NestJS', icon: '', color: 'hover:text-red-400' },
   ],
 }
 

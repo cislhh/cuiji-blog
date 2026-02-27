@@ -224,3 +224,28 @@ export interface HeroConfig {
   about: AboutConfigSimple
   contact: ContactSectionConfig
 }
+
+// Projects page configuration
+export interface ProjectsPageConfig {
+  // Page header
+  header: {
+    title: string
+    description: string
+  }
+  // Project type labels
+  typeLabels: {
+    company: string
+    personal: string
+  }
+  // Modal section labels
+  modal: {
+    closeButtonAriaLabel: string
+    projectIntroTitle: string
+    techStackTitle: string
+    highlightsTitle: string
+    visitProjectText: string
+    screenshotCountText: string // Format: "X 张截图"
+  }
+  // Projects data
+  projects: any[] // Will be typed as Project[] at runtime
+}
