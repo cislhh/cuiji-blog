@@ -30,7 +30,7 @@ export default function EmailDropdown({ emails, size = 6 }: EmailDropdownProps) 
 
   return (
     <div
-      className="relative"
+      className="relative inline-flex"
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
@@ -56,7 +56,7 @@ export default function EmailDropdown({ emails, size = 6 }: EmailDropdownProps) 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full left-1/2 mb-3 -translate-x-1/2 z-50"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 z-50 box-border pb-3"
           >
             <div className="glass-panel rounded-lg p-2 min-w-[200px] shadow-xl border border-gray-700/50">
               <div className="space-y-1">

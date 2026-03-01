@@ -20,7 +20,7 @@ export const heroConfig: HeroConfig = {
 
   // Introduction text (if used in your design)
   introduction:
-    '我是一名充满激情的软件工程师，专注于构建优雅且高效的数字体验。探索设计与技术的交汇点，一次完成一个项目。',
+    '我是一名充满激情的软件工程师，专注于构建优雅且高效的数字体验。我的英文名是"CuiJi"，中文名为"淬己"，取自"淬炼己身"，寓意着在代码与技术的世界里不断锤炼、打磨自己，追求卓越。探索设计与技术的交汇点，一次完成一个项目。',
 
   // Technologies displayed in "Currently Learning & Using" section
   techStack: [
