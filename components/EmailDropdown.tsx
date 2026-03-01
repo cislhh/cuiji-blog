@@ -35,18 +35,18 @@ export default function EmailDropdown({ emails, size = 6 }: EmailDropdownProps) 
       onMouseLeave={() => setIsOpen(false)}
     >
       {/* Mail Icon */}
-      <a
-        className="text-sm text-gray-500 transition hover:text-gray-600 cursor-pointer"
-        onClick={(e) => {
-          e.preventDefault()
+      <button
+        className="text-sm text-gray-500 transition hover:text-gray-600 cursor-pointer bg-transparent border-0 p-0"
+        onClick={() => {
           setIsOpen(!isOpen)
         }}
+        aria-label="Email"
+        aria-expanded={isOpen}
       >
-        <span className="sr-only">Email</span>
         <Mail
           className={`hover:text-primary-400 fill-current text-gray-200 h-${size} w-${size}`}
         />
-      </a>
+      </button>
 
       {/* Dropdown Menu */}
       <AnimatePresence>

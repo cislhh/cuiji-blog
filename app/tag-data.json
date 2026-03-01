@@ -13,6 +13,8 @@
   "writings": 1,
   "book": 1,
   "reflection": 1,
+  "multi-author": 1,
+  "feature": 1,
   "css": 1,
   "layout": 1,
   "grid": 1,
@@ -46,7 +48,5 @@
   "core-web-vitals": 1,
   "micro-frontend": 1,
   "architecture": 1,
-  "qiankun": 1,
-  "multi-author": 1,
-  "feature": 1
+  "qiankun": 1
 }
