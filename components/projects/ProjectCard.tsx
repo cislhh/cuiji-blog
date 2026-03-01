@@ -28,7 +28,7 @@ function ProjectCard({ project, onClick, index }: ProjectCardProps) {
         <div className="relative overflow-hidden">
           <Image
             alt={project.name}
-            src={project.coverImage || project.images[0]?.src || ''}
+            src={project.images[0]?.src || ''}
             className="w-full object-cover object-center transition-transform duration-300 group-hover:scale-105 aspect-video"
             width={800}
             height={450}

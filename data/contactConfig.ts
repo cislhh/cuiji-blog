@@ -114,7 +114,7 @@ export const contactConfig: ContactConfig = {
         { kind: 'qq', show: true },
         { kind: 'wechat', show: true },
         { kind: 'github', show: true },
-        { kind: 'xiaohongshu', show: true },
+        // { kind: 'xiaohongshu', show: true },
         { kind: 'mail', show: true },
       ],
     },
@@ -127,7 +127,18 @@ export const contactConfig: ContactConfig = {
         { kind: 'qq', show: true },
         { kind: 'wechat', show: true },
         { kind: 'github', show: true },
-        { kind: 'xiaohongshu', show: true },
+        // { kind: 'xiaohongshu', show: true },
+        { kind: 'mail', show: true },
+      ],
+    },
+
+    // About page - which links to show and in what order
+    // Same as Hero section for consistency
+    about: {
+      socialLinks: [
+        { kind: 'qq', show: true },
+        { kind: 'wechat', show: true },
+        { kind: 'github', show: true },
         { kind: 'mail', show: true },
       ],
     },

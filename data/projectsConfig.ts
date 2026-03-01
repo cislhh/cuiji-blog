@@ -40,7 +40,7 @@ export const projectsConfig: ProjectsPageConfig = {
     viewMoreText: '查看全部作品 →',
     // Optional: Specify featured projects by ID
     // If not provided, will use the first 3 projects sorted by date (descending)
-    projectIds: ['umpaas', 'beijing-credit-card', 'udesk-website'],
+    projectIds: ['umpaas', 'cuiji-blog', 'beijing-credit-card'],
     maxProjects: 3,
   },
 
@@ -56,8 +56,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'ecommerce',
       ownershipType: 'company',
       date: '2024.07',
-      coverImage: '/static/images/projects/ecommerce-cover.jpg',
       images: [
+        {
+          src: '/static/images/projects/ecommerce-cover.jpg',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/static/images/projects/ecommerce-1.jpg',
           alt: '首页',
@@ -96,8 +100,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'admin',
       ownershipType: 'company',
       date: '2024.11',
-      coverImage: '/static/images/projects/admin-cover.jpg',
       images: [
+        {
+          src: '/static/images/projects/admin-cover.jpg',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/static/images/projects/admin-1.jpg',
           alt: '仪表盘',
@@ -131,8 +139,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'mobile',
       ownershipType: 'company',
       date: '2024.06',
-      coverImage: '/images/beijingMobile/封面图.png',
       images: [
+        {
+          src: '/images/beijingMobile/封面图.png',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/images/beijingMobile/首页.png',
           alt: '首页',
@@ -183,8 +195,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'miniprogram',
       ownershipType: 'company',
       date: '2024.09',
-      coverImage: '/static/images/projects/miniprogram-cover.jpg',
       images: [
+        {
+          src: '/static/images/projects/miniprogram-cover.jpg',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/static/images/projects/miniprogram-1.jpg',
           alt: '首页',
@@ -214,8 +230,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'website',
       ownershipType: 'company',
       date: '2024.08',
-      coverImage: '/images/wofe/封面图.png',
       images: [
+        {
+          src: '/images/wofe/封面图.png',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/images/wofe/导航栏.png',
           alt: '导航栏',
@@ -258,8 +278,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'website',
       ownershipType: 'personal',
       date: '2024.12',
-      coverImage: '/static/images/projects/blog-cover.jpg',
       images: [
+        {
+          src: '/static/images/projects/blog-cover.jpg',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/static/images/projects/blog-1.jpg',
           alt: '首页',
@@ -285,6 +309,59 @@ export const projectsConfig: ProjectsPageConfig = {
       ],
     },
     {
+      id: 'cuiji-blog',
+      name: '个人博客系统',
+      description:
+        '基于 Next.js 15 的现代化个人博客系统，采用 App Router 架构，支持 MDX 写作、深色模式和响应式设计。',
+      longDescription:
+        '这是我开发的个人博客系统，使用 Next.js 15 和 App Router 架构从零重构完成。系统支持 MDX 格式的文章写作、代码语法高亮、数学公式渲染、标签分类等功能。博客采用响应式设计，完美适配各种设备，支持深色模式，集成了现代化的 UI 组件和流畅的动画效果，提供优质的阅读体验。',
+      type: 'website',
+      ownershipType: 'personal',
+      date: '2024.12',
+      images: [
+        {
+          src: '/images/cuijiBlog/封面图.png',
+          alt: '封面',
+          caption: '项目封面',
+        },
+        {
+          src: '/images/cuijiBlog/文章列表.png',
+          alt: '文章列表',
+          caption: '博客文章列表页',
+        },
+        {
+          src: '/images/cuijiBlog/文章详情.png',
+          alt: '文章详情',
+          caption: '文章阅读页面',
+        },
+        {
+          src: '/images/cuijiBlog/关于.png',
+          alt: '关于页面',
+          caption: '个人关于页面',
+        },
+      ],
+      tags: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'MDX', 'Framer Motion', 'App Router'],
+      link: 'https://www.azocuiji.com',
+      highlights: [
+        {
+          title: 'Next.js 15 重构',
+          description: '采用最新 Next.js 15 和 App Router 架构，利用 Server Components 和 RSC 提升性能',
+        },
+        {
+          title: 'MDX 支持',
+          description: '支持在 Markdown 中使用 React 组件，实现更丰富的内容表现形式',
+        },
+        {
+          title: '现代化 UI',
+          description: '使用 Tailwind CSS 和 Framer Motion 构建流畅的动画效果和精美的用户界面',
+        },
+        {
+          title: 'SEO 优化',
+          description: '完善的 SEO 配置和元数据管理，提升搜索引擎可见性和用户体验',
+        },
+      ],
+    },
+    {
       id: 'umpaas',
       name: 'UMPaaS',
       description:
@@ -294,8 +371,12 @@ export const projectsConfig: ProjectsPageConfig = {
       type: 'other',
       ownershipType: 'company',
       date: '2024.10',
-      coverImage: '/images/umpaas/封面图.png',
       images: [
+        {
+          src: '/images/umpaas/封面图.png',
+          alt: '封面',
+          caption: '项目封面',
+        },
         {
           src: '/images/umpaas/低代码界面.png',
           alt: '低代码界面',

@@ -75,6 +75,9 @@ export interface ContactConfig {
       socialLinks: SocialLinkDisplay[] // Which links to show in Footer
       showSocialLinks: boolean // Master toggle for footer social links
     }
+    about: {
+      socialLinks: SocialLinkDisplay[] // Which links to show in About page
+    }
   }
 
   // Footer specific settings
@@ -152,7 +155,7 @@ export interface AboutConfigSimple {
 
 // Timeline item for experience/education
 export interface TimelineItem {
-  year: string
+  year?: string // Optional year field
   title: string
   organization: string
   description: string
@@ -184,6 +187,16 @@ export interface CurrentFocus {
   technologies: string[]
 }
 
+// Personal stats and vision
+export interface PersonalStats {
+  title: string
+  description: string
+  stats: {
+    label: string
+    value: string
+  }[]
+}
+
 // Personal information
 export interface PersonalInfo {
   name: string
@@ -198,11 +211,12 @@ export interface AboutPageConfig {
   personalInfo: PersonalInfo
   skills: Skill[]
   experience: TimelineItem[]
-  education: TimelineItem[]
+  education?: TimelineItem[] // Optional field
   interests: Interest[]
   achievements: Achievement[]
   currentFocus: CurrentFocus
-  funFacts: string[]
+  funFacts?: string[] // Optional, replaced by personalStats
+  personalStats?: PersonalStats // New field for stats and vision
 }
 
 // Legacy type alias for backward compatibility
