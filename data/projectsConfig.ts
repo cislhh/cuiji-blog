@@ -40,7 +40,7 @@ export const projectsConfig: ProjectsPageConfig = {
     viewMoreText: '查看全部作品 →',
     // Optional: Specify featured projects by ID
     // If not provided, will use the first 3 projects sorted by date (descending)
-    projectIds: ['umpaas', 'udesk-website', 'personal-blog'],
+    projectIds: ['umpaas', 'beijing-credit-card', 'udesk-website'],
     maxProjects: 3,
   },
 
@@ -118,6 +118,59 @@ export const projectsConfig: ProjectsPageConfig = {
         {
           title: '数据可视化',
           description: '集成 ECharts 实现丰富的数据可视化图表',
+        },
+      ],
+    },
+    {
+      id: 'beijing-credit-card',
+      name: '北京银行信用卡中心',
+      description:
+        '从 Vue2 升级到 Vue3 的移动端应用重构项目，采用 H5 页面渲染方式，提供信用卡申请、借款、查询等金融服务功能。',
+      longDescription:
+        '这是北京银行信用卡中心的移动端应用重构项目，将原有 Vue2 架构升级到 Vue3，并新增多项业务功能。项目采用 H5 渲染页面的方式进行开发，支持信用卡申请、额度查询、借款申请、还款管理等核心业务功能。升级后显著提升了应用的性能和用户体验。',
+      type: 'mobile',
+      ownershipType: 'company',
+      date: '2024.06',
+      coverImage: '/images/beijingMobile/封面图.png',
+      images: [
+        {
+          src: '/images/beijingMobile/首页.png',
+          alt: '首页',
+          caption: '应用首页',
+        },
+        {
+          src: '/images/beijingMobile/查询列表.png',
+          alt: '查询列表',
+          caption: '业务查询功能',
+        },
+        {
+          src: '/images/beijingMobile/借款页.png',
+          alt: '借款页',
+          caption: '借款申请页面',
+        },
+        {
+          src: '/images/beijingMobile/我的.png',
+          alt: '我的',
+          caption: '个人中心',
+        },
+      ],
+      tags: ['Vue3', 'Vue2', 'H5', 'JavaScript', 'CSS3'],
+      highlights: [
+        {
+          title: 'Vue2 到 Vue3 升级',
+          description: '完成整个应用从 Vue2 到 Vue3 的平滑升级，利用 Composition API 优化代码结构',
+        },
+        {
+          title: 'H5 页面渲染',
+          description: '采用 H5 页面渲染方式，实现跨平台兼容，提升用户体验',
+        },
+        {
+          title: '性能优化',
+          description: '通过框架升级和代码优化，应用启动速度和页面渲染性能显著提升',
+        },
+        {
+          title: '功能扩展',
+          description: '新增多项业务功能，完善金融服务体系',
         },
       ],
     },
