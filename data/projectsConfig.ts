@@ -40,7 +40,7 @@ export const projectsConfig: ProjectsPageConfig = {
     viewMoreText: '查看全部作品 →',
     // Optional: Specify featured projects by ID
     // If not provided, will use the first 3 projects sorted by date (descending)
-    projectIds: ['umpaas', 'personal-blog', 'admin-dashboard'],
+    projectIds: ['umpaas', 'udesk-website', 'personal-blog'],
     maxProjects: 3,
   },
 
@@ -148,6 +148,51 @@ export const projectsConfig: ProjectsPageConfig = {
         {
           title: '跨平台',
           description: '使用 Taro 框架，支持编译到多个平台',
+        },
+      ],
+    },
+    {
+      id: 'udesk-website',
+      name: 'Udesk 企业官网',
+      description:
+        '基于 Bootstrap 的企业官网系统，展示公司产品、新闻资讯，提供在线咨询和客户服务功能。',
+      longDescription:
+        '这是为 Udesk 开发的企业官方网站，采用响应式设计，支持多终端访问。网站包含产品展示、解决方案、新闻中心、关于我们等模块，集成了在线客服系统，为用户提供便捷的咨询服务。',
+      type: 'website',
+      ownershipType: 'company',
+      date: '2024.08',
+      coverImage: '/images/wofe/封面图.png',
+      images: [
+        {
+          src: '/images/wofe/导航栏.png',
+          alt: '导航栏',
+          caption: '响应式导航栏设计',
+        },
+        {
+          src: '/images/wofe/产品窗.png',
+          alt: '产品展示',
+          caption: '产品展示模块',
+        },
+        {
+          src: '/images/wofe/新闻中心.png',
+          alt: '新闻中心',
+          caption: '新闻资讯模块',
+        },
+      ],
+      tags: ['HTML5', 'CSS3', 'JavaScript', 'Bootstrap'],
+      link: 'https://www.udesk.cn',
+      highlights: [
+        {
+          title: '响应式设计',
+          description: '基于 Bootstrap 实现完美响应式布局，适配各种设备屏幕',
+        },
+        {
+          title: '性能优化',
+          description: '通过代码压缩、图片优化等手段，提升页面加载速度',
+        },
+        {
+          title: 'SEO 友好',
+          description: '符合搜索引擎优化标准，提升网站搜索排名',
         },
       ],
     },

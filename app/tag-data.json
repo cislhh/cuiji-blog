@@ -7,14 +7,13 @@
   "ols": 1,
   "github": 1,
   "guide": 2,
+  "hello": 1,
   "holiday": 1,
   "canada": 1,
   "images": 1,
   "writings": 1,
   "book": 1,
   "reflection": 1,
-  "multi-author": 1,
-  "feature": 1,
   "css": 1,
   "layout": 1,
   "grid": 1,
@@ -48,5 +47,7 @@
   "core-web-vitals": 1,
   "micro-frontend": 1,
   "architecture": 1,
-  "qiankun": 1
+  "qiankun": 1,
+  "multi-author": 1,
+  "feature": 1
 }
