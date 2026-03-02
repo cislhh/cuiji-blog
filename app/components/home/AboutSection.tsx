@@ -1,41 +1,41 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll } from 'motion/react'
 import { useRef, useState, useEffect } from 'react'
 import { Briefcase, Heart, Sparkles } from 'lucide-react'
+import { aboutConfig } from '@/data/aboutConfig'
 
-// 数据内容
+// 从 aboutConfig 中提取数据并分类
 const categories = [
   {
     id: 'skills',
     title: '技能',
     icon: Sparkles,
-    content: [
-      { name: 'React / Next.js', level: '精通' },
-      { name: 'TypeScript', level: '熟练' },
-      { name: 'Tailwind CSS', level: '精通' },
-      { name: 'Node.js', level: '熟练' },
-      { name: 'Python', level: '了解' },
-    ],
+    content: aboutConfig.skills.flatMap((skillGroup) =>
+      skillGroup.items.map((item) => ({
+        category: skillGroup.category,
+        name: item,
+      }))
+    ),
   },
   {
     id: 'experience',
     title: '经历',
     icon: Briefcase,
-    content: [
-      { company: '某科技公司', position: '前端工程师', period: '2023 - 至今' },
-      { company: '某互联网公司', position: '实习工程师', period: '2022 - 2023' },
-    ],
+    content: aboutConfig.experience.map((exp) => ({
+      title: exp.title,
+      organization: exp.organization,
+      description: exp.description.split('\n')[0], // 只显示第一行作为简介
+    })),
   },
   {
     id: 'life',
     title: '生活',
     icon: Heart,
-    content: [
-      { hobby: '阅读', description: '热爱技术和设计类书籍' },
-      { hobby: '摄影', description: '记录生活中的美好瞬间' },
-      { hobby: '旅行', description: '探索不同的文化和风景' },
-    ],
+    content: aboutConfig.interests.map((interest) => ({
+      name: interest.name,
+      icon: interest.icon,
+    })),
   },
 ]
 
@@ -78,9 +78,7 @@ export default function AboutSection() {
             className="text-center"
           >
             <activeData.icon className="mx-auto mb-6 h-16 w-16 text-gray-100" />
-            <h2 className="text-3xl font-bold text-gray-100">
-              {activeData.title}
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-100">{activeData.title}</h2>
           </motion.div>
         </div>
       </div>
@@ -90,20 +88,25 @@ export default function AboutSection() {
         {/* 技能部分 */}
         <div className="min-h-[50vh] py-12">
           <h3 className="mb-8 text-2xl font-bold text-gray-100">技能</h3>
-          <div className="space-y-4">
-            {categories[0].content.map((skill, index) => (
+          <div className="space-y-6">
+            {aboutConfig.skills.map((skillGroup, groupIndex) => (
               <motion.div
-                key={index}
+                key={groupIndex}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="rounded-lg bg-gray-800 p-6"
+                transition={{ delay: groupIndex * 0.1 }}
+                className="rounded-xl border border-gray-700/50 bg-gray-800/30 p-6"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-medium text-gray-100">
-                    {skill.name}
-                  </span>
-                  <span className="text-sm text-gray-400">{skill.level}</span>
+                <h4 className="mb-3 font-semibold text-gray-100">{skillGroup.category}</h4>
+                <div className="flex flex-wrap gap-2">
+                  {skillGroup.items.map((skill, itemIndex) => (
+                    <span
+                      key={itemIndex}
+                      className="rounded-lg bg-blue-500/10 px-3 py-1.5 text-sm text-blue-400"
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </motion.div>
             ))}
@@ -113,20 +116,19 @@ export default function AboutSection() {
         {/* 经历部分 */}
         <div className="min-h-[50vh] py-12">
           <h3 className="mb-8 text-2xl font-bold text-gray-100">经历</h3>
-          <div className="space-y-4">
-            {categories[1].content.map((exp, index) => (
+          <div className="space-y-6">
+            {aboutConfig.experience.map((exp, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="rounded-lg bg-gray-800 p-6"
+                className="relative border-l-2 border-blue-500/30 pl-6"
               >
-                <h4 className="text-lg font-bold text-gray-100">
-                  {exp.position}
-                </h4>
-                <p className="mt-1 text-gray-400">{exp.company}</p>
-                <p className="mt-2 text-sm text-gray-500">{exp.period}</p>
+                <div className="absolute -left-2 top-0 h-4 w-4 rounded-full bg-blue-500" />
+                <h4 className="text-lg font-bold text-gray-100">{exp.title}</h4>
+                <p className="mt-1 text-sm text-gray-400">{exp.organization}</p>
+                <p className="mt-2 text-sm text-gray-500 whitespace-pre-line">{exp.description}</p>
               </motion.div>
             ))}
           </div>
@@ -135,17 +137,17 @@ export default function AboutSection() {
         {/* 生活部分 */}
         <div className="min-h-[50vh] py-12">
           <h3 className="mb-8 text-2xl font-bold text-gray-100">生活</h3>
-          <div className="space-y-4">
-            {categories[2].content.map((life, index) => (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {aboutConfig.interests.map((interest, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="rounded-lg bg-gray-800 p-6"
+                className="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-700/50 bg-gray-800/30 p-4 transition-all hover:border-blue-500/50 hover:bg-gray-800/50"
               >
-                <h4 className="text-lg font-bold text-gray-100">{life.hobby}</h4>
-                <p className="mt-1 text-gray-400">{life.description}</p>
+                <span className="text-2xl">{interest.icon}</span>
+                <span className="text-sm font-medium text-gray-200">{interest.name}</span>
               </motion.div>
             ))}
           </div>
