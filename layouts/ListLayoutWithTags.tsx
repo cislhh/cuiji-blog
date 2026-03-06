@@ -147,7 +147,7 @@ export default function ListLayoutWithTags({
                 {/* data-lenis-prevent 排除 Lenis 平滑滚动,启用局部原生滚动 */}
                 <nav
                   data-lenis-prevent
-                  className="scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-500 max-h-[calc(100vh-12rem)] space-y-2 overflow-y-auto pr-2"
+                  className="custom-scrollbar-dark custom-scrollbar-thin max-h-[calc(100vh-12rem)] space-y-2 overflow-y-auto pr-2"
                 >
                   {pathname.startsWith('/blog') ? (
                     <div className="bg-primary-500/10 text-primary-400 rounded-lg px-3 py-2 font-medium">

@@ -218,6 +218,166 @@ input:-webkit-autofill:focus {
   overflow: auto hidden;
 }
 
+/* === Custom Scrollbar Styling === */
+/*
+ * Modern, minimal scrollbar utilities following UI/UX Pro Max guidelines.
+ * These provide a consistent, polished scrollbar experience across the application.
+ *
+ * Usage:
+ * - `.custom-scrollbar` - Standard vertical scrollbar (light mode optimized)
+ * - `.custom-scrollbar-dark` - Dark mode vertical scrollbar (for dark backgrounds)
+ * - `.custom-scrollbar-thin` - Thin variant (4px width) for compact spaces
+ * - `.custom-scrollbar-horizontal` - Horizontal scrollbar variant
+ * - `.custom-scrollbar-horizontal-dark` - Dark mode horizontal scrollbar
+ *
+ * Design principles:
+ * - Minimal width (4-8px) to maximize content space
+ * - Semi-transparent thumb for subtle appearance
+ * - Smooth hover transitions (200ms) for better UX
+ * - Border-radius for modern, polished look
+ * - Works across WebKit (Chrome/Safari/Edge) and Firefox
+ *
+ * Apply to scrollable containers with overflow:
+ * - overflow-y-auto (vertical scroll)
+ * - overflow-x-auto (horizontal scroll)
+ *
+ * Note: Elements with `data-lenis-prevent` use native scrolling and benefit from these styles.
+ */
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+/* Dark mode optimized scrollbar */
+.custom-scrollbar-dark::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.4);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.6);
+}
+
+/* Firefox dark mode */
+.custom-scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 114, 128, 0.4) rgba(0, 0, 0, 0.2);
+}
+
+/* Thin variant for compact spaces */
+.custom-scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 2px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Firefox thin variant */
+.custom-scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+/* Horizontal scroll variant */
+.custom-scrollbar-horizontal::-webkit-scrollbar {
+  width: auto;
+  height: 6px;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* Firefox horizontal variant */
+.custom-scrollbar-horizontal {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+/* Horizontal dark mode variant */
+.custom-scrollbar-horizontal-dark::-webkit-scrollbar {
+  width: auto;
+  height: 6px;
+}
+
+.custom-scrollbar-horizontal-dark::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.custom-scrollbar-horizontal-dark::-webkit-scrollbar-thumb {
+  background: rgba(107, 114, 128, 0.4);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.custom-scrollbar-horizontal-dark::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.6);
+}
+
+/* Firefox horizontal dark mode variant */
+.custom-scrollbar-horizontal-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 114, 128, 0.4) rgba(0, 0, 0, 0.2);
+}
+
 .content-header-link {
   opacity: 0;
   margin-left: -24px;

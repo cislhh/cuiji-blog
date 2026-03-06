@@ -79,7 +79,7 @@ export default function ImageCarousel({ images, initialIndex = 0 }: ImageCarouse
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="mt-4 flex justify-center gap-2 overflow-x-auto">
+        <div className="custom-scrollbar-horizontal-dark mt-4 flex justify-center gap-2 overflow-x-auto">
           {images.map((image, index) => (
             <button
               key={index}

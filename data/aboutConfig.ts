@@ -101,8 +101,8 @@ export const aboutConfig: AboutPageConfig = {
     stats: [
       { label: '完成项目', value: '15+' },
       { label: '技术栈掌握', value: '10+' },
-      { label: '代码贡献', value: '50万+' },
-      { label: '团队协作', value: '8人团队' },
+      { label: '代码贡献', value: '20万+' },
+      { label: '团队协作', value: '5人团队' },
     ],
   },
 }

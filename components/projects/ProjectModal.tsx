@@ -83,7 +83,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
 
                 <div
                   ref={modalRef}
-                  className="p-6 md:p-8 overflow-y-auto max-h-[90vh]"
+                  className="custom-scrollbar-dark p-6 md:p-8 overflow-y-auto max-h-[90vh]"
                   style={{
                     overscrollBehavior: 'contain',
                   }}
