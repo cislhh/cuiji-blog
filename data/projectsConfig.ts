@@ -47,50 +47,6 @@ export const projectsConfig: ProjectsPageConfig = {
   // Projects data
   projects: [
     {
-      id: 'b2c-ecommerce',
-      name: '某电商平台',
-      description:
-        '现代化的前台电商购物网站，支持完整的购物流程，包括商品浏览、购物车、结账和支付集成。',
-      longDescription:
-        '这是一个功能完整的B2C电商平台，支持商品浏览、购物车、结账流程、支付集成等功能。作为核心开发人员，我负责了前端架构设计和主要业务模块的实现。',
-      type: 'ecommerce',
-      ownershipType: 'company',
-      date: '2024.07',
-      images: [
-        {
-          src: '/static/images/projects/ecommerce-cover.jpg',
-          alt: '封面',
-          caption: '项目封面',
-        },
-        {
-          src: '/static/images/projects/ecommerce-1.jpg',
-          alt: '首页',
-          caption: '平台首页设计',
-        },
-        {
-          src: '/static/images/projects/ecommerce-2.jpg',
-          alt: '商品详情',
-          caption: '商品详情页',
-        },
-        {
-          src: '/static/images/projects/ecommerce-3.jpg',
-          alt: '购物车',
-          caption: '购物车功能',
-        },
-      ],
-      tags: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Stripe'],
-      highlights: [
-        {
-          title: '性能优化',
-          description: '实现了代码分割和图片优化，首屏加载时间减少40%',
-        },
-        {
-          title: '支付集成',
-          description: '集成Stripe支付，支持多种支付方式',
-        },
-      ],
-    },
-    {
       id: 'admin-dashboard',
       name: '企业管理后台',
       description:
@@ -345,7 +301,8 @@ export const projectsConfig: ProjectsPageConfig = {
       highlights: [
         {
           title: 'Next.js 15 重构',
-          description: '采用最新 Next.js 15 和 App Router 架构，利用 Server Components 和 RSC 提升性能',
+          description:
+            '采用最新 Next.js 15 和 App Router 架构，利用 Server Components 和 RSC 提升性能',
         },
         {
           title: 'MDX 支持',
@@ -415,6 +372,44 @@ export const projectsConfig: ProjectsPageConfig = {
         {
           title: '快速交付',
           description: '将定制化开发周期从数周缩短至数天，大幅提升项目交付效率',
+        },
+      ],
+    },
+    {
+      id: 'financial-audit-system',
+      name: '企业财务审核系统',
+      description:
+        '统合各个分公司的外出老师的财务分配管理，根据近期派遣情况，合理规划当前老师的详细信息和月奖金统计。',
+      longDescription:
+        '针对企业外出教师财务管理分散、人工统计效率低的问题，开发的财务审核系统。系统统合各个分公司的外出老师财务分配管理，根据近期派遣情况，实现老师信息的集中管理和月奖金的自动统计。通过可视化的数据展示和灵活的配置功能，帮助财务部门高效完成审核工作，减少人工错误，提升管理效率。',
+      type: 'admin',
+      ownershipType: 'company',
+      date: '2024.12',
+      images: [
+        {
+          src: '/images/calculationsst/封面图.png',
+          alt: '封面',
+          caption: '项目封面',
+        },
+      ],
+      tags: ['Vue3', 'Vite', 'OpenTiny', 'TypeScript'],
+      link: 'https://github.com/cislhh/calculationsystem-abandoned-',
+      highlights: [
+        {
+          title: '集中化管理',
+          description: '统合各分公司数据，实现外出教师信息的集中管理和维护',
+        },
+        {
+          title: '智能统计',
+          description: '根据派遣记录自动计算月奖金，减少人工统计工作量',
+        },
+        {
+          title: '灵活配置',
+          description: '支持多种奖金规则和配置，适应不同业务场景需求',
+        },
+        {
+          title: 'OpenTiny 组件库',
+          description: '基于 OpenTiny 企业级组件库，提供完善的 UI 交互体验',
         },
       ],
     },
