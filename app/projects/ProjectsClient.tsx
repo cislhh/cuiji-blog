@@ -66,14 +66,16 @@ export default function ProjectsClient() {
         className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8"
       >
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projectsConfig.projects.map((project: Project, index: number) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onClick={() => handleProjectClick(project)}
-              index={index}
-            />
-          ))}
+          {projectsConfig.projects
+            .filter((project) => project.id === 'miniprogram')
+            .map((project: Project, index: number) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onClick={() => handleProjectClick(project)}
+                index={index}
+              />
+            ))}
         </div>
       </motion.div>
 
