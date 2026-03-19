@@ -135,7 +135,7 @@ export default function HeroSection() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-base transition-colors hover:text-blue-400 md:text-lg"
+              className="text-xl transition-colors hover:text-blue-400 md:text-2xl"
             >
               {link.title}
             </Link>

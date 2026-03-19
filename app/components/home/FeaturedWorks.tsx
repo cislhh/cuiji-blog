@@ -9,7 +9,15 @@ import { getFeaturedProjects } from '@/data/projects/utils'
 import { Project } from '@/data/projects/types'
 import Link from 'next/link'
 
-function FeaturedProjectCard({ project, index, onClick }: { project: Project; index: number; onClick: () => void }) {
+function FeaturedProjectCard({
+  project,
+  index,
+  onClick,
+}: {
+  project: Project
+  index: number
+  onClick: () => void
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -28,7 +36,11 @@ function FeaturedProjectCard({ project, index, onClick }: { project: Project; in
           {/* Cover Image with Gradient Overlay */}
           <div className="relative aspect-video overflow-hidden">
             <Image
-              src={project.coverImage || project.images[0]?.src || '/static/images/project-placeholder.jpg'}
+              src={
+                project.coverImage ||
+                project.images[0]?.src ||
+                '/static/images/project-placeholder.jpg'
+              }
               alt={project.name}
               width={800}
               height={450}
@@ -39,12 +51,12 @@ function FeaturedProjectCard({ project, index, onClick }: { project: Project; in
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
             {/* Date Badge (top-right) */}
-            <div className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur-sm">
+            <div className="absolute top-3 right-3 rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur-sm">
               {project.date}
             </div>
 
             {/* Tags (top-right, below date) */}
-            <div className="absolute right-3 top-10 flex flex-col items-end gap-1.5">
+            <div className="absolute top-10 right-3 flex flex-col items-end gap-1.5">
               {project.tags.slice(0, 2).map((tag) => (
                 <span
                   key={tag}
@@ -56,7 +68,7 @@ function FeaturedProjectCard({ project, index, onClick }: { project: Project; in
             </div>
 
             {/* Title and Description (bottom) */}
-            <div className="absolute bottom-0 left-0 right-0 p-4">
+            <div className="absolute right-0 bottom-0 left-0 p-4">
               <h3 className="mb-2 text-lg font-bold text-white">{project.name}</h3>
               <p className="line-clamp-2 text-sm text-gray-300">{project.description}</p>
             </div>
@@ -98,7 +110,9 @@ export default function FeaturedWorks() {
           transition={{ duration: 0.6 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-2 text-3xl font-bold text-gray-100 md:text-4xl">{featuredWorks.title}</h2>
+          <h2 className="mb-2 text-3xl font-bold text-gray-100 md:text-4xl">
+            {featuredWorks.title}
+          </h2>
           <p className="text-gray-400">{featuredWorks.subtitle}</p>
         </motion.div>
 
@@ -122,26 +136,13 @@ export default function FeaturedWorks() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 text-right lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 lg:mt-0"
+            className="mt-8 hidden text-right md:block lg:absolute lg:right-0 lg:-bottom-4 lg:mt-0 lg:translate-y-1/2"
           >
             <Link
               href="/projects"
-              className="group inline-flex items-center gap-2 text-gray-400 transition-colors hover:text-primary-400"
+              className="group hover:text-primary-400 inline-flex items-center gap-2 text-gray-400 transition-colors"
             >
               <span className="text-sm">{featuredWorks.viewMoreText}</span>
-              <svg
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
             </Link>
           </motion.div>
 
@@ -155,22 +156,9 @@ export default function FeaturedWorks() {
           >
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 text-gray-400 transition-colors hover:text-primary-400"
+              className="hover:text-primary-400 inline-flex items-center gap-2 text-gray-400 transition-colors"
             >
               <span>{featuredWorks.viewMoreText}</span>
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
             </Link>
           </motion.div>
         </div>
