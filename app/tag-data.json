@@ -21,6 +21,10 @@
   "测试驱动开发": 1,
   "软件工程": 1,
   "最佳实践": 1,
+  "ai": 2,
+  "claude-code": 1,
+  "mcp": 1,
+  "skills": 1,
   "css": 1,
   "layout": 1,
   "grid": 1,
@@ -49,10 +53,12 @@
   "component-architecture": 1,
   "zustand": 2,
   "image": 1,
-  "performance": 3,
+  "performance": 4,
   "monitoring": 1,
   "core-web-vitals": 1,
   "micro-frontend": 1,
   "architecture": 1,
-  "qiankun": 1
+  "qiankun": 1,
+  "virtual-scroll": 1,
+  "rendering": 1
 }
