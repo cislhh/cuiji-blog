@@ -1,0 +1,273 @@
+---
+slug: build-first-ts-ai-agent
+title: 从零开始搭建第一个 TypeScript AI Agent
+date: 2026-06-28
+authors: [cuiji]
+tags: [ai, agent, typescript]
+keywords:
+  [
+    AI Agent,
+    TypeScript,
+    Vercel AI SDK,
+    Zod,
+    Tool Calling,
+    Agent Loop,
+    Anthropic,
+  ]
+description: "从传统 TS 业务开发转向 AI Agent 工程的入门笔记。解读 Anthropic 的 Agent 设计哲学，理解 Agent 循环、Augmented LLM，并用 Vercel AI SDK + Zod 搭建第一个带工具调用能力的 Agent。"
+---
+
+我是一名 TypeScript 全栈工程师，日常工作是开发业务型产品。过去几年里，LLM 的能力进步很快，但我对它的使用一直停留在"调一下 API，拿一段文本回来"。这不是什么问题，只是它离"做一个能干活的东西"还有一段距离。
+
+最近开始系统补 AI Agent 这块，一边学一边记。这篇文章是第一站：理解 Agent 到底是什么，解读 Anthropic 的 Agent 设计哲学，然后用 TypeScript 从零搭一个能自己调用工具的 Agent。
+
+---
+
+## 前言：为什么前端工程师也要关注 AI Agent
+
+说句实话——Agent 开发正在从"算法工程师的领地"变成"普通应用工程师也能做的事"。
+
+过去想做 AI 应用，你得懂 Python、懂模型、懂部署。现在 TypeScript 生态已经足够成熟，Vercel AI SDK 这套工具链把模型调用、工具定义、流式输出这些脏活全包了。你写 TS 的手艺完全可以直接搬过来。
+
+另外，Agent 不是后端专利。前端工程里有大量"串联多个步骤、依赖上下文做决策"的场景——表单向导、多步配置、搜索过滤组合。这些思维模式和 Agent 的"循环决策"天然对应。你不需要转行做算法，只是在现有技术栈上加一个新维度。
+
+话虽如此，上来就钻代码容易只见树木不见森林。我们先看一篇奠定 Agent 设计理念的文章。
+
+---
+
+## 一、Anthropic 的 Agent 设计哲学
+
+2024 年底，Anthropic 工程团队发了一篇文章 [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents)，总结了他们跟几十个团队合作搭建 LLM Agent 的经验。这篇文章的核心观点是：**最成功的实现不靠复杂框架，靠简单、可组合的模式。**
+
+### 1.1 Agent 到底是什么
+
+"Agent"这个词市面上用得很乱。有人觉得是能独立跑几天的全自动系统，有人觉得是按固定流程走的自动化脚本。
+
+Anthropic 把所有这些统称为 **Agentic System（智能系统）**，然后做了一个关键的架构区分：
+
+- **Workflow（工作流）**：LLM 和工具按预定义的代码路径执行。流程是你写死的，LLM 在固定的节点上被调用。
+- **Agent（智能体）**：LLM 自己动态决定怎么做事、用什么工具。流程是模型自己选出来的。
+
+简单说：**Workflow 是你指挥 LLM，Agent 是 LLM 指挥自己。**
+
+这个区分很重要，因为它决定了你在什么场景下用哪种模式。
+
+### 1.2 基础单元：Augmented LLM
+
+不管多复杂的 Agentic System，最基础的砖块都是同一个东西——**增强版 LLM（Augmented LLM）**。
+
+一个普通的 LLM 只能根据训练数据生成文本。一个 Augmented LLM 多了三样东西：
+
+| 增强能力              | 做什么                 | 举个例子                     |
+| --------------------- | ---------------------- | ---------------------------- |
+| **检索（Retrieval）** | 从外部知识库拉资料     | 查公司文档、搜索网页         |
+| **工具（Tools）**     | 调用外部函数和服务     | 发邮件、操作数据库、调 API   |
+| **记忆（Memory）**    | 在多轮交互中记住上下文 | 记住用户的偏好、上一轮的结果 |
+
+现代模型能主动使用这些能力——自己生成搜索词、自己选工具、自己决定记什么。这篇文章后续讨论的所有模式，都假设每次 LLM 调用已经具备了这三种能力。
+
+### 1.3 五种工作流模式
+
+从简单到复杂，Anthropic 总结了五种在实际生产中验证过的模式：
+
+**① Prompt Chaining（提示链）**
+
+把一个任务拆成固定步骤，上一步的输出是下一步的输入。每步之间可以加校验闸门（gate），中间结果不对就停下来。
+
+> 适合：任务能清晰拆解为固定子步骤的场景。比如写大纲 → 检查大纲 → 写正文 → 翻译成另一种语言。
+
+**② Routing（路由）**
+
+先让 LLM 对输入分类，再分发给专门处理该类任务的后续流程。
+
+> 适合：不同类型的问题需要不同处理方式。比如客服里区分"退费请求"和"技术咨询"，或者把简单问题路由给小模型省成本。
+
+**③ Parallelization（并行）**
+
+多个 LLM 同时干不同的活，结果再汇总。又分两种：**分段**（把任务拆成独立部分并行跑）和**投票**（同一个任务跑多次取多数结果）。
+
+> 适合：任务可以独立并行处理。比如一个模型处理用户查询，另一个同时做内容安全审查。
+
+**④ Orchestrator-Workers（编排器-工人）**
+
+一个中央 LLM 动态拆解任务，分发给多个 Worker LLM，最后汇总结果。和 Parallelization 的关键区别：子任务不是预定义的，是编排器根据具体输入动态决定的。
+
+> 适合：代码仓库里修改多个文件（改哪些文件、怎么改都取决于任务本身）、跨多源信息搜索和分析。
+
+**⑤ Evaluator-Optimizer（评估器-优化器）**
+
+一个 LLM 负责生成，另一个 LLM 负责评价和给反馈，循环迭代直到满意。
+
+> 适合：有明确评估标准，迭代能带来可衡量改进的场景。比如文学翻译（评估器能指出译文的微妙缺失）、多轮搜索直到收集到全面信息。
+
+### 1.4 什么时候不该用 Agent
+
+Anthropic 给了一条很实际的原则：**能找到的最简单方案先上，只有简单方案不够用时再叠复杂度。**
+
+Agentic System 本质上是用延迟和成本换任务完成质量。很多场景下，优化单次 LLM 调用——加检索、加上下文示例——就够用了。
+
+Workflow 适合"流程可以提前定义清楚"的场景，可预测、可控。Agent 适合"需要模型在运行时自己拿主意"的场景，更灵活但开销更大。
+
+选型的关键问题是：**这个任务值得我花多少延迟和成本来换更好的结果？**
+
+### 1.5 关于框架
+
+市面上有很多 Agent 框架——Claude Agent SDK、Strands Agents SDK、Rivet、Vellum 等。框架的优势是"上手快"，帮你封装了调用 LLM、定义工具、串联步骤这些底层操作。
+
+但框架的问题也在这里：**多一层抽象就多一层黑箱。** 你不知道 LLM 实际收到了什么 prompt，debug 就很痛苦。而且框架容易诱惑你"为复杂而复杂"——明明一个简单的 prompt chain 就能搞定，偏要上个全自动 Agent。
+
+Anthropic 的建议和我自己的体会一致：**先用 LLM API 直接写。** 很多模式十几行代码就能实现。即使用框架，也要确保自己理解底层在做什么。对底层机制的错误假设，是大多数工程事故的来源。
+
+### 1.6 三条核心原则
+
+文章最后总结了三件事，我直接留在这里：
+
+1. **保持简单（Simplicity）**——Agent 的设计能简单就简单
+2. **保持透明（Transparency）**——把 Agent 的规划步骤明确展示出来，让用户知道它在干嘛
+3. **精心打磨 Agent-Computer Interface（ACI）**——工具的定义、描述、文档，要像写 API 文档一样认真对待
+
+---
+
+## 二、工具链选型
+
+回到 TypeScript 落地。TS 生态做 Agent，核心就两个库：
+
+**Vercel AI SDK** —— 主干。一套 API 屏蔽不同模型厂商的差异，内置 Agent Loop（你不用手写 while 循环），支持流式输出。核心函数就三个：
+
+| 函数             | 用途                                     |
+| ---------------- | ---------------------------------------- |
+| `generateText`   | 生成文本，支持工具调用，Agent 的主力函数 |
+| `streamText`     | 上面那个的流式版，用户能实时看到输出     |
+| `generateObject` | 强制 LLM 返回结构化 JSON，做分类、提取用 |
+
+**Zod** —— 工具参数的定义方式。你写一个 Zod schema，AI SDK 自动转成 LLM 能理解的 JSON Schema 格式。LLM 就是靠这个知道"这个工具要什么参数、每个参数什么意思"。
+
+```ts
+z.object({
+  expression: z.string().describe('数学表达式，如 "123 * 456"'),
+});
+
+// AI SDK 自动转成 LLM 能读的格式：
+// { expression: { type: "string", description: "数学表达式，如 "123 * 456"" } }
+```
+
+---
+
+## 三、第一个 Agent：计算器
+
+计算器是一个很好的切入点，因为 LLM 天然不擅长精确计算——你让它心算大数乘法，它经常猜错。给它一个计算器工具，让它自己判断"什么时候该用工具，什么时候该自己回答"，这就是 Agent 工具调用最直观的演示。
+
+### 项目初始化
+
+```bash
+mkdir my-first-agent && cd my-first-agent
+npm init -y
+npm i ai @ai-sdk/openai zod
+npm i -D tsx typescript @types/node
+```
+
+`package.json` 需要加一行，因为 AI SDK 用了 top-level await，项目必须走 ESM：
+
+```json
+"type": "module"
+```
+
+### 完整代码
+
+```ts
+import { generateText, tool } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { z } from "zod";
+
+// Provider 配置 —— 我用 DeepSeek，换成别的只改这里
+const provider = createOpenAI({
+  baseURL: "https://api.deepseek.com",
+  apiKey: process.env.DEEPSEEK_API_KEY!,
+});
+const model = provider.chat("deepseek-v4-flash");
+
+// ① 定义工具：告诉 LLM "你可以用这个"
+const calculator = tool({
+  description: "计算数学表达式。LLM 不擅长精确计算，遇到数学问题请调用此工具。",
+  parameters: z.object({
+    expression: z.string().describe('数学表达式，如 "123 * 456"'),
+  }),
+  execute: async ({ expression }) => {
+    const sanitized = expression.replace(/[^0-9+\-*/.()\s]/g, "");
+    const result = Function(`"use strict"; return (${sanitized})`)();
+    return { expression, result };
+  },
+});
+
+// ② 启动 Agent Loop —— 你没写 while 循环，AI SDK 帮你跑了
+const { text, steps } = await generateText({
+  model,
+  tools: { calculator },
+  maxSteps: 5,
+  system: "你是数学助手。遇到计算时必须使用 calculator 工具，不要自己心算。",
+  prompt: "123 × 456 等于多少？另外，789 ÷ 3 呢？",
+});
+
+console.log(text);
+```
+
+### 运行
+
+`.env` 文件里放 API Key：
+
+```
+DEEPSEEK_API_KEY=你的key
+```
+
+Node.js 24 原生支持加载 `.env`，不需要装 dotenv：
+
+```bash
+node --env-file=.env --import tsx/esm agent.ts
+```
+
+输出结果——Agent 自动调了两次计算器，拿到正确结果后才生成最终回复：
+
+```
+123 × 456 = 56088，789 ÷ 3 = 263。
+```
+
+### 代码拆解
+
+整个 Agent 就三个零件：
+
+1. **`tool()` —— 定义能力。** `description` 决定 LLM 会不会在合适时机调用它。`parameters`（Zod schema）告诉 LLM 参数长什么样。`execute` 是你实际执行的逻辑——调 API、读数据库、算数学，随你。
+
+2. **`generateText()` —— 启动 Agent Loop。** `tools` 把工具箱给 LLM，`maxSteps` 限制最多循环几轮，`system` 设置行为边界。最关键的是——你没有写 while 循环。AI SDK 内部跑了完整的"思考 → 调工具 → 拿结果 → 再思考"。
+
+3. **`steps` —— 调试窗口。** 每一步记录了 LLM 在循环中的决策：`tool-call`（调了哪个工具，传了什么参数）、`tool-result`（工具返回了什么）。这对理解 Agent 的行为至关重要。
+
+### 换模型只改三行
+
+这就是 AI SDK 统一 API 的价值。从 DeepSeek 换到 Claude：
+
+```ts
+// DeepSeek
+const provider = createOpenAI({
+  baseURL: "https://api.deepseek.com",
+  apiKey: process.env.DEEPSEEK_API_KEY!,
+});
+const model = provider.chat("deepseek-v4-flash");
+
+// 换成 Claude
+import { anthropic } from "@ai-sdk/anthropic";
+const model = anthropic("claude-sonnet-4-6");
+```
+
+工具定义和 Agent 循环代码完全不用动。
+
+---
+
+## 结语
+
+这篇文章是我学习 AI Agent 开发的第一站。两个核心收获：
+
+1. **阅读层面**——理解了 Anthropic 的 Agent 设计哲学。Agent 不是越复杂越好，能简单就简单。Workflow 和 Agent 各有适用场景，关键是搞清楚"这个任务值不值得用延迟和成本换质量"。
+
+2. **实践层面**——用 Vercel AI SDK + Zod 搭了一个能自主调用工具的 Agent。Agent Loop 不需要手写，框架帮你跑了。你只需要定义好工具和参数，LLM 自己决定什么时候该用。
+
+下一步是给 Agent 加上真正的"知识"——让它能读我自己的文档，根据内容回答问题。这就是 RAG（检索增强生成），下篇写。
