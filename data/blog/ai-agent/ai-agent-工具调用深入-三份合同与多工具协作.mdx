@@ -1,0 +1,347 @@
+---
+slug: ai-agent-tool-calling-deep-dive
+title: AI Agent 工具调用深入：三份合同与多工具协作
+date: 2026-07-04
+authors: [cuiji]
+tags: [ai, agent, typescript, tool-calling]
+keywords:
+  [AI Agent, TypeScript, Vercel AI SDK, Tool Calling, Function Calling, Zod, ReAct, Agent Loop]
+description: '深入理解 AI Agent 工具调用的核心机制。工具的三份合同（description、parameters、返回值）、多工具协作时 LLM 如何选工具、调 prompt 的实践经验，以及如何通过 steps 理解 ReAct 循环。'
+---
+
+上篇搭了一个能算数的 Agent——一个工具，一个 prompt，能自己判断什么时候该调计算器。但真正的 Agent 不会只有一个工具，也不会每次都一帆风顺。
+
+这篇记录我在给 Agent 加多个工具、让它操作文件系统时学到的核心东西：工具调用的"三份合同"、多工具协作、以及调 prompt 碰到的实际问题。
+
+---
+
+## 一、工具调用的三份合同
+
+定义一个工具，你和 LLM 之间签了三份合同。每份决定不同的事：
+
+| 你写的                           | LLM 收到的                       | 决定了什么                                            |
+| -------------------------------- | -------------------------------- | ----------------------------------------------------- |
+| `description: '读取文件内容...'` | 自然语言说明                     | **LLM 会不会调这个工具** — 描述不准，要么乱调要么不调 |
+| `parameters: z.object({...})`    | JSON Schema                      | **LLM 传什么参数** — schema 不精确，参数名就对不上    |
+| `execute()` 的返回值             | 文本或结构化数据，拼进对话上下文 | **LLM 下一步怎么做** — 返回值直接影响后续推理         |
+
+这三个可以被 LLM 分别"看到"和"理解"的东西，共同决定了工具调用的可靠性。
+
+### 第一份合同：description — 决定"会不会调"
+
+`description` 是 LLM 选工具的唯一依据。LLM 看不到你的 `execute` 函数体——它只能看到一段文字描述和一个参数 schema。所以 description 本质上就是工具的"广告牌"。
+
+怎么写算好？三条规则：
+
+1. **说清楚"什么时候用我"** — 用动词开头（"读取"、"写入"、"搜索"），不用模糊词（"处理"、"操作"）
+2. **说清楚"我不能干什么"** — 和别的工具划清边界
+3. **把典型使用场景写进去** — "用于查看文件内容"比"读取文件"更直接
+
+模糊描述的代价不是"可能选错"——是"几乎一定选错"。当两个工具的 description 都很像时，LLM 相当于在蒙。
+
+### 第二份合同：parameters — 决定"参数怎么填"
+
+`parameters` 是一个 Zod schema，AI SDK 在运行时把它转成 JSON Schema 发给 LLM。LLM 靠这个知道每个参数叫什么、什么类型、什么意思。
+
+```ts
+parameters: z.object({
+  file: z.string().describe('文件名，例如 notes.txt'),
+  content: z.string().describe('要写入的完整内容'),
+})
+```
+
+AI SDK 会自动转成：
+
+```json
+{
+  "file": { "type": "string", "description": "文件名，例如 notes.txt" },
+  "content": { "type": "string", "description": "要写入的完整内容" }
+}
+```
+
+关键经验：**参数名用 LLM 自然能想到的词。** 你写 `filename`，模型脑子里蹦出来的可能是 `file`——那就用 `file`。参数名和模型直觉之间的差距，会直接变成调工具失败。
+
+### 第三份合同：返回值 — 决定"下一步怎么走"
+
+这是最容易忽视的一份。工具返回值不是只给你看的——它会被原样喂回 LLM 的对话上下文，直接影响下一轮推理。
+
+比较两种处理"文件不存在"的方式：
+
+```ts
+// ❌ 抛异常 — LLM 收到的是空的 / tool-error，然后开始瞎编
+execute: async ({ file }) => {
+  const content = fs.readFileSync(file, 'utf-8')
+  return content
+}
+
+// ✅ 返回结构化错误 — LLM 知道出错了，会告诉用户或尝试别的方案
+execute: async ({ file }) => {
+  if (!fs.existsSync(file)) {
+    return { error: `文件 ${file} 不存在，可能路径写错了` }
+  }
+  const content = fs.readFileSync(file, 'utf-8')
+  return { file, content, size: content.length }
+}
+```
+
+原则很简单：**永远返回结构化对象，永远不要抛异常。** LLM 看到 `{ error: "..." }` 知道该怎么做——告诉用户文件不存在、建议换个文件名。LLM 看到一个空工具错误，会自己编一个结果。
+
+---
+
+## 二、多工具协作：LLM 怎么选工具
+
+当一个 Agent 有多个工具时，LLM 在每一轮循环里做的事：
+
+> 看 prompt → 读所有工具 description → 挑最匹配的那个 → 按 parameters 填参数
+
+你没有写任何 if/else 来控制流程。LLM 自己决定先调哪个、后调哪个。这是 Agent 和传统程序最本质的区别——**流程不是写死的，是模型在运行时自己选的。**
+
+三个工具的 description 对比：
+
+```ts
+const listFiles = tool({
+  description: '列出 workspace 目录下的所有文件和文件夹。' + '用于了解当前有哪些文件。不接受参数。',
+  parameters: z.object({}),
+})
+
+const readFile = tool({
+  description:
+    '读取 workspace 中指定文件的内容。' + '只能读取文件，不能写入或修改。用于查看文件里写了什么。',
+  parameters: z.object({
+    file: z.string().describe('文件名，例如 notes.txt'),
+  }),
+})
+
+const writeFile = tool({
+  description:
+    '将内容写入 workspace 中的文件。' + '会覆盖已有文件。只能写入，不能读取。用于创建或修改文件。',
+  parameters: z.object({
+    file: z.string().describe('文件名，例如 todo.txt'),
+    content: z.string().describe('要写入的完整内容'),
+  }),
+})
+```
+
+每个 description 都明确了三件事：**干什么、不能干什么、什么时候用。** 这就是多工具协作不出错的基础。
+
+---
+
+## 三、动手：文件助手 Agent
+
+做一个能操作文件系统的 Agent。先建一个 `workspace/` 目录作为它的工作区，然后给它三个工具：列目录、读文件、写文件。
+
+### 准备工作
+
+```bash
+mkdir -p workspace
+echo "学 AI Agent 的第一天" > workspace/notes.txt
+```
+
+### 完整代码
+
+```ts
+import { generateText, tool } from 'ai'
+import { createOpenAI } from '@ai-sdk/openai'
+import { z } from 'zod'
+import fs from 'node:fs'
+import path from 'node:path'
+
+const provider = createOpenAI({
+  baseURL: 'https://api.deepseek.com',
+  apiKey: process.env.DEEPSEEK_API_KEY!,
+})
+const model = provider.chat('deepseek-v4-flash')
+
+const WORKSPACE = './workspace'
+
+const listFiles = tool({
+  description: '列出 workspace 目录下的所有文件和文件夹。' + '用于了解当前有哪些文件。不接受参数。',
+  parameters: z.object({}),
+  execute: async () => {
+    const files = fs.readdirSync(WORKSPACE)
+    return { files, count: files.length }
+  },
+})
+
+const readFile = tool({
+  description:
+    '读取 workspace 中指定文件的内容。' + '只能读取文件，不能写入或修改。用于查看文件里写了什么。',
+  parameters: z.object({
+    file: z.string().describe('文件名，例如 notes.txt'),
+  }),
+  execute: async ({ file }) => {
+    if (!file) return { error: '缺少 file 参数' }
+    const filepath = path.join(WORKSPACE, file)
+    if (!fs.existsSync(filepath)) {
+      return { error: `文件不存在: ${file}` }
+    }
+    const content = fs.readFileSync(filepath, 'utf-8')
+    return { file, content, size: content.length }
+  },
+})
+
+const writeFile = tool({
+  description:
+    '将内容写入 workspace 中的文件。' + '会覆盖已有文件。只能写入，不能读取。用于创建或修改文件。',
+  parameters: z.object({
+    file: z.string().describe('文件名，例如 todo.txt'),
+    content: z.string().describe('要写入的完整内容'),
+  }),
+  execute: async ({ file, content }) => {
+    if (!file || !content) return { error: '缺少 file 或 content 参数' }
+    const filepath = path.join(WORKSPACE, file)
+    fs.writeFileSync(filepath, content, 'utf-8')
+    return { ok: true, file, bytes: content.length }
+  },
+})
+
+const { text, steps } = await generateText({
+  model,
+  tools: { listFiles, readFile, writeFile },
+  maxSteps: 10,
+  system:
+    '你是文件助手。规则：\n' +
+    '1. 不要输出计划或思考过程，直接调用工具\n' +
+    '2. 用 listFiles 列目录，用 readFile 读文件，用 writeFile 写文件\n' +
+    '3. 完成所有操作步骤后，用一句话总结结果\n' +
+    "4. 不要说'我来帮你'、'首先让我看看'之类的话，直接调工具",
+  prompt:
+    '执行以下操作：\n' +
+    '1. 调用 listFiles 查看目录\n' +
+    '2. 调用 writeFile 创建 todo.txt，content 写三条中文待办\n' +
+    '3. 调用 readFile 读取 notes.txt',
+})
+
+console.log(text)
+```
+
+运行：
+
+```bash
+node --env-file=.env --import tsx/esm fs-agent.ts
+```
+
+### 实际执行流程
+
+Agent 跑了大致 5 个步骤，全是它自己决定的：
+
+> ① listFiles → 看目录里有什么
+> ② writeFile → 创建 todo.txt
+> ③ listFiles → 确认创建成功
+> ④ readFile → 读 notes.txt
+> ⑤ 生成最终回复
+
+第③步特别值得注意——我没有告诉它"创建完要确认一下"，是它自己决定的。这就是 Agent：**你给工具和规则，它自己拿主意怎么完成。**
+
+---
+
+## 四、调 prompt 的实践经验
+
+写完代码首次跑，Agent 不干活。问题不在代码，在 prompt。
+
+### 模型"光说不干"
+
+第一次跑，LLM 输出了一段很长的计划文本——"我将执行以下操作：首先列出文件，然后创建 todo.txt..."——但一个工具都没调。
+
+原因：模型天然倾向"先说后做"。它把 `prompt` 里的指令当成了讨论话题，而不是待执行的任务。
+
+修复：在 `system` prompt 里加了明确的"行为指令"：
+
+```ts
+system:
+  "你是文件助手。规则：\n" +
+  "1. 不要输出计划或思考过程，直接调用工具\n" +
+  "2. 用 listFiles 列目录，用 readFile 读文件，用 writeFile 写文件\n" +
+  "3. 完成所有操作步骤后，用一句话总结结果\n" +
+  "4. 不要说'我来帮你'、'首先让我看看'之类的话，直接调工具",
+```
+
+效果立竿见影——模型不再"自言自语"，直接开始调工具。
+
+> 这个问题的本质是：**prompt 不只要告诉模型"做什么"，还要告诉它"怎么做"。** "不要输出计划，直接调工具"这句话压住了模型的"先说不做"倾向。
+
+### 参数名不匹配
+
+第二个问题：参数 schema 里写的是 `filename`，但模型填的是 `file`——两者对不上，调用失败。
+
+根本原因是 LLM 的直觉和 schema 不吻合。模型看到"文件名"这个描述，本能地填了 `file` 而不是 `filename`。改成 `file` 之后问题消失。
+
+> 规则：**参数名用 LLM 自然会想到的词，不要用你习惯的命名。** 这不是一个"规范命名"的问题——参数名是 LLM 的 UI，要以 LLM 的认知习惯为准。
+
+### 参数漏填
+
+description 写得含糊时，模型有时候会漏传参数。比如 description 只写"写入文件"，模型可能只传 `file` 不传 `content`。
+
+解决方式是把必需参数直接写进 description：
+
+```ts
+// ❌ 模型可能忘记传 content
+description: '将内容写入文件。'
+
+// ✅ 明确告诉模型必须传什么
+description: '写入文件。必须同时传 file（文件名）和 content（内容）两个参数。'
+```
+
+---
+
+## 五、用 steps 理解 ReAct 循环
+
+ReAct 是 Reasoning + Acting，Agent 的核心运行模式：思考 → 行动 → 观察 → 再思考，循环直到任务完成。
+
+AI SDK 的 `steps` 数组完整记录了这个循环。一篇典型的 steps 输出大致是：
+
+```
+步骤 1 — tool-calls
+  🔧 listFiles({})
+步骤 1 — tool-results
+  📦 {"files":["notes.txt"],"count":1}
+步骤 2 — tool-calls
+  🔧 writeFile({"file":"todo.txt","content":"1. 学习 AI Agent\n2. ..."})
+步骤 2 — tool-results
+  📦 {"ok":true,"file":"todo.txt","bytes":68}
+步骤 3 — tool-calls
+  🔧 readFile({"file":"notes.txt"})
+步骤 3 — tool-results
+  📦 {"file":"notes.txt","content":"学 AI Agent 的第一天","size":12}
+步骤 4 — stop
+  📝 已完成：创建了 todo.txt，...
+```
+
+每一行对应 ReAct 的一个环节：
+
+- **Think**：model 内部推理过程（不直接体现在 steps 里，但 `tool-call` 包含了决策结果）
+- **Act**：`tool-call` — 模型决定调哪个工具、传什么参数
+- **Observe**：`tool-result` — 工具的返回值，作为新一轮 Think 的输入
+
+```ts
+// 打印完整 steps，理解 Agent 的每一步决策
+for (const step of steps) {
+  console.log(`步骤 ${step.stepNumber} — ${step.finishReason}`)
+  for (const item of step.content) {
+    if (item.type === 'tool-call')
+      console.log(`  🔧 ${item.toolName}(${JSON.stringify(item.input)})`)
+    else if (item.type === 'tool-result') console.log(`  📦 ${JSON.stringify(item.output)}`)
+    else if (item.type === 'text') console.log(`  📝 ${item.text}`)
+  }
+}
+```
+
+这个日志在生产环境里是调试利器。Agent 出了问题时，你不会看到"为什么它做了这件事"——你只会看到现象。steps 是第一手的线索。
+
+---
+
+## 核心收获
+
+1. **工具调用的三份合同每份都重要。** description 决定会不会调，parameters 决定参数怎么填，返回值决定下一步怎么走。缺哪份都会出问题。
+
+2. **description 是工具的说明书。** 动词开头，说清楚"什么时候用"和"不能干什么"。模糊的描述 = 随机选工具。
+
+3. **返回值会喂回 LLM。** 返回 `{ error: "..." }` 比抛异常好得多。LLM 看到明确的错误才知道怎么补救。
+
+4. **多工具协作的关键在描述区分度。** LLM 不看你代码逻辑，只看 description。两个描述太像的工具，LLM 区分不了。
+
+5. **调 prompt 不是在写文案——是在指导一个非常听话但需要明确指令的执行者。** 告诉它"不要什么"和"要什么"一样重要。
+
+6. **steps 是理解 Agent 行为的窗口。** 不要只看最终输出——每一步的工具调用和返回值才是理解模型决策的关键。
+
+下一篇：给 Agent 装上知识——RAG（检索增强生成），让它能读自己的文档，根据内容回答问题。
