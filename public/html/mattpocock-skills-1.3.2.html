@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matt Pocock Skills 全解 · 39 个技能怎么用、凭什么这么设计（v1.3.2）</title>
+<style>
+  :root {
+    --bg: #14161c;
+    --panel: #1d2029;
+    --panel2: #232735;
+    --border: #31374a;
+    --text: #e3e7f0;
+    --muted: #9aa3b8;
+    --purple: #b195f5;
+    --teal: #52d5c5;
+    --amber: #f2c069;
+    --rose: #f28b94;
+    --blue: #6faef5;
+    --green: #7fd88f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.75;
+    padding: 40px 24px 100px;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; }
+  h1 { font-size: 26px; margin-bottom: 8px; line-height: 1.45; }
+  .sub { color: var(--muted); margin-bottom: 8px; font-size: 14px; }
+  .meta { color: #6f778c; font-size: 12.5px; margin-bottom: 34px; }
+  h2 { font-size: 20px; margin: 52px 0 16px; padding-left: 12px; border-left: 4px solid var(--purple); }
+  h2.teal-b { border-color: var(--teal); }
+  h2.amber-b { border-color: var(--amber); }
+  h2.rose-b { border-color: var(--rose); }
+  h2.blue-b { border-color: var(--blue); }
+  h3 { font-size: 16px; margin: 26px 0 10px; color: #d8dcec; }
+  h4 { font-size: 14px; margin: 18px 0 8px; color: var(--muted); letter-spacing: .3px; }
+  p { margin-bottom: 10px; font-size: 14.5px; }
+  a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted rgba(111,174,245,.45); }
+  a:hover { color: #9ccbfa; }
+  code {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 12.8px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    color: var(--blue);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+  }
+  .svgbox {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    overflow-x: auto;
+    margin-bottom: 18px;
+  }
+  svg { display: block; min-width: 1150px; width: 100%; height: auto; }
+  svg text { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--purple);
+    border-radius: 10px;
+    padding: 15px 17px;
+  }
+  .card.teal { border-left-color: var(--teal); }
+  .card.amber { border-left-color: var(--amber); }
+  .card.rose { border-left-color: var(--rose); }
+  .card.blue { border-left-color: var(--blue); }
+  .card.wide { grid-column: 1 / -1; }
+  .card h3 { font-size: 15.5px; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .card h3 code { font-size: 13px; }
+  .card p { font-size: 13.4px; color: #c8cedd; margin-bottom: 6px; }
+  .card .oneline { color: #e6eaf5; font-size: 13.6px; }
+  .card .why::before { content: "为什么｜"; color: var(--purple); font-weight: 600; }
+  .card .how::before { content: "怎么用｜"; color: var(--blue); font-weight: 600; }
+  .card.teal .why::before { color: var(--teal); }
+  .card.amber .why::before { color: var(--amber); }
+  .card.rose .why::before { color: var(--rose); }
+  .use, .skip { font-size: 13px; margin-top: 4px; }
+  .use::before { content: "✅ 适合｜"; color: var(--green); font-weight: 600; }
+  .skip::before { content: "⛔ 别用｜"; color: var(--rose); font-weight: 600; }
+  .new { font-size: 12.6px; margin-top: 8px; padding: 7px 10px; color: #cfd6e6;
+    background: rgba(242,192,105,.06); border: 1px solid rgba(242,192,105,.28);
+    border-left: 3px solid var(--amber); border-radius: 7px; }
+  .new::before { content: "1.3.2｜"; color: var(--amber); font-weight: 600; }
+
+  .badge {
+    display: inline-block; font-size: 10.5px; padding: 0 7px; border-radius: 9px;
+    line-height: 17px; vertical-align: middle; font-weight: 500; white-space: nowrap;
+  }
+  .badge.user { color: var(--amber); background: rgba(242,192,105,.12); border: 1px solid rgba(242,192,105,.32); }
+  .badge.model { color: var(--teal); background: rgba(82,213,197,.1); border: 1px solid rgba(82,213,197,.3); }
+  .badge.beta { color: var(--rose); background: rgba(242,139,148,.1); border: 1px solid rgba(242,139,148,.3); }
+  .badge.frozen { color: var(--muted); background: rgba(154,163,184,.1); border: 1px solid rgba(154,163,184,.3); }
+  .badge.core { color: var(--purple); background: rgba(177,149,245,.12); border: 1px solid rgba(177,149,245,.32); }
+  .badge.newb { color: var(--amber); background: rgba(242,192,105,.14); border: 1px solid rgba(242,192,105,.4); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.2px; margin: 10px 0 20px; }
+  th, td { border: 1px solid var(--border); padding: 9px 11px; text-align: left; vertical-align: top; }
+  th { background: var(--panel2); color: var(--muted); font-weight: 600; }
+  td code { white-space: nowrap; }
+  tr:nth-child(even) td { background: rgba(255,255,255,.012); }
+  .dim { color: var(--muted); }
+  .nowrap { white-space: nowrap; }
+
+  .callout {
+    background: rgba(177,149,245,.08);
+    border: 1px solid rgba(177,149,245,.35);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .callout.amberc { background: rgba(242,192,105,.07); border-color: rgba(242,192,105,.35); }
+  .callout.tealc { background: rgba(82,213,197,.06); border-color: rgba(82,213,197,.32); }
+  .callout.rosec { background: rgba(242,139,148,.06); border-color: rgba(242,139,148,.32); }
+  .callout strong { color: var(--purple); }
+  .callout.amberc strong { color: var(--amber); }
+  .callout.tealc strong { color: var(--teal); }
+  .callout.rosec strong { color: var(--rose); }
+  .callout ul, .callout ol { margin-bottom: 0; }
+
+  ul, ol { padding-left: 22px; margin-bottom: 12px; font-size: 14.2px; }
+  li { margin-bottom: 6px; }
+  .kbd-note { color: var(--muted); font-size: 13px; }
+
+  html, body { overflow-x: hidden; }
+  .wrap, .grid, .card, .panel, .ex, .q, .callout, .svgbox { min-width: 0; max-width: 100%; }
+  p, li, td, th, .card p, .card .oneline, .ex, .q, .callout { overflow-wrap: anywhere; word-break: break-word; }
+  table { table-layout: auto; }
+  td code, th code { white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+  @media (min-width: 1000px) { td:first-child code { white-space: nowrap; } }
+
+  .q {
+    background: #191c24; border: 1px solid var(--border); border-left: 3px solid var(--blue);
+    border-radius: 8px; padding: 12px 14px; margin: 10px 0; font-size: 13.4px; color: #cfd6e6;
+  }
+  .q .qq { color: var(--blue); font-weight: 600; }
+  .q .rec { color: var(--green); }
+  .q .rec::before { content: "➡️ "; }
+
+  .steps { counter-reset: s; list-style: none; padding-left: 0; }
+  .steps > li {
+    counter-increment: s; position: relative; padding-left: 34px; margin-bottom: 12px; font-size: 14px;
+  }
+  .steps > li::before {
+    content: counter(s); position: absolute; left: 0; top: 2px;
+    width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%;
+    background: rgba(177,149,245,.16); border: 1px solid rgba(177,149,245,.4);
+    color: var(--purple); font-size: 12px; font-weight: 700;
+  }
+  .toc { columns: 2; column-gap: 26px; font-size: 13.6px; }
+  .toc a { border-bottom: none; }
+  .toc div { margin-bottom: 5px; break-inside: avoid; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Matt Pocock Skills 全解：39 个技能怎么用、凭什么这么写、1.3.2 改了什么</h1>
+<div class="sub">对应 <a href="https://github.com/mattpocock/skills">github.com/mattpocock/skills</a> 的 <strong>v1.3.2</strong>，逐个文件读过一遍。下面只写这一版里真实存在的东西。</div>
+<div class="meta">工程 20 个 · 生产力 7 个 · in-progress 8 个 · misc 4 个 · deprecated 空桶（0 个）<br>
+想自己写 skill、或者只想挑几个用得上的，看第一、三、四、十章就够；想把 39 个都过一遍，看第六章。</div>
+
+<div class="panel">
+<h4>目录</h4>
+<div class="toc">
+<div><a href="#a1">一、先看结论：四句话 + 它想治的四个毛病</a></div>
+<div><a href="#a2">二、全景：一条主线、三条岔路、一层词、一圈独立工具</a></div>
+<div><a href="#a3">三、两个开关：哪些要你亲自敲，哪些模型能自己抓</a></div>
+<div><a href="#a4">四、这套 skill 自己是怎么写出来的</a></div>
+<div><a href="#a5">五、grill 家族：同一个动作，十一种入口</a></div>
+<div><a href="#a6">六、39 个技能逐个讲</a></div>
+<div><a href="#a7">七、四个典型场景，从头走一遍</a></div>
+<div><a href="#a8">八、上下文该清、该接、还是该派出去</a></div>
+<div><a href="#a9">九、跟你仓库里已有的规矩撞了怎么办</a></div>
+<div><a href="#a10">十、怎么装、1.3.2 改了什么、速查</a></div>
+<div><a href="#a11">十一、一页纸执行手册</a></div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a1">一、先看结论：四句话 + 它想治的四个毛病</h2>
+
+<p>先说清楚它不是什么。它不是那种"从提需求到上线全包"的流程框架（GSD、BMAD、Spec-Kit 那一路）。那类东西的毛病是：它把流程拿走自己管，流程一旦不合你的意，你只能在它的规则里绕，改不动。</p>
+
+<p>这套东西反过来：每个 skill 只钉住<strong>一个动作该怎么做</strong>，做完就退出，不接管你整条路。所以你随时可以改它、违反它、只挑一个用。看懂它，只要记住四句话。</p>
+
+<div class="grid">
+  <div class="card">
+    <h3>① 它是纪律，不是流程</h3>
+    <p class="oneline">一个 skill 只回答"这件事怎么做才算做对"。</p>
+    <p class="why">流程引擎出了 bug 你只能绕；纪律你看一眼就知道该怎么改。<code>/tdd</code> 只讲红绿循环、测试写在哪、哪三种测试是白写的，它不管你怎么开分支；把活串起来的是 <code>/implement</code>，不是它。</p>
+    <p class="use">你想让 agent 在某个动作上稳定做对，就抽一个 skill。</p>
+    <p class="skip">你想让它"自动把整个需求做完"，别指望单个 skill。</p>
+  </div>
+  <div class="card teal">
+    <h3>② 触发权分两种，不能混</h3>
+    <p class="oneline">有些 skill 只有你亲自敲才生效，有些模型能自己伸手拿。</p>
+    <p class="why">这不是风格问题，是成本问题。模型能自己拿的那种，描述要一直挂在上下文里，每轮都在花钱；只有你能敲的那种不占地方，代价是你得记住它存在。混着做，就会两头吃亏。</p>
+    <p class="use">要串流程、要你拍板的，做成"只有你能敲"。</p>
+    <p class="skip">别给"只想手动跑一次"的东西写自动触发词。</p>
+  </div>
+  <div class="card amber">
+    <h3>③ 先有词，才有短话</h3>
+    <p class="oneline">一个词顶一整片行为：<em>紧回路</em>、<em>曳光弹</em>、<em>深模块</em>、<em>战争迷雾</em>。</p>
+    <p class="why">这些词模型在训练时见过，你说一个词，它就调出一整套做法；你自造一个词，得先花一段话解释，它还未必照做。词定下来以后，变量名、文件名、测试名会跟着一起定，话自然就短了。</p>
+    <p class="use">你发现自己反复用"快、稳定、开销小"这种三个词描述同一件事时，找个现成的词把它收掉。</p>
+    <p class="skip">别为了造词而造词，先找现成的。</p>
+  </div>
+  <div class="card rose">
+    <h3>④ 上下文是有限的，指过去比搬进来便宜</h3>
+    <p class="oneline">能让 agent 顺着一句话自己找到的，就别塞进上下文。</p>
+    <p class="why">常驻的材料按"token × 轮次"收费。入口文档只放指路的一句话，细节留在文档里等着被查；模型本来就会做的事，你写一遍等于白写还占地方。</p>
+    <p class="use">大段规范、设计稿、历史决定，写成"在哪、什么时候去看"。</p>
+    <p class="skip">别用"以后可能有用"的理由留常驻文本。</p>
+  </div>
+</div>
+
+<h3>它想治的四个毛病</h3>
+<p>README 里把失败模式列成四条，整套 skill 基本就是围绕这四条长出来的。</p>
+<table>
+<tr><th style="width:16%">毛病</th><th style="width:30%">表现</th><th style="width:26%">它的解法</th><th>对应的 skill</th></tr>
+<tr><td><strong>它没做我要的</strong></td><td>你觉得自己说清了，交付出来完全不是那回事。问题出在开头没聊透，不在模型笨。</td><td>开工前先<strong>一轮一轮追问</strong>，问到你没有默认假设为止。</td><td><code>/grilling</code> <code>/grill-me</code> <code>/grill-with-docs</code></td></tr>
+<tr><td><strong>它话太多</strong></td><td>二十个词说一个词的事。项目里的词没定下来，它只能临场猜。</td><td>建<strong>共用的词表</strong>，把难以反悔的决定写成 ADR。词定了，命名跟着定。</td><td><code>/domain-modeling</code>（<code>/grill-with-docs</code> 会用）</td></tr>
+<tr><td><strong>代码不 work</strong></td><td>需求明明聊清楚了，写出来还是不对。缺的是一条能马上告诉你"错了"的反馈回路。</td><td>把<strong>先写会红的测试</strong>变成纪律，再写刚好够用的实现。</td><td><code>/tdd</code> <code>/diagnosing-bugs</code></td></tr>
+<tr><td><strong>越写越乱</strong></td><td>agent 让写代码变快，也让代码库变复杂的速度变快。</td><td>定期挑一块<strong>把行为往小接口后面收</strong>，让改动以后只落在一处。</td><td><code>/improve-codebase-architecture</code> <code>/codebase-design</code></td></tr>
+</table>
+
+<div class="callout">
+<strong>一句话总结：</strong>先用追问把"要什么"问死，用词表把"叫什么"定死，用先写测试把"对不对"锁死，用模块设计把"以后还敢不敢改"保住。剩下三十多个 skill，都是这四件事在不同场景下的入口。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a2">二、全景：一条主线、三条岔路、一层词、一圈独立工具</h2>
+
+<p>下面这张图是 39 个技能的位置图。<strong>实线 = 产物往下传，虚线 = 可以被调用或者旁路</strong>。颜色：紫=主线（你手动敲），青=模型能自己拿的基础件，琥珀=岔路，玫红=随叫随到的独立工具。</p>
+
+<div class="svgbox">
+<svg viewBox="0 0 1220 1010" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8a93ab"/>
+    </marker>
+    <marker id="arP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b195f5"/>
+    </marker>
+    <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f2c069"/>
+    </marker>
+    <marker id="arT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#52d5c5"/>
+    </marker>
+    <marker id="arR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f28b94"/>
+    </marker>
+  </defs>
+
+  <!-- ===== 前置 ===== -->
+  <rect x="20" y="14" width="1180" height="56" rx="12" fill="#1a1d26" stroke="#4a4130" stroke-dasharray="6 4"/>
+  <text x="40" y="38" fill="#f2c069" font-size="13" font-weight="700">前置（每个仓库跑一次）</text>
+  <text x="40" y="58" fill="#9aa3b8" font-size="12.5">/setup-matt-pocock-skills → 写 docs/agents/issue-tracker.md · triage-labels.md · domain.md，并把指针写进 AGENTS.md / CLAUDE.md</text>
+  <rect x="960" y="26" width="222" height="32" rx="8" fill="#232735" stroke="#f2c069"/>
+  <text x="1071" y="47" fill="#f2c069" font-size="12.5" text-anchor="middle">/ask-matt ← 不知道该用哪个就问它</text>
+
+  <!-- ===== 主线 ===== -->
+  <rect x="20" y="88" width="1180" height="292" rx="14" fill="#1d2029" stroke="#31374a"/>
+  <text x="40" y="114" fill="#b195f5" font-size="13.5" font-weight="700">主线：从想法到交付（九成的需求走这条；前 3 步尽量待在同一个会话里）</text>
+
+  <rect x="44" y="160" width="156" height="58" rx="9" fill="#2a2340" stroke="#b195f5" stroke-width="1.6"/>
+  <text x="122" y="184" fill="#e3e7f0" font-size="13" text-anchor="middle" font-weight="600">/grill-with-docs</text>
+  <text x="122" y="203" fill="#9aa3b8" font-size="11" text-anchor="middle">追问 + 顺手定词表/ADR</text>
+
+  <rect x="244" y="160" width="112" height="58" rx="9" fill="#252a38" stroke="#b195f5"/>
+  <text x="300" y="184" fill="#e3e7f0" font-size="13" text-anchor="middle" font-weight="600">/to-spec</text>
+  <text x="300" y="203" fill="#9aa3b8" font-size="11" text-anchor="middle">合成 spec（不再问）</text>
+
+  <rect x="400" y="160" width="122" height="58" rx="9" fill="#252a38" stroke="#b195f5"/>
+  <text x="461" y="184" fill="#e3e7f0" font-size="13" text-anchor="middle" font-weight="600">/to-tickets</text>
+  <text x="461" y="203" fill="#9aa3b8" font-size="11" text-anchor="middle">切小片 + 标依赖</text>
+
+  <rect x="566" y="132" width="150" height="46" rx="9" fill="#252a38" stroke="#b195f5"/>
+  <text x="641" y="152" fill="#e3e7f0" font-size="12.5" text-anchor="middle" font-weight="600">/implement（逐张）</text>
+  <text x="641" y="169" fill="#9aa3b8" font-size="10.5" text-anchor="middle">每张票一个干净会话</text>
+
+  <rect x="566" y="190" width="150" height="46" rx="9" fill="#252a38" stroke="#b195f5"/>
+  <text x="641" y="210" fill="#e3e7f0" font-size="12.5" text-anchor="middle" font-weight="600">/implement-spec（整本）</text>
+  <text x="641" y="227" fill="#9aa3b8" font-size="10.5" text-anchor="middle">按依赖图并行开子任务</text>
+
+  <rect x="762" y="160" width="86" height="58" rx="9" fill="#252a38" stroke="#b195f5"/>
+  <text x="805" y="184" fill="#e3e7f0" font-size="13" text-anchor="middle" font-weight="600">/pr</text>
+  <text x="805" y="203" fill="#9aa3b8" font-size="10.5" text-anchor="middle">一图说清改动</text>
+
+  <rect x="886" y="160" width="104" height="58" rx="9" fill="#252a38" stroke="#b195f5"/>
+  <text x="938" y="184" fill="#e3e7f0" font-size="13" text-anchor="middle" font-weight="600">/retro</text>
+  <text x="938" y="203" fill="#9aa3b8" font-size="10.5" text-anchor="middle">改环境，不改代码</text>
+
+  <rect x="1020" y="160" width="158" height="88" rx="9" fill="#1f2330" stroke="#31374a" stroke-dasharray="5 4"/>
+  <text x="1099" y="182" fill="#9aa3b8" font-size="11.5" text-anchor="middle">会话怎么切</text>
+  <text x="1099" y="201" fill="#c8cedd" font-size="11" text-anchor="middle">前 3 步别清</text>
+  <text x="1099" y="219" fill="#c8cedd" font-size="11" text-anchor="middle">票与票之间可以清</text>
+  <text x="1099" y="237" fill="#c8cedd" font-size="11" text-anchor="middle">大约 150k 就该切</text>
+
+  <line x1="200" y1="189" x2="240" y2="189" stroke="#b195f5" stroke-width="1.6" marker-end="url(#arP)"/>
+  <line x1="356" y1="189" x2="396" y2="189" stroke="#b195f5" stroke-width="1.6" marker-end="url(#arP)"/>
+  <line x1="522" y1="182" x2="562" y2="160" stroke="#b195f5" stroke-width="1.6" marker-end="url(#arP)"/>
+  <line x1="522" y1="196" x2="562" y2="210" stroke="#b195f5" stroke-width="1.6" marker-end="url(#arP)"/>
+  <line x1="716" y1="180" x2="758" y2="186" stroke="#b195f5" stroke-width="1.6" marker-end="url(#arP)"/>
+  <line x1="848" y1="189" x2="882" y2="189" stroke="#b195f5" stroke-width="1.6" marker-end="url(#arP)"/>
+
+  <!-- 主线内部驱动层 -->
+  <rect x="430" y="262" width="700" height="98" rx="10" fill="#1a1d26" stroke="#3a4156" stroke-dasharray="5 4"/>
+  <text x="448" y="284" fill="#9aa3b8" font-size="11.5" font-weight="700">内部驱动（被上面自动调用）· /implement 固定顺序：tdd 写票 → code-review 收尾 → commit</text>
+  <rect x="448" y="294" width="120" height="50" rx="8" fill="#1f2a2a" stroke="#52d5c5"/>
+  <text x="508" y="315" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/tdd</text>
+  <text x="508" y="332" fill="#9aa3b8" font-size="10.5" text-anchor="middle">先红后绿，一个 seam</text>
+  <rect x="584" y="294" width="140" height="50" rx="8" fill="#1f2a2a" stroke="#52d5c5"/>
+  <text x="654" y="315" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/code-review</text>
+  <text x="654" y="332" fill="#9aa3b8" font-size="10.5" text-anchor="middle">规范 ∥ 需求，两栏不合并</text>
+  <rect x="740" y="294" width="176" height="50" rx="8" fill="#1f2a2a" stroke="#52d5c5"/>
+  <text x="828" y="315" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/codebase-design</text>
+  <text x="828" y="332" fill="#9aa3b8" font-size="10.5" text-anchor="middle">模块深度的词汇（参考，不是会话）</text>
+  <rect x="932" y="294" width="180" height="50" rx="8" fill="#1f2a2a" stroke="#52d5c5"/>
+  <text x="1022" y="315" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/domain-modeling</text>
+  <text x="1022" y="332" fill="#9aa3b8" font-size="10.5" text-anchor="middle">改词表，改 ADR</text>
+  <line x1="616" y1="240" x2="560" y2="290" stroke="#52d5c5" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arT)"/>
+  <line x1="641" y1="240" x2="648" y2="290" stroke="#52d5c5" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arT)"/>
+
+  <!-- prototype 旁路 -->
+  <rect x="44" y="262" width="156" height="58" rx="9" fill="#2b2419" stroke="#f2c069"/>
+  <text x="122" y="286" fill="#f2c069" font-size="12.5" text-anchor="middle" font-weight="600">/prototype</text>
+  <text x="122" y="304" fill="#9aa3b8" font-size="10.5" text-anchor="middle">先丢个能跑的东西出来</text>
+  <path d="M122 220 L122 258" stroke="#f2c069" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arA)" marker-start="url(#arA)"/>
+  <text x="210" y="252" fill="#8a93ab" font-size="10.5">试验件单独开一个会话做，做完把结论带回来，不要留代码</text>
+
+  <!-- ===== 岔路 ===== -->
+  <rect x="20" y="396" width="1180" height="176" rx="14" fill="#1d2029" stroke="#3a3220" stroke-dasharray="5 4"/>
+  <text x="40" y="422" fill="#f2c069" font-size="13.5" font-weight="700">三条岔路：不是主线，但最后都并回主线</text>
+
+  <rect x="52" y="446" width="150" height="56" rx="9" fill="#2b2419" stroke="#f2c069"/>
+  <text x="127" y="469" fill="#f2c069" font-size="12.5" text-anchor="middle" font-weight="600">/triage</text>
+  <text x="127" y="487" fill="#9aa3b8" font-size="10.5" text-anchor="middle">别人提的 bug / 需求</text>
+  <text x="127" y="523" fill="#8a93ab" font-size="10.5" text-anchor="middle">产出：能直接开工的说明</text>
+
+  <rect x="262" y="446" width="164" height="56" rx="9" fill="#2b2419" stroke="#f2c069"/>
+  <text x="344" y="469" fill="#f2c069" font-size="12.5" text-anchor="middle" font-weight="600">/diagnosing-bugs</text>
+  <text x="344" y="487" fill="#9aa3b8" font-size="10.5" text-anchor="middle">难 bug / 变慢 / 偶发失败</text>
+  <text x="344" y="523" fill="#8a93ab" font-size="10.5" text-anchor="middle">先造一条"会红"的回路</text>
+
+  <rect x="486" y="446" width="150" height="56" rx="9" fill="#2b2419" stroke="#f2c069"/>
+  <text x="561" y="469" fill="#f2c069" font-size="12.5" text-anchor="middle" font-weight="600">/wayfinder</text>
+  <text x="561" y="487" fill="#9aa3b8" font-size="10.5" text-anchor="middle">一个会话装不下的活</text>
+  <text x="561" y="523" fill="#8a93ab" font-size="10.5" text-anchor="middle">画决策地图，不做交付</text>
+
+  <rect x="700" y="446" width="196" height="56" rx="9" fill="#1f2330" stroke="#31374a"/>
+  <text x="798" y="469" fill="#c8cedd" font-size="12" text-anchor="middle" font-weight="600">/improve-codebase-architecture</text>
+  <text x="798" y="487" fill="#9aa3b8" font-size="10.5" text-anchor="middle">扫一遍 → HTML 报告 → 挑一个</text>
+  <text x="798" y="523" fill="#8a93ab" font-size="10.5" text-anchor="middle">隔几天跑一次，是体检不是抢救</text>
+
+  <rect x="912" y="446" width="158" height="56" rx="9" fill="#1f2330" stroke="#31374a"/>
+  <text x="991" y="469" fill="#c8cedd" font-size="12" text-anchor="middle" font-weight="600">/research</text>
+  <text x="991" y="487" fill="#9aa3b8" font-size="10.5" text-anchor="middle">后台读一手资料，落引用笔记</text>
+  <text x="991" y="523" fill="#8a93ab" font-size="10.5" text-anchor="middle">读完喂回追问那头</text>
+
+  <text x="40" y="550" fill="#8a93ab" font-size="10.5">并回点：/triage 产出可开工说明 → /implement　·　/diagnosing-bugs 修完 → 同一个会话里跑 /retro　·　/wayfinder 地图清楚了 → /to-spec</text>
+  <text x="40" y="566" fill="#8a93ab" font-size="10.5">/improve-codebase-architecture 选中一个 → /grill-with-docs　·　/research 的笔记 → 喂回 /grill-with-docs　·　/prototype 的结论 → 也回到 /grill-with-docs</text>
+
+  <!-- ===== 词表层 ===== -->
+  <rect x="20" y="596" width="1180" height="126" rx="14" fill="#1a2422" stroke="#2f4a45"/>
+  <text x="40" y="622" fill="#52d5c5" font-size="13.5" font-weight="700">词表层：上面所有 skill 都靠它说话，你也可以单独喊</text>
+  <rect x="52" y="640" width="140" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="122" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/grilling</text>
+  <text x="122" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">决策树 · 这一轮 · 轮次</text>
+  <rect x="208" y="640" width="160" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="288" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/domain-modeling</text>
+  <text x="288" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">挑词的毛病，写词表/ADR</text>
+  <rect x="384" y="640" width="158" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="463" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/codebase-design</text>
+  <text x="463" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">模块 / 深度 / seam / 适配层</text>
+  <rect x="558" y="640" width="150" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="633" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/tdd</text>
+  <text x="633" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">好测试 / seam / 反模式</text>
+  <rect x="724" y="640" width="176" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="812" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/writing-for-agents</text>
+  <text x="812" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">怎么写给人/给 agent 看的文档</text>
+  <rect x="916" y="640" width="150" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="991" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/research</text>
+  <text x="991" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">一手资料 + 引用</text>
+  <rect x="1082" y="640" width="96" height="56" rx="9" fill="#182c2a" stroke="#52d5c5"/>
+  <text x="1130" y="664" fill="#52d5c5" font-size="12.5" text-anchor="middle" font-weight="600">/wizard</text>
+  <text x="1130" y="682" fill="#9aa3b8" font-size="10.5" text-anchor="middle">只有人能做的步骤</text>
+
+  <!-- ===== 独立工具 ===== -->
+  <rect x="20" y="740" width="1180" height="122" rx="14" fill="#1f1c22" stroke="#4a2f34"/>
+  <text x="40" y="766" fill="#f28b94" font-size="13.5" font-weight="700">独立工具（不接主线，随时喊）</text>
+  <rect x="52" y="784" width="118" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="111" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/grill-me</text>
+  <text x="111" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">不在仓库里时用</text>
+  <rect x="186" y="784" width="112" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="242" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/handoff</text>
+  <text x="242" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">换工具 / 换目录</text>
+  <rect x="314" y="784" width="146" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="387" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/to-questionnaire</text>
+  <text x="387" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">答案在别人脑子里</text>
+  <rect x="476" y="784" width="118" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="535" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/wait-what</text>
+  <text x="535" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">上一句没听懂</text>
+  <rect x="610" y="784" width="104" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="662" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/teach</text>
+  <text x="662" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">分几次学会一个东西</text>
+  <rect x="730" y="784" width="140" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="800" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/retro</text>
+  <text x="800" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">改环境不改代码</text>
+  <rect x="886" y="784" width="140" height="52" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="956" y="806" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="600">/setup-*</text>
+  <text x="956" y="823" fill="#9aa3b8" font-size="10" text-anchor="middle">一次性配置</text>
+  <rect x="1042" y="784" width="136" height="52" rx="8" fill="#26232b" stroke="#5a4650" stroke-dasharray="4 3"/>
+  <text x="1110" y="806" fill="#9aa3b8" font-size="11.5" text-anchor="middle" font-weight="600">in-progress ×8</text>
+  <text x="1110" y="823" fill="#6f778c" font-size="10" text-anchor="middle">beta，随时会变</text>
+
+  <text x="20" y="896" fill="#6f778c" font-size="11.5">图例：紫=主线（你手动敲）· 青=模型能自己拿的基础件 · 琥珀=岔路/旁路 · 玫红=独立工具 · 虚线=可以调用或者旁路的关系</text>
+</svg>
+</div>
+
+<h3>这张图怎么读</h3>
+<ul>
+<li><strong>主线只有一条</strong>：追问 → spec → 拆票 → 逐张实现（或整本并行）→ PR → 复盘。任何"做需求"的活，最后都落在这条线上。</li>
+<li><strong>岔路只是入口不同</strong>：别人提的 bug 从 <code>/triage</code> 进；难 bug 从 <code>/diagnosing-bugs</code> 进；大到看不清路的活从 <code>/wayfinder</code> 进。它们最后都汇回主线，不会各自长出一条流水线。</li>
+<li><strong>词表层不是工具，是语言</strong>：<code>/tdd</code>、<code>/codebase-design</code> 本身不产出流程，它们定义"什么叫好测试""什么叫深模块"。主线里的 skill 靠这些词互相说话。</li>
+<li><strong>独立工具不排队</strong>：<code>/handoff</code>、<code>/wait-what</code>、<code>/teach</code> 跟某个需求无关，是随手用的。</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="a3" class="teal-b">三、两个开关：哪些要你亲自敲，哪些模型能自己抓</h2>
+
+<p>这是整套设计里唯一一条不能松的规矩。搞懂它，你就不会再问"为什么我让它自己用 /to-spec，它不用"。</p>
+
+<div class="panel">
+<p><strong>只有你能敲的</strong>（文件里写着 <code>disable-model-invocation: true</code>，Codex 那边是 <code>policy.allow_implicit_invocation: false</code>）：模型看不见它，别的 skill 也调不动它。描述写成给你看的摘要，不带"什么时候用我"这种触发词。代价是你得记住它存在；好处是一分上下文都不占。</p>
+<p><strong>模型也能自己拿的</strong>：不写上面那两个字段。描述是写给模型的"什么时候来拿我"，要带足触发场景。代价是这段描述一直挂在上下文里；好处是它能被自动抓、也能被别的 skill 调用。</p>
+<p class="kbd-note">判断只有一句：<em>模型有没有可能自己需要它？有没有别的 skill 需要调它？</em>两个都没有，就做成"只有你能敲"，别付那份常驻开销。</p>
+</div>
+
+<div class="callout rosec">
+<strong>硬边界（1.3.0 为此专门修过一轮）：</strong>只有你能敲的 skill，<strong>永远</strong>不能被别的 skill 调用，哪怕正文里写着"调用 setup-matt-pocock-skills"。所以 <code>/to-spec</code>、<code>/to-tickets</code>、<code>/triage</code>、<code>/code-review</code>、<code>/wayfinder</code> 里统一写成：<em>"issue tracker 应该已经给你了；如果没有，<strong>让用户去跑</strong> /setup-matt-pocock-skills"</em>。那是给人看的指令，不是给模型的调用。
+</div>
+
+<h3>谁真的会调谁</h3>
+<p>下面这些调用关系都能在源码里找到对应写法。注意：<strong>右边只会出现"模型也能自己拿"的那些</strong>。</p>
+
+<table>
+<tr><th style="width:22%">谁</th><th style="width:30%">调什么</th><th>调来干什么</th></tr>
+<tr><td><code>/grill-me</code> <span class="badge user">你敲</span></td><td><code>grilling</code></td><td>整个 skill 只有一行正文：转给 grilling。它存在的意义就是给"不在仓库里"这件事一个名字。</td></tr>
+<tr><td><code>/grill-with-docs</code> <span class="badge user">你敲</span></td><td><code>grilling</code> + <code>domain-modeling</code>（两次）</td><td>一边问，一边把词写进 <code>GLOSSARY.md</code>，把难反悔的决定写成 ADR。</td></tr>
+<tr><td><code>/triage</code> <span class="badge user">你敲</span></td><td><code>grilling</code> + <code>domain-modeling</code></td><td>issue 信息不够时，把"你以为的 bug"问成一份能直接交给 agent 的说明。</td></tr>
+<tr><td><code>/wayfinder</code> <span class="badge user">你敲</span></td><td><code>grilling</code> + <code>domain-modeling</code>；<code>research</code>；<code>prototype</code></td><td>先定目的地 → 再横着扫一遍画出边界 → 每种票用对应技能解决。</td></tr>
+<tr><td><code>/improve-codebase-architecture</code> <span class="badge user">你敲</span></td><td><code>codebase-design</code>；<code>grilling</code>；<code>domain-modeling</code></td><td>先用模块深度的词扫一遍，你选中一个之后才进追问，最后可能补词、补 ADR。</td></tr>
+<tr><td><code>/implement</code> <span class="badge user">你敲</span></td><td><code>tdd</code>；<code>code-review</code></td><td>在事先说好的 seam 上先红后绿；完事两栏 review 再提交。</td></tr>
+<tr><td><code>/implement-spec</code> <span class="badge user">你敲</span></td><td><code>tdd</code>（每个子任务各自调）；<code>code-review</code>（整条集成分支收尾）</td><td>把票当成有依赖关系的图，能同时开工的一起开。</td></tr>
+<tr><td><code>/tdd</code> <span class="badge model">模型可抓</span></td><td><code>codebase-design</code></td><td>只为了拿"模块/接口/深度/seam/适配层"这套词。原文说得很清楚：<em>它是参考，不是要跑一遍的会话</em>。</td></tr>
+<tr><td><code>/retro</code> <span class="badge user">你敲</span></td><td><code>writing-for-agents</code></td><td>写改进建议时用同一套文档写法。</td></tr>
+<tr><td><code>/setup-ts-deep-modules</code> <span class="badge beta">beta</span></td><td><code>codebase-design</code></td><td>配 dependency-cruiser 时统一用深模块那套话。</td></tr>
+<tr><td><code>/loop-me</code> <span class="badge beta">beta</span></td><td><code>grilling</code>（带状态的变体）</td><td>把追问的输出限定成"工作流说明"。</td></tr>
+<tr><td><code>/writing-fragments</code> <span class="badge beta">beta</span></td><td><code>grilling</code></td><td>用追问挖写作碎片，不做结构。</td></tr>
+<tr><td><code>/writing-shape</code> <span class="badge beta">beta</span></td><td><code>grilling</code>（反向）</td><td>把追问反过来：不问"你在注意什么"，问"这篇到底在论证什么、读者该按什么顺序听"。</td></tr>
+<tr><td><code>/to-spec</code> <span class="badge user">你敲</span></td><td><span class="dim">不调任何东西</span></td><td><strong>它的定义就是"不再访谈"</strong>：只把已经聊出来的东西合成 spec。这就是它和追问的分工。</td></tr>
+</table>
+
+<div class="callout tealc">
+<strong>为什么正文要写"调用 Skill 工具"而不是"运行 /grilling"：</strong>1.3.0 的更新记录里写了这件事——正文里写 <code>/grilling</code>，模型只当它是句闲话，不一定会真的加载；写成"调用 Skill 工具，名字是 grilling"命中率高得多，而且去掉斜杠以后不绑死某个客户端。这就是"指路的话怎么写，决定它会不会去看"的活例子。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a4" class="amber-b">四、这套 skill 自己是怎么写出来的</h2>
+
+<p>你想自己写 skill，答案不在某一个具体技能里，在 <code>/writing-for-agents</code>。它是这套仓库的"母技能"：另外 38 个、入口文件、<code>docs/agents/*.md</code>，全是照它的规矩写的。这一章是全文最值得搬走的部分。</p>
+
+<h3>4.1 文档都在花两种钱</h3>
+<table>
+<tr><th style="width:18%">花的是</th><th style="width:34%">是什么</th><th>怎么省</th></tr>
+<tr><td><strong>上下文</strong><br><span class="dim">模型每轮都要读</span></td><td>入口文件的每一行、每个"模型能自己拿"的技能的描述、每个被塞进上下文的文件。每一轮都在付费。</td><td>挪到一句话后面；删掉废话；只在某些情况才需要的，推出去等用到再看。</td></tr>
+<tr><td><strong>记性</strong><br><span class="dim">你要记住多少</span></td><td>有哪些文档、什么时候该用哪个。<strong>你本人就是索引。</strong></td><td>不是越少越好——它是"你还能做主"的价格。需要你判断的地方留着；不需要判断的地方（用一个总入口，或者让模型自己抓）把它消掉。</td></tr>
+</table>
+
+<p><strong>这两种成本是可以互换的。</strong>一件事做成"模型能自己抓"，就是拿你的记性换上下文；做成"只有你能敲"，就是反过来。<code>/ask-matt</code> 这个总入口存在的唯一理由，就是把"十几个手动技能记不住"这件事收成一个。</p>
+
+<h3>4.2 指路的话，措辞决定它会不会去看</h3>
+<p>所谓"指针"，就是上下文里的一句引用，后面挂着没在上下文里的材料，<strong>而且这句话本身要说清"什么时候该去看"</strong>。技能的描述是指针，入口文件里一行"XX 见 docs/xxx.md"也是同一个东西。</p>
+
+<ul>
+<li><strong>东西再好，话说得含糊就等于没写。</strong>必须有材料的地方配了一句软话，先改措辞；改不好再考虑搬进来。</li>
+<li><strong>关键词往前提。</strong>指针的活儿就是触发，触发词埋在第三行就废了。</li>
+<li><strong>一个分支一个触发词。</strong>两个词说的是同一件事，其实是同一个分支写了两遍，合并掉。</li>
+<li><strong>删掉"本技能帮助你……"这种自我介绍。</strong>正文已经在干这件事了，重复一遍只占地方。</li>
+</ul>
+
+<h3>4.3 一份文档里该有三层</h3>
+<table>
+<tr><th style="width:24%">层</th><th style="width:32%">放什么</th><th>例子</th></tr>
+<tr><td>① 照着做的步骤</td><td>按顺序执行的动作</td><td><code>/diagnosing-bugs</code> 的六个阶段；<code>/to-tickets</code> 的五步。</td></tr>
+<tr><td>② 随手要查的规则</td><td>定义、清单、判断标准。平铺一堆同级规则是正常的，不算乱</td><td><code>/tdd</code> 的三条反模式；<code>/code-review</code> 的十二条代码坏味道。</td></tr>
+<tr><td>③ 推出去的参考</td><td>放到另一个文件，等用到再加载</td><td><code>tests.md</code>、<code>mocking.md</code>、<code>DESIGN-IT-TWICE.md</code>、<code>PHASE-BOUNDARIES.md</code>。</td></tr>
+</table>
+<p><strong>推出去不是为了省 token，是为了让最上面那层还能读。</strong>最干净的判断标准是"分支"：每个分支都要的，写在原地；只有某些情况才会走到的，推出去。<strong>同一个概念的定义、规则、注意事项要放在同一个标题下</strong>，别散在三处。</p>
+<p>这里有个词叫 <em>sprawl</em>（摊大饼）：每一行都还有效、都不重复，但文档就是太长，注意力被摊薄了。解法还是分层，按分支或者按顺序切开。</p>
+
+<h3>4.4 每一步都要能判断"做完了没有"</h3>
+<p>做完的判据，就是告诉 agent "这一步到此为止"的那句话。它有两个旋钮：</p>
+<ul>
+<li><strong>清楚不清楚</strong>：能不能一刀切出"做完"和"没做完"。模糊的边界（"达成理解"）会诱使它<strong>提前收工</strong>——注意力滑向"我完成了"，而不是"我做对了"。后面还看得见的步骤会形成拉力，判据的清不清楚就是阻力。防御顺序：<strong>先把边界收紧</strong>（便宜、就地能改）；只有边界本来就模糊、而且你确实见过它赶工，才用"拆成两段、把后面的步骤藏起来"——而且"藏"只在<strong>真的换了上下文</strong>（交接、派子任务）时才行，同一个会话里藏着没用。</li>
+<li><strong>要求高不高</strong>：它逼你做多少。"每个改到的模型都要交代清楚"能逼出彻底的工作，"产出一份变更清单"不能。</li>
+</ul>
+<p>所以 <code>/diagnosing-bugs</code> 第一阶段的判据写得那么硬：四条可以打勾（能抓住这个 bug / 稳定复现 / 秒级 / 不用人盯着），后面还跟一句"没有这条命令，不许进第二阶段"。<strong>最好的判据是既能打勾、又足够穷尽。</strong></p>
+
+<h3>4.5 什么时候该拆，什么时候别拆</h3>
+<ul>
+<li><strong>按顺序拆</strong>：后面的步骤会诱使它赶工时切开。反过来也成立——把步骤合并，等于提前把"后面还有多少活"暴露给当前这一步。</li>
+<li><strong>按调用方式拆（只对 skill 说）</strong>：只有当"有一个独立的词该单独触发它"或者"别的 skill 要调它"时，才拆出一个"模型能自己拿"的技能——因为你要为多出来的那段常驻描述付费。</li>
+<li><strong>总入口</strong>：手动技能多到你记不住时，用一个总入口把它们收在一起（<code>/ask-matt</code>）。它只能<strong>提示</strong>，永远触发不了那些手动技能。</li>
+</ul>
+
+<h3>4.6 一个词换一整片行为</h3>
+<p>所谓关键词，就是模型训练时已经见过的紧凑概念。它跑文档时拿这些词思考：<em>紧回路</em>、<em>红</em>、<em>曳光弹</em>、<em>战争迷雾</em>、<em>深模块</em>、<em>seam</em>。这些词以单词形式反复出现（而不是每处都重新解释一遍），会在它脑子里累积成一个定义，用最少的字锚住最完整的行为。</p>
+<div class="callout amberc">
+<strong>原文给的改写练习：</strong>
+<ul>
+<li>"快、稳定、开销小" → <em>紧</em>（一条<em>紧</em>回路）</li>
+<li>"一条你信得过的回路" → <em>红</em>（把模糊的门槛变成二选一：这条回路在这个 bug 上会变红，或者不会）</li>
+</ul>
+<p style="margin-top:8px">好处是双份的：字更少，而且给了模型一个更锋利的挂钩。原文的建议是——<strong>假设你文档里每一处三元组、每一句"描述一个概念"的话，都在等着被一个词收掉。</strong></p>
+</div>
+<p><strong>否定的坑：</strong>用"不要做什么"来引导，等于把那个行为拖进上下文，还让它更显眼——"别想大象"，满脑子都是大象。要<strong>正面说该做什么</strong>（"写一行注释说明为什么"），让不该发生的那句根本不出现。禁令只留给"实在没法正面说的硬护栏"，而且必须同时给出正面的目标。</p>
+
+<h3>4.7 修剪：一件事只说一遍，别抄环境，别攒垃圾</h3>
+<table>
+<tr><th style="width:20%">概念</th><th style="width:38%">什么意思</th><th>动作</th></tr>
+<tr><td>一件事只说一遍</td><td>一个意思只存一处。<strong>重复</strong>同时抬高维护成本和 token，还会把这件事的重要性在层级里虚抬。</td><td>合并到一处，别处只留一句话指过去。</td></tr>
+<tr><td>环境就是答案，别抄</td><td><code>package.json</code> 的脚本、配置文件、目录结构、<code>--help</code> 的输出，本身就是答案。你在文档里复述它，那叫<strong>缓存</strong>。</td><td>只缓存"看文件看不出来的"：没写下来的约定、某个选择的理由、配置里没承认的坑。</td></tr>
+<tr><td>越放越沉</td><td>没用的行有两种来路：从来就跟任务无关（纯介绍、本该推出去的分支），或者世界变了它没跟着变。<strong>沉积是默认命运</strong>：加进来觉得安全，删掉觉得危险，层层叠到你得打钻才找得到还活着的部分。</td><td>定期逐行问一句"这句现在还跟这份文档要干的事有关吗"。</td></tr>
+<tr><td>废话指令</td><td>模型默认就会遵守的话，说了等于没说，还付了成本。判断标准是<strong>对模型而言</strong>，不是对读者而言：两个人吵这是不是废话，其实是在吵"默认到底是什么"，跑一遍就知道，别辩论。</td><td>不合格就<strong>整句删</strong>，别在词上抠。<em>要仔细</em>打不过默认，换个更狠的词（<em>死磕</em>）。</td></tr>
+</table>
+
+<h3>4.8 拿这把尺子量量自己写的 skill</h3>
+<table>
+<tr><th style="width:34%">查什么</th><th style="width:26%">怎么问</th><th>典型改法</th></tr>
+<tr><td>描述分对层了吗</td><td>这个技能需要模型自己抓吗？需要别的技能调它吗？</td><td>只在点名时用的，做成"只有你能敲"，描述去掉触发词、写人话；要被自动抓的，保留触发场景。</td></tr>
+<tr><td>有没有废话</td><td>"注意代码规范""要写测试"——模型默认不做吗？</td><td>删掉，换成能打勾的判据（"每个新增模块必须有对应的接口测试"）。</td></tr>
+<tr><td>每一步有判据吗</td><td>每步结尾能不能二选一判断？</td><td>把"确认设计合理"换成"列出这次的 seam，跟我确认；没确认不许写测试"。</td></tr>
+<tr><td>是不是把别处的文档抄进来了</td><td>同一个意思是不是在技能和设计文档里各有一份？</td><td>技能里只留一句话指过去 + 什么时候去看。</td></tr>
+<tr><td>有没有关键词</td><td>你在提示里反复说同一串三个词吗？</td><td>把它提成正式术语写进词表，技能里只重复这个词，不重复解释。</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="a5" class="rose-b">五、grill 家族：同一个动作，十一种入口</h2>
+
+<p>这是整套仓库里最容易被用错、也最值钱的一块。名字里带 grill 的、以及内部会跑追问的，一共 <strong>11 个</strong>。它们的差别不是"语气轻重"，而是三个坐标：<strong>问的是什么、会不会写到文件里、什么时候算问完</strong>。</p>
+
+<h3>5.1 一句话分清</h3>
+<table>
+<tr><th style="width:22%">入口</th><th style="width:20%">问的是什么</th><th style="width:26%">产出</th><th>什么时候你会喊它</th></tr>
+<tr><td><code>/grilling</code> <span class="badge model">原语</span></td><td>一个计划 / 决定 / 想法</td><td>对话里的共识（不写文件）</td><td>你就想要那套访谈纪律，不要任何包装。</td></tr>
+<tr><td><code>/grill-me</code> <span class="badge user">包装</span></td><td>同上</td><td>同上（<strong>不留痕</strong>，什么都不写）</td><td>你<strong>不在一个仓库里</strong>：打磨一份计划、一个设计、一篇东西。</td></tr>
+<tr><td><code>/grill-with-docs</code> <span class="badge user">包装</span></td><td>同上</td><td>共识 + 词表更新 + ADR</td><td>你在<strong>一个仓库里</strong>。同样的访谈，但留下纸面痕迹。</td></tr>
+<tr><td><code>/wait-what</code> <span class="badge user">反向</span></td><td>不追问，<strong>重讲</strong>上一句</td><td>一段带上下文的白话</td><td>你没听懂它刚才说了什么。</td></tr>
+<tr><td><code>/to-questionnaire</code> <span class="badge user">变体</span></td><td>问的是<strong>"怎么发出去"</strong>，不是主题</td><td>给别人填的问卷 md</td><td>答案不在你脑子里，也不在代码里，在别人脑子里。</td></tr>
+<tr><td><code>/triage</code> <span class="badge user">内嵌</span></td><td>一个别人提的 issue / PR</td><td>能开工的说明 / 分诊记录 / 范围外记录</td><td>bug 和需求堆起来了，要分类、要验证、要写成能交付的样子。</td></tr>
+<tr><td><code>/wayfinder</code> <span class="badge user">内嵌</span></td><td>一个大到看不清路的活（<strong>两轮</strong>：先定目的地，再横着扫一遍）</td><td>一张地图 + 一堆决策票</td><td>全新项目或者大改造，一个会话装不下。</td></tr>
+<tr><td><code>/improve-codebase-architecture</code> <span class="badge user">内嵌</span></td><td>你从报告里选中的那<strong>一个</strong>改造候选</td><td>改造方案 + 可能的新词 / 新 ADR</td><td>你想动一块代码，但还没想清楚接口该长什么样。</td></tr>
+<tr><td><code>/loop-me</code> <span class="badge beta">beta</span></td><td>你生活/工作里一个<strong>反复出现的流程</strong></td><td>可以交给 agent 实现的流程说明</td><td>你想把一件重复做的事交出去。</td></tr>
+<tr><td><code>/writing-fragments</code> <span class="badge beta">beta</span></td><td>"你到底在注意什么"（<strong>只挖，不搭结构</strong>）</td><td>一堆碎片（<code>---</code> 分隔，没标题没顺序）</td><td>你有话想说，但还不知道要写成什么。</td></tr>
+<tr><td><code>/writing-shape</code>·<code>/writing-beats</code> <span class="badge beta">beta</span></td><td>"这篇到底在论证什么、读者该按什么顺序听"（<strong>反向</strong>）</td><td>成型的文章</td><td>素材有了，要收成一篇。</td></tr>
+</table>
+
+<h3>5.2 先纠正一个常见误解</h3>
+
+<p><strong><code>/grill-me</code> 的前提不是"空白目录 + 不知道要做什么"。</strong>它假设你心里<em>已经有一个东西</em>——一个想法、一份计划、一个设计草稿，哪怕很糊——缺的是把它<strong>问穿</strong>。如果你连"要解决谁的什么问题"都没有，第一轮就会卡在你自己也答不出来的问题上。那种情况更该先用 <code>/research</code> 把外部事实补齐，或者用 <code>/to-questionnaire</code> 去问知情的人，而不是硬问。</p>
+
+<p>真正的"迷茫"有三种，分属三个不同的技能：</p>
+<table>
+<tr><th style="width:14%">哪种迷茫</th><th style="width:30%">你此刻的状态</th><th style="width:22%">该用</th><th>为什么</th></tr>
+<tr><td>① 问题没想清</td><td>"我想做点什么，但不知道要解决谁的什么问题。"</td><td>先别问。<code>/research</code> 补事实，或者 <code>/to-questionnaire</code> 问业务方，或者 <code>/teach</code> 先把这行学会。</td><td>追问只负责把<strong>已有</strong>的想法问穿，它不负责替你长出问题。</td></tr>
+<tr><td>② 想法有，边界不清（小）</td><td>"我知道要做这件事，但归属、流程、验收标准全没定。"</td><td>有仓库 → <code>/grill-with-docs</code>；没仓库 → <code>/grill-me</code></td><td>规模在一个会话之内，缺的只是决定。</td></tr>
+<tr><td>③ 目的地有，路看不见（大）</td><td>"我知道要去哪，但会牵动几十个文件，不知道从哪下手。"</td><td><code>/wayfinder</code></td><td>路线本身是未知的，而且一张地图要跨多个会话、多个 agent 共享。</td></tr>
+</table>
+
+<div class="callout tealc">
+<strong>一句话分清：</strong>追问的产物活在<strong>这次对话</strong>里；wayfinder 的产物活在 <strong>issue tracker</strong> 里。<br>
+<code>/grill-me</code> 什么都不写，会话一关就没了（所以在仓库里一律用 grill-with-docs，把词和决定落到词表和 ADR）；wayfinder 把思考<strong>搬到外面</strong>，写成地图加决策票，别的会话、别的 agent、三天后的你都能接着干。
+</div>
+
+<h4>三条判据，按顺序问</h4>
+<ol>
+<li><strong>这个活一个会话装得下吗？</strong>装得下 → 永远别用 wayfinder（原文自己说它"更慢更密"）。装不下 → 才轮到它。</li>
+<li><strong>现在能不能把问题<em>说精确</em>？</strong>注意不是"能不能回答"。能说精确 → 它是一张票、或一个追问问题；说不精确 → 它是<em>雾</em>。雾多到看不清路，才是 wayfinder 的地盘。</li>
+<li><strong>需要别人、别的会话接着干吗？</strong>需要 → 产物必须写下来并共享；不需要 → 对话里的共识就够了。</li>
+</ol>
+
+<h4>两个容易搞混的细节</h4>
+<ul>
+<li><strong>wayfinder 内部也在跑追问</strong>，但它跑<strong>两轮，而且第二轮是横着扫</strong>（扫整个空间，找出还开着的决定和"现在就能走的第一步"）；grill-me / grill-with-docs 是<strong>竖着往下剥</strong>。所以可以记成：<em>wayfinder = 追问 + 搬到地图上 + 决策票分类 + 跨会话</em>。</li>
+<li><strong>wayfinder 不产出交付</strong>。它的票是"决定"，不是"活儿"。地图走完要接 <code>/to-spec</code> 收敛，不能直接 <code>/implement</code>。而追问完之后，是可以动手的。</li>
+</ul>
+
+<h3>5.3 差异矩阵：八个角度看穿它们</h3>
+<table>
+<tr>
+<th style="width:16%">入口</th><th style="width:8%">怎么问</th><th style="width:11%">写文件吗</th><th style="width:13%">改词表吗</th><th style="width:16%">事实从哪来</th><th style="width:17%">什么时候算完</th><th>最常见的误用</th>
+</tr>
+<tr>
+<td><code>grilling</code></td><td>竖着问，只问<strong>这一轮能问的</strong></td><td>不写</td><td>不改</td><td>事实归 agent（派子任务查文件/工具）；<strong>决定归你</strong></td><td>这一轮问空了 + 你明确说达成共识</td><td>一轮抛 20 个不相关的问题；或者它自问自答（替你做了决定）</td>
+</tr>
+<tr>
+<td><code>grill-me</code></td><td>同上</td><td>不写（不留痕）</td><td>不改</td><td>同上</td><td>同上</td><td>在仓库里用它，共识没留下任何痕迹，下个会话从零开始</td>
+</tr>
+<tr>
+<td><code>grill-with-docs</code></td><td>同上 + 边问边写</td><td>写：词表、<code>docs/adr/*</code>（<strong>用到才建</strong>）</td><td>改</td><td>同上 + 读代码对一遍（"你代码里整单取消，你刚说可以部分取消，哪个对？"）</td><td>问空了 + 词都落了纸</td><td>把它当"写文档"，其实它是"靠写下来逼你把词想清楚"</td>
+</tr>
+<tr>
+<td><code>wait-what</code></td><td>没有轮次</td><td>不写</td><td>不改（<strong>只用</strong>词表）</td><td>不查事实</td><td>你说懂了</td><td>拿它当"再说详细点"，它要的是<strong>换一种讲法</strong></td>
+</tr>
+<tr>
+<td><code>to-questionnaire</code></td><td>三步固定：发给谁 → 要什么回来 → 写文档</td><td>写：<code>to-questionnaire-&lt;名字&gt;.md</code></td><td>不改</td><td>事实来自<strong>收件人</strong>，问题要瞄准"他知道而你不知道"的那道缝</td><td>第二步列的每一项都被一个问题覆盖</td><td>拿它问你自己的主题（你也不知道，问不出来）；写成开放式大问题</td>
+</tr>
+<tr>
+<td><code>triage</code></td><td>先验证再问</td><td>写：评论、分诊记录、范围外记录</td><td>改</td><td>先查代码（是不是已经实现了）+ 读范围外记录（是不是已经被否过）</td><td>issue 带上明确状态（可开工 / 缺信息 等）</td><td>拿它处理自己刚拆出来的票——那些本来就该直接开工</td>
+</tr>
+<tr>
+<td><code>wayfinder</code></td><td><strong>两轮不一样</strong>：第一轮定目的地（竖着），第二轮横着扫全空间</td><td>写：地图 + 一票一个文件 + 依赖关系</td><td>改</td><td>研究票派子任务去读一手资料</td><td>去目的地的路上没有待定决定（雾散尽）</td><td>拿它做已经清楚的中等需求（太重）；或者地图清了直接 <code>/implement</code></td>
+</tr>
+<tr>
+<td><code>improve-codebase-architecture</code></td><td>先扫出候选，再问<strong>你选的那一个</strong></td><td>写：临时目录里的 HTML 报告（<strong>不进仓库</strong>）</td><td>改</td><td>先看 <code>git log</code> 找最近动得多的区域，再派子任务逛</td><td>候选收敛成一个能执行的方案，或者被你否掉并留下 ADR</td><td>指望它"救"一个陈年老坑（它是体检，不是抢救）</td>
+</tr>
+<tr>
+<td><code>loop-me</code></td><td>连续多个会话，带状态</td><td>写：<code>workflows/*.md</code> + 笔记</td><td>部分（把口语磨成规范词）</td><td>笔记薄的时候，先问你的工作长什么样</td><td><strong>一个实现的 agent 能不问任何问题就把它建出来</strong></td><td>硬往里塞 AI、检查点、定时（原文：不该有任何东西被结构性地强制）</td>
+</tr>
+<tr>
+<td><code>writing-fragments</code></td><td>连续，只加不减（除非你要求）</td><td>写：单个 md，<code>---</code> 分隔，没标题</td><td>不改</td><td>从你们对话里来；<strong>你第一句话它就开始记</strong></td><td>没有终点——探索本来就不收敛</td><td>顺手给它分章节（那是成型阶段的事）</td>
+</tr>
+<tr>
+<td><code>writing-shape</code>·<code>writing-beats</code></td><td>一次一块，绝不提前写</td><td>写：单独的文章文件（<strong>素材文件只读</strong>）</td><td>不改</td><td>素材是采石场，只挖不改</td><td>走完这段旅程（不是素材用完）</td><td>一次写完一整篇；或者让新段落引用还没交代过的概念</td>
+</tr>
+</table>
+
+<h3>5.4 一个一个说清，它们到底差在哪</h3>
+
+<h4>① /grilling —— 唯一真干活的那个</h4>
+<p><strong>它的思路：把不确定的东西画成一棵树，然后一层一层剥。</strong>每个决定都会分叉出依赖它的下级决定。<em>这一轮能问的</em>（原文叫 frontier，前沿）就是"前置条件都已经落定、现在问不会瞎猜"的那批问题。一轮只问这一批，每题编号，并且附上"我建议选哪个"，然后把决定权还给你。</p>
+<p><strong>为什么非要一轮一轮来：</strong>你这一轮的回答会改变树——定下来的决定把边界往外推，解锁后面依赖它的问题。所以<strong>"答案依赖本轮另一个还没定"的问题，属于下一轮</strong>，这轮问了也是浪费。这条规矩决定了后面所有内嵌用法的形态。</p>
+<p><strong>为什么每题都要带建议：</strong>措辞要让<strong>说"是"就等于接受建议</strong>。这样你一个词能确认十个决定，不用每次从零想。这不是替你决定，是给你一个可以反驳的靶子。</p>
+<p><strong>事实和决定要分开（最容易被违反的一条）：</strong>查事实是它的活，永远不是你的。某个问题需要看文件、看工具输出，就<strong>派个子任务去查</strong>，别问你。而且不要因为它在查就整轮卡住——只有依赖那个事实的下游问题才等它，这一轮剩下的现在就问。</p>
+<p><strong>什么时候算完：</strong>这一轮问空了，等于树上的每个分支都走过了，没有东西被悄悄假设。<strong>而且</strong>：你确认达成共识之前，它不许动手。</p>
+
+<h4>② /grill-me —— 不留痕的那个入口</h4>
+<p>整个技能只有一句正文：去调 grilling。它存在的唯一理由是给"不在工作目录里"这件事一个名字——你在打磨一份计划、一个设计、一篇要发出去的东西，底下没有仓库可写。</p>
+<p><strong>它跟 grill-with-docs 的关系是严格被压一头的：</strong>在仓库里，grill-with-docs 跑同一套访谈，还额外留下纸面痕迹，所以<strong>永远更好</strong>。反过来，在没有仓库的地方用 grill-with-docs，它会想写文件却写不了。</p>
+
+<h4>③ /grill-with-docs —— 追问的副产品是把词钉死</h4>
+<p><strong>它干的事：</strong>同一套访谈，但边问边做两件附带的事——<em>domain-modeling</em> 负责挑你用词的毛病、逼你想清边界情况、把结果写进词表和 ADR；<em>grilling</em> 负责问。</p>
+<p>它真正在做的不是"写文档"，而是<strong>通过让你把词写下来，逼你把概念想清楚</strong>。这跟第二个毛病（话太多）是一件事的两面：共用的词不是文档产物，是思考的压缩器。词定了，变量名、文件名、测试名一起定，代码库对 agent 更好找路，想事也更省字。</p>
+<p><strong>写文件这件事，它的规矩很克制：</strong></p>
+<ul>
+<li><code>GLOSSARY.md</code> <strong>用到才建</strong>——第一个词真的定下来时才建文件。</li>
+<li>词<strong>当场写</strong>，不攒着。</li>
+<li>词表里<strong>绝对不许写实现细节</strong>。它不是 spec，不是草稿纸，不是决定仓库，它只是词表。</li>
+<li>ADR 只在<strong>三个条件同时成立</strong>时才提：很难反悔、没有背景的人看了会惊讶、确实是取舍的结果。缺一个就不写。</li>
+<li>发现你说的话跟代码不一致，<strong>当场点出来</strong>（"你代码里取消的是整张单，你刚说可以部分取消，哪个对？"）。</li>
+</ul>
+
+<h4>④ /wait-what —— 不是"再说详细点"，是"换一种讲法"</h4>
+<p>它是<strong>事后补救</strong>，grill-with-docs 是<strong>事前预防</strong>。触发场景是"停，上一句我没落地"。它要求三件事：补一点上下文、说人话（简化技术英语）、用词表里的词（仓库里有多个上下文时，跟着索引找到对的那份词表）。</p>
+<p>注意：它<strong>只用</strong>词表，不改词表。真正的修法是回去补一次 grill-with-docs，让共用的词从源头上就建立起来。</p>
+
+<h4>⑤ /to-questionnaire —— 问"怎么发出去"，不问主题</h4>
+<p><strong>这是整个家族里最反直觉、也最值得学的一个设计。</strong>当答案不在你脑子里，你没法把它问出来。但这个技能说：你<strong>永远答得上来的</strong>是另外两件事——<em>这东西发给谁</em>，和<em>你需要拿回什么</em>。所以访谈只做这两步（各一轮），然后问卷的问题瞄准<strong>"收件人知道而你不知道"的那道缝</strong>。</p>
+<p>文档结构也是设计过的：目的 / 发件人收件人 / 一段够用的背景 / 怎么答（含截止时间和"可以写不知道"）/ 按主题分组、最重要的放前面、一题一个想法、下面留作答位、只在可能被误解时加一句"为什么这重要" / 结尾一句兜底。</p>
+<p><strong>为什么强调"最重要的放前面"：</strong>异步意味着你可能只有一次机会。这跟追问的"只问这一轮能问的"是同一个思路，换了介质。</p>
+
+<h4>⑥ /triage —— 先验证，再问</h4>
+<p>它把 issue 当成状态机推：2 个<em>类别</em>（bug / 需求）+ 5 个<em>状态</em>（待分诊 / 缺信息 / 可开工 / 要人做 / 不做），每条 issue 恰好各带一个。</p>
+<p><strong>顺序是关键：先验证，再问。</strong>bug 要按报告里的步骤复现；PR 要切过去跑一遍相关测试。验证完再追问，产出的东西强得多。它还有两个便宜但常被跳过的前置检查：<em>是不是已经实现了</em>（按领域概念搜代码）和<em>是不是已经被否过</em>（读范围外记录）。已经实现的走"不做"，但<strong>不写</strong>范围外记录——那是"被拒需求"的档案，写进去会污染去重。</p>
+<p>最后产出一份"能开工的说明"，写作纪律值得单独记：<strong>写耐久的东西而不是精确的东西</strong>（写接口、类型、行为契约，不写文件路径和行号）、<strong>描述行为不描述过程</strong>、<strong>验收标准完整且能独立验证</strong>、<strong>明确划出范围外</strong>。</p>
+
+<h4>⑦ /wayfinder —— 两轮完全不同的追问</h4>
+<p><strong>它的思路：找路，不是冲终点。</strong>先给<em>目的地</em>起名（目的地决定每张票长什么样），这一步用追问加深挖；然后<strong>第二轮横着扫</strong>，把整个空间扫一遍，翻出还开着的决定和"现在就能走的第一步"。</p>
+<p>这里有一套很精确的词，都值得进你自己的词表：</p>
+<ul>
+<li><em>决策票</em>：子 issue，持有一个<strong>问题</strong>，它的解决是一个决定，不是一个交付物。除了地图本身，票分四种：<code>research</code>（不用人盯，派子任务）、<code>prototype</code>（要人一起看，做个粗件）、<code>grilling</code>（要人一起聊，默认）、<code>task</code>（唯一"做"而不是"决定"的类型，靠"解开某个决定的阻塞"获得存在资格）。</li>
+<li><em>战争迷雾</em>：看得见要来、但现在还说不精确的东西，写在地图的"还没说清"那一节。判断标准是<strong>"现在能不能把问题说精确"，不是"现在能不能答"</strong>。能说精确就是票（哪怕被卡着），说不精确就是雾。别提前把雾切成票那么大。</li>
+<li><em>出界</em>：不是雾。目的地定了范围，越界的是<strong>范围问题，不是清晰度问题</strong>，单独一节，永远不放出去。</li>
+<li><em>认领</em>：先把票分给自己再动手——分给谁就是认领，没分就是还开放。</li>
+<li><strong>一个会话只解一张票</strong>（研究票除外）。</li>
+</ul>
+<p><strong>它的产出是决定，不是交付。</strong>"想直接动手"通常正是你走到地图边缘、该交棒的信号。</p>
+
+<h4>⑧ /improve-codebase-architecture —— 先扫描，后追问</h4>
+<p>它把追问放在<strong>后半段</strong>：先按 <code>git log</code> 找最近改得多的区域（理由很实在：改得勤的地方，改起来顺手的收益最大），派子任务自己去逛（不套死板的检查表），用<em>删除测试</em>判断哪些是空壳，输出一份<strong>临时目录里的自包含 HTML 报告</strong>（每个候选一张卡：涉及文件 / 问题 / 方案 / 好处 / 前后对比图 / 强度标记）。然后才问你："你想深入哪一个？"——选中之后进追问，边上边补词、补 ADR。</p>
+<p><strong>它明确不做的事：</strong>不先给接口方案（那是选定之后 <code>/codebase-design</code> 里"设计两次"那一环）；不列举每个理论上能改但被 ADR 禁掉的东西；不假装能救一个陈年老坑。</p>
+
+<h4>⑨ /loop-me —— 把追问对准"你反复做的事"</h4>
+<p>beta，但它给了一套很好的委托词汇：<em>循环</em>（一生中反复出现的模式）、<em>触发</em>（事件还是定时，事件通常更省）、<em>检查点</em>（人必须确认或决定的地方）、<em>往右推</em>（把检查点尽量往后挪：先把活干完，让人只在最后被问一次，而且那时一切都备好了）、<em>简报</em>（检查点给人看的是"可以直接拍板"的摘要，不是草稿）。</p>
+<p><strong>它最反套路的一条：什么都可以不要。</strong>一个流程不需要 AI、不需要检查点、不需要排期，除非问下来证明它需要。</p>
+
+<h4>⑩ 写作三件套 —— 同一个动作的正反两用</h4>
+<p><em>先挖后收</em>是两个独立的技能，各有明确边界：<code>/writing-fragments</code> 只把可能写的东西摊开（碎片可以杂、只要对作者自己有可读性、用 <code>---</code> 分隔、只加不覆盖）；<code>/writing-shape</code> 和 <code>/writing-beats</code> 只收（把素材当采石场，一次只写一块）。</p>
+<p>它们贡献了一个很好的概念：<em>接地</em>——每个概念要么是读者本来就懂的，要么在前面某一块里交代过，否则这一块就把读者丢了。于是"哪些当前提、哪些在文中交代"成了核心取舍：前提要太多会挡住读者，文中交代太多会让开头淹死在定义里。</p>
+
+<h3>5.5 我该喊哪个：一张决策图</h3>
+<div class="svgbox">
+<svg viewBox="0 0 1140 620" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa3b8"/>
+    </marker>
+  </defs>
+  <rect x="12" y="12" width="1116" height="596" rx="14" fill="#1a1d26" stroke="#31374a"/>
+
+  <rect x="420" y="30" width="300" height="46" rx="9" fill="#2a2340" stroke="#b195f5"/>
+  <text x="570" y="59" fill="#e3e7f0" font-size="13.5" text-anchor="middle" font-weight="600">我现在该喊哪个 grill？</text>
+  <line x1="570" y1="76" x2="570" y2="102" stroke="#9aa3b8" stroke-width="1.4" marker-end="url(#d1)"/>
+
+  <rect x="360" y="104" width="420" height="48" rx="9" fill="#232735" stroke="#52d5c5"/>
+  <text x="570" y="123" fill="#e3e7f0" font-size="12.5" text-anchor="middle" font-weight="600">Q1　答案在「你脑子里」还是在「别人脑子里」？</text>
+  <text x="570" y="141" fill="#6f778c" font-size="10.5" text-anchor="middle">不在任何人脑子里、只是要知道"能不能做"→ 直接走 Q2</text>
+
+  <line x1="360" y1="128" x2="176" y2="128" stroke="#f28b94" stroke-width="1.4" marker-end="url(#d1)"/>
+  <rect x="26" y="104" width="146" height="48" rx="8" fill="#2a2126" stroke="#f28b94"/>
+  <text x="99" y="124" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="700">/to-questionnaire</text>
+  <text x="99" y="141" fill="#9aa3b8" font-size="10" text-anchor="middle">别人脑子里</text>
+
+  <line x1="570" y1="152" x2="570" y2="180" stroke="#9aa3b8" stroke-width="1.4" marker-end="url(#d1)"/>
+
+  <rect x="360" y="182" width="420" height="48" rx="9" fill="#232735" stroke="#52d5c5"/>
+  <text x="570" y="201" fill="#e3e7f0" font-size="12.5" text-anchor="middle" font-weight="600">Q2　你现在有工作目录 / 仓库吗？</text>
+  <text x="570" y="219" fill="#6f778c" font-size="10.5" text-anchor="middle">没有：计划、设计、要发出去的文稿</text>
+  <line x1="360" y1="206" x2="176" y2="206" stroke="#f2c069" stroke-width="1.4" marker-end="url(#d1)"/>
+  <rect x="26" y="182" width="146" height="48" rx="8" fill="#232735" stroke="#f2c069"/>
+  <text x="99" y="202" fill="#f2c069" font-size="12" text-anchor="middle" font-weight="700">/grill-me</text>
+  <text x="99" y="219" fill="#9aa3b8" font-size="10" text-anchor="middle">什么都不留</text>
+
+  <line x1="570" y1="230" x2="570" y2="258" stroke="#9aa3b8" stroke-width="1.4" marker-end="url(#d1)"/>
+
+  <rect x="360" y="260" width="420" height="48" rx="9" fill="#232735" stroke="#52d5c5"/>
+  <text x="570" y="279" fill="#e3e7f0" font-size="12.5" text-anchor="middle" font-weight="600">Q3　要问的到底是什么东西？</text>
+  <text x="570" y="297" fill="#6f778c" font-size="10.5" text-anchor="middle">需求 / issue / 代码库 / 你的工作流 / 一篇文章</text>
+
+  <line x1="400" y1="308" x2="146" y2="352" stroke="#9aa3b8" stroke-width="1.3" marker-end="url(#d1)"/>
+  <rect x="26" y="356" width="150" height="64" rx="8" fill="#232735" stroke="#b195f5"/>
+  <text x="101" y="378" fill="#b195f5" font-size="12" text-anchor="middle" font-weight="700">/grill-with-docs</text>
+  <text x="101" y="396" fill="#9aa3b8" font-size="10" text-anchor="middle">一个会话装得下的需求</text>
+  <text x="101" y="411" fill="#6f778c" font-size="9.5" text-anchor="middle">（有仓库时的默认答案）</text>
+
+  <line x1="452" y1="308" x2="266" y2="352" stroke="#9aa3b8" stroke-width="1.3" marker-end="url(#d1)"/>
+  <rect x="200" y="356" width="150" height="64" rx="8" fill="#232735" stroke="#f2c069"/>
+  <text x="275" y="378" fill="#f2c069" font-size="12" text-anchor="middle" font-weight="700">/triage</text>
+  <text x="275" y="396" fill="#9aa3b8" font-size="10" text-anchor="middle">别人提的 bug / 需求</text>
+  <text x="275" y="411" fill="#6f778c" font-size="9.5" text-anchor="middle">先验证，再问</text>
+
+  <line x1="556" y1="308" x2="452" y2="352" stroke="#9aa3b8" stroke-width="1.3" marker-end="url(#d1)"/>
+  <rect x="374" y="356" width="160" height="64" rx="8" fill="#232735" stroke="#f2c069"/>
+  <text x="454" y="378" fill="#f2c069" font-size="12" text-anchor="middle" font-weight="700">/wayfinder</text>
+  <text x="454" y="396" fill="#9aa3b8" font-size="10" text-anchor="middle">一个会话装不下的活</text>
+  <text x="454" y="411" fill="#6f778c" font-size="9.5" text-anchor="middle">产出决定，不产出交付</text>
+
+  <line x1="662" y1="308" x2="662" y2="352" stroke="#9aa3b8" stroke-width="1.3" marker-end="url(#d1)"/>
+  <rect x="556" y="356" width="212" height="64" rx="8" fill="#232735" stroke="#f2c069"/>
+  <text x="662" y="378" fill="#f2c069" font-size="11.5" text-anchor="middle" font-weight="700">/improve-codebase-architecture</text>
+  <text x="662" y="396" fill="#9aa3b8" font-size="10" text-anchor="middle">已有代码库要体检</text>
+  <text x="662" y="411" fill="#6f778c" font-size="9.5" text-anchor="middle">先出报告，再追问</text>
+
+  <line x1="744" y1="308" x2="856" y2="352" stroke="#9aa3b8" stroke-width="1.3" marker-end="url(#d1)"/>
+  <rect x="790" y="356" width="160" height="64" rx="8" fill="#232735" stroke="#f28b94"/>
+  <text x="870" y="378" fill="#f28b94" font-size="12" text-anchor="middle" font-weight="700">/loop-me</text>
+  <text x="870" y="396" fill="#9aa3b8" font-size="10" text-anchor="middle">你的工作循环 / 流程</text>
+  <text x="870" y="411" fill="#6f778c" font-size="9.5" text-anchor="middle">产出流程说明</text>
+
+  <line x1="570" y1="420" x2="570" y2="448" stroke="#f28b94" stroke-width="1.3" marker-end="url(#d1)"/>
+  <rect x="330" y="450" width="480" height="58" rx="9" fill="#2a2126" stroke="#f28b94"/>
+  <text x="570" y="470" fill="#f28b94" font-size="11.5" text-anchor="middle" font-weight="600">要写文章？→ 先 /writing-fragments（只挖，不搭结构）</text>
+  <text x="570" y="487" fill="#c8cedd" font-size="11" text-anchor="middle">素材够了 → /writing-shape 或 /writing-beats（成型）；顺序不能反</text>
+  <text x="570" y="502" fill="#6f778c" font-size="9.5" text-anchor="middle">挖的时候就分章节 = 提前把结构锁死</text>
+
+  <rect x="26" y="522" width="1070" height="76" rx="10" fill="#1f2330" stroke="#31374a" stroke-dasharray="5 4"/>
+  <text x="46" y="546" fill="#9aa3b8" font-size="11.5" font-weight="600">两个「不是追问」的入口，别混进来：</text>
+  <text x="46" y="566" fill="#c8cedd" font-size="11">/wait-what　=　上一句没听懂：要的是换一种讲法（补上下文 + 说人话 + 用词表里的词），不是"说详细点"</text>
+  <text x="46" y="584" fill="#c8cedd" font-size="11">/to-spec　　=　明确不再访谈：只把已经聊出来的东西合成 spec。它和追问的分工就是"问"和"收"</text>
+</svg>
+</div>
+
+<h3>5.6 一轮真实的追问长什么样</h3>
+<p>下面这个场景是虚构的，只为了让你看清格式：一个业务模块要从 A 域搬到 B 域，需求方只说了"迁过去"三个字。正确的第一轮长这样——<strong>只问这一轮能问的，每题带建议，措辞让"是"等于接受建议。</strong></p>
+
+<div class="q">
+<p><span class="qq">❓ Q1 - 归属：搬过去之后，这几条业务线归新模块还是留在原模块？</span></p>
+<p>词表里对"模块归属"有定义：谁的列表归谁所有，不由别的模块代管。现在这几条业务线的代码挂在老模块目录下，搬完以后接口、页面、取数配置是不是整体搬？</p>
+<p class="rec">按定义走：业务线归谁，模块就归谁 → 全部搬到新模块，老模块只留跳转入口；不保留两份代码。</p>
+</div>
+
+<div class="q">
+<p><span class="qq">❓ Q2 - 地址：URL 跟不跟着变？</span></p>
+<p>有三种选法：(a) 只留新地址，(b) 新旧并存，(c) 旧地址重定向到新地址。另外提醒一句：一级路由如果要在三个地方分别注册，漏一个就是"权限有、菜单不显示"。</p>
+<p class="rec">选 (a) 新地址单入口 + 旧地址重定向；理由是后端按路由名授权，双路由会同时养两套权限点。你要是想保住旧书签，就改 (c)。</p>
+</div>
+
+<div class="q">
+<p><span class="qq">❓ Q3 - 单据形态：搬完还是"先申请、后审批"两段吗？</span></p>
+<p>现在的约定是：申请阶段没有经办人、没有审批节点，审批单建了才有。迁移会不会改变流转起点（比如只能从已完成的单子发起，还是进行中也能发起）？</p>
+<p class="rec">两态不动，只改归属；流转起点维持原样。理由：节点来源刚刚统一过，不在这次搬迁里再动。</p>
+</div>
+
+<div class="q">
+<p><span class="qq">❓ Q4 - 列表页要不要一起搬？</span></p>
+<p>一起搬，所有列表页的取数、配置、角色要跟着重排，这是整个活的大头；不搬，就会出现"申请页在新模块、列表页在老模块"的半吊子状态。</p>
+<p class="rec">一起搬，但拆成独立的一张票（被单据迁移卡着），单独验收。理由：半吊子状态对 agent 找路的伤害，大于一次性搬完的成本。</p>
+</div>
+
+<div class="q">
+<p><span class="qq">❓ Q5 - 验收按哪一档？</span></p>
+<p>这次是纯结构搬迁，行为不该变。要不要出完整的验收报告？</p>
+<p class="rec">最轻那档：类型检查 + 受影响的单测 + 一份"迁移前后路由/菜单对照表"人工核对；不出完整报告。</p>
+</div>
+
+<p class="kbd-note">注意这五题的关系：Q1 定归属，Q2 依赖 Q1，Q3、Q4 依赖前两个的答案，Q5 依赖 Q4（搬不搬列表页决定验收量）。所以严格说，<strong>真正属于第一轮的只有 Q1 和 Q2</strong>——这正是那条"依赖未定问题的题留到下一轮"的规矩。上面写成五题是"预告"，真实跑起来它只会先问两个。</p>
+
+<h3>5.7 六种典型误用</h3>
+<table>
+<tr><th style="width:36%">误用</th><th>为什么错 / 该怎么做</th></tr>
+<tr><td>在仓库里用 <code>/grill-me</code></td><td>什么都不写下来，下个会话从零开始。<strong>仓库里一律 grill-with-docs</strong>，它是严格更好的那个。</td></tr>
+<tr><td>一次抛 15 个问题</td><td>违反"只问这一轮能问的"：里面一半的题依赖另一半的答案。正确做法是一轮只问当下能问的。</td></tr>
+<tr><td>让 agent "顺便帮你查一下这个字段在哪"</td><td>违反"事实是它的活"：它应该派子任务去查，而且不该卡住跟你无关的问题。</td></tr>
+<tr><td>追问完直接 <code>/implement</code></td><td>跳过 <code>/to-spec</code> 的收尾。wayfinder 场景尤其致命：地图里链接的细节全被丢掉。</td></tr>
+<tr><td>拿 triage 去处理自己刚拆出来的票</td><td>那些票本来就是"可开工"，再分诊只会把它们改成"缺信息"。</td></tr>
+<tr><td>把 <code>/wait-what</code> 当"说得再详细点"</td><td>它要的是<strong>换讲法</strong>（补上下文、说人话、用项目词表）。同一套黑话再详细一遍，只会更听不懂。</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="a6">六、39 个技能逐个讲</h2>
+
+<p class="kbd-note">卡片怎么读：<span class="badge user">你敲</span> 只有你打出来才生效 · <span class="badge model">模型可抓</span> 模型也能自己拿 · <span class="badge beta">beta</span> 没毕业，插件不给，要单独装 · <span class="badge frozen">冻结</span> 不维护了。带 <span class="badge newb">1.3.2</span> 的是这一版刚改过的。</p>
+
+<h3>6.1 工程 · 你手动敲的（11 个）</h3>
+<div class="grid">
+
+<div class="card">
+<h3><code>/ask-matt</code> <span class="badge user">你敲</span> <span class="badge core">总入口</span></h3>
+<p class="oneline">不知道用哪个、该走哪条线的时候问它。</p>
+<p class="why">"记不住十几个手动技能"这件事的解法。它只能<strong>提示</strong>，永远调不动那些手动技能。它同时是整套东西的地图：别的技能要指路，指它就行。</p>
+<p class="how">直接说你的处境（"我想改个列表页，已经知道要什么了"），它给一条路径 + 该跳过哪几步。</p>
+<p class="use">你不确定要不要出 spec、要不要拆票、要不要上 wayfinder。</p>
+<p class="skip">你已经知道敲哪个——直接敲，别多绕一步。</p>
+<div class="new">它在讲某个技能做什么、或建议跳过某一步之前，必须先去读那个技能的 SKILL.md，不能凭自己的一句话摘要下判断。</div>
+</div>
+
+<div class="card teal">
+<h3><code>/setup-matt-pocock-skills</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">每个仓库跑一次：配 issue tracker、分诊标签、领域文档放哪。</p>
+<p class="why">这套技能假设"issue 存在某个地方"。它不猜，先探（远程仓库、已有的 AGENTS.md / CLAUDE.md、词表、ADR 目录、本地 issue 目录、monorepo 的迹象），再一段一段问你，最后写 <code>docs/agents/*.md</code>，并且<strong>更新已有文件里的段落，而不是新建一个</strong>（CLAUDE.md 已经存在就绝不另建 AGENTS.md）。</p>
+<p class="how">三段：A 选 tracker（GitHub / GitLab / 本地 md / 其他）→ B 要不要沿用默认的五个标签（装了 triage 才问）→ C 单上下文还是多上下文（有 monorepo 迹象才问）。</p>
+<p class="use">新仓库第一次用这套工程技能之前。</p>
+<p class="skip">已经跑过。上游改过模板，跑完升级要再跑一次刷新 <code>docs/agents/</code>。</p>
+<div class="new">写 GitHub / GitLab 的 tracker 之前，先确认远程仓库真的连得上（不然写了个谁都够不着的配置）；发现旧的 <code>CONTEXT.md</code> / <code>CONTEXT-MAP.md</code>，会提议改名成 <code>GLOSSARY.md</code>；会顺手把缺的分诊标签建出来；GitHub 那边改成先读 PR 正文再看评论、用 <code>gh</code> 原生参数表达阻塞关系、并给出"数一数还有几个没解"的命令。</div>
+</div>
+
+<div class="card">
+<h3><code>/grill-with-docs</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">一边追问一边把需求聊定，顺手把领域词钉死（词表 + ADR）。</p>
+<p class="why">见第五章。核心是"通过要求你把词写下来，逼你把概念想清楚"。它调 grilling 一次、domain-modeling 两次，分别在不同阶段。</p>
+<p class="how">把想法、模糊需求、甚至一段抱怨丢给它，然后一轮一轮回答。边答它会边写词、边提 ADR（只在那三个条件都成立时提）。</p>
+<p class="use"><strong>有仓库的地方，几乎永远用它</strong>，而不是 grill-me。整套东西里回报最高的一步。</p>
+<p class="skip">纯工具性改动（改文案、修样式）——没有决策树可走。</p>
+</div>
+
+<div class="card amber">
+<h3><code>/to-spec</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">把当前对话合成 spec，发到 issue tracker。<strong>它明确不再访谈你。</strong></p>
+<p class="why">定义就是"不问"。为什么值得单独成一个技能：很多 agent 会忍不住再问一遍，把已经聊透的东西重新搅浑。它只在两件事上要你确认：<strong>测试的 seam</strong>（"这几处符合你的预期吗？"）和 spec 最终内容。</p>
+<p class="how">① 逛仓库（用词表、尊重 ADR）→ ② 先画 seam，优先用已有的、尽量用高的，理想情况只有一个 → ③ 按模板写：问题 / 方案 / 很长的用户故事编号表 / 实现决定（<strong>不写文件路径和代码片段</strong>）/ 测试决定 / 范围外 / 备注 → 打上可开工标签，不必再分诊。</p>
+<p class="use">多会话的活，追问结束、同一个会话里紧接着做。</p>
+<p class="skip">一个会话能做完的小改动——直接 implement。</p>
+</div>
+
+<div class="card">
+<h3><code>/to-tickets</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">把 spec 拆成"一小片能从头跑到尾"的票，每张声明自己被谁卡着。</p>
+<p class="why">三条铁律：竖着切（每一层都切到，不是横着一层一刀）、做完能演示或验证、一张票塞得进一个干净的会话。而且先做"让改动变容易"的预重构——先变容易，再做容易的改动。<strong>宽重构是例外</strong>：一次机械改动炸开全库（改列名、改共享类型）时不能切小片，要走"先加新的（不破坏）→ 按影响范围分批搬 → 最后删旧的"，每批一张票。</p>
+<p class="how">① 取上下文（可以给 spec 路径或 issue 号）→ ② 逛仓库、找预重构机会 → ③ 切竖片 + 标依赖 → ④ <strong>把拆法列成编号清单让你过一遍</strong>（粒度对不对？依赖对不对？要不要合并或再拆）→ ⑤ 发布。本地就是 <code>.scratch/&lt;特性&gt;/issues/NN-名字.md</code>，按依赖顺序编号，卡人的排前面。</p>
+<p class="use">接在 to-spec 后面；或者你已经有清楚计划，只需要拆。</p>
+<p class="skip">一句话能说完的改动。</p>
+<div class="new">如果来源是一个已有 issue，每张票做成它的子 issue；用原生阻塞关系表达依赖时，就不再写"Blocked by"那一节。</div>
+</div>
+
+<div class="card teal">
+<h3><code>/implement</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">按一张票（或一份 spec）实现：在说好的 seam 上跑 tdd，收尾跑 code-review，然后提交。</p>
+<p class="why">它自己几乎不含纪律，全部外包给 <code>/tdd</code> 和 <code>/code-review</code>。这就是"技能是纪律、编排是薄壳"。它还规定了检查节奏：<strong>经常类型检查、经常跑单个测试文件、最后跑一次全量</strong>。</p>
+<p class="how">传票号或路径 → 它先报出票的标题 → tdd → 类型检查/测试 → code-review → 提交到当前分支。</p>
+<p class="use">多会话项目里的每一张票；或单会话的小需求。</p>
+<p class="skip">活还没拆到"一张票说得完"的程度——回去拆票。</p>
+<div class="new">传进来一个票引用，它会先去 tracker 取回来，开工前念一遍标题；引用有歧义就问你。调 tdd 和 code-review 统一改成"调用 Skill 工具"的写法，不再写裸斜杠。</div>
+</div>
+
+<div class="card">
+<h3><code>/implement-spec</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">一次实现整份 spec：把票当依赖图，在能开工的那一圈并行派子任务，全部落到一条集成分支。</p>
+<p class="why">关键认知：<strong>票不是步骤清单，是带依赖的图</strong>，所以任何时刻都有一圈"可以领"的票。沟通要稀疏，主要靠指针（spec、票、笔记、之前的提交），别复制已有信息。每个实现者在自己 worktree 上：确认基于集成分支 → 调 tdd → 完成前把集成分支最新提交合进来（让后续合并是快进）→ 由合并子任务合入。</p>
+<p class="how">需要 tracker 已经配好。只有 tracker 用 PR 关活、或者你要求时，才开草稿 PR，而且要在第一次合并之后（零提交的分支开不了 PR）。</p>
+<p class="use">spec 大到你想"编排建造"而不是"亲自逐票开车"，而且票之间真有并行度。</p>
+<p class="skip">只有两三张串行票——逐张 implement 更省。</p>
+</div>
+
+<div class="card amber">
+<h3><code>/wayfinder</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">把一个大到一个会话装不下的活，画成 tracker 上的决策票地图，一张一张解，直到路清楚。</p>
+<p class="why">见 5.4⑦。三条最容易被忽略：<strong>只产出决定不产出交付</strong>（"想直接动手"是走到地图边缘的信号）、<strong>一个会话只解一张票</strong>（研究票除外）、<strong>给人看的地方一律用名字</strong>（一墙 <code>#42 #43 #44</code> 是没法读的）。还有两个词要分清：<em>战争迷雾</em>（在范围内但还不精确）和<em>出界</em>（范围外，永远不放出来）。</p>
+<p class="how">两种模式：<strong>画地图</strong>（给一个松散想法：定目的地 → 横着问一遍 → 建地图 → 建现在能说清的票 → 第二遍连依赖 → 给研究票派子任务）和<strong>走地图</strong>（给地图：加载低分辨率视图 → 选票 → 认领 → 按类型解 → 写结论、关票、往"已定的事"追加一行 → 把新露出来的雾放进去）。</p>
+<p class="use">全新项目、跨系统大改造、方向本身还没定的大特性。</p>
+<p class="skip">范围清楚的中等需求（太重）；已经知道怎么做的活。</p>
+<div class="new">地图和票都不再打"可开工"这类分诊标签（它们是决定，不是活）；交叉引用只用真实 issue 号（占位符会自动链到不相干的 issue）；研究分支只推不合并、不开 PR；解票时按票上标签写的类型来解。</div>
+</div>
+
+<div class="card rose">
+<h3><code>/triage</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">把 issue / PR 沿状态机往前推：分类、验证、必要时追问、写出能开工的说明。</p>
+<p class="why">见 5.4⑥。两个便宜但常被跳过的前置检查：<strong>是不是已经实现了</strong>（已实现走"不做"，但<strong>不写</strong>范围外记录）、<strong>是不是已经被否过</strong>（读范围外记录）。另外每条分诊评论都必须以"这条是 AI 在分诊时生成的"开头。</p>
+<p class="how">自然语言指挥（"看看有什么要我处理的""把这条移到可开工"）。快速改状态时会跳过追问，并问你要不要补一份说明。</p>
+<p class="use">bug 报告、别人提的需求、外部 PR 堆积时。</p>
+<p class="skip">自己刚拆出来的票（本来就该直接开工）；已经在做的活。</p>
+</div>
+
+<div class="card">
+<h3><code>/improve-codebase-architecture</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">扫一遍代码库找"能把行为收进小接口"的地方，出可视化 HTML 报告，你挑一个再进追问。</p>
+<p class="why">见 5.4⑧。它先定范围再扫：改得勤的地方优先（<code>git log</code> 找热点）。报告写到<strong>系统临时目录</strong>，文件名带时间戳，<strong>不进仓库</strong>，然后帮你打开。</p>
+<p class="how">每个候选一张卡：涉及文件 / 问题 / 方案 / 好处（用"改动集中"和"调用者省事"来讲）/ 前后对比图 / 强度标记（强 · 值得看看 · 只是猜想）。最后给"我会先做哪个"。只在跟 ADR 冲突时标出来，不列举所有理论上的改法。</p>
+<p class="use">隔几天跑一次，当体检。你感觉"这块改起来越来越绕"时。</p>
+<p class="skip">指望它把陈年老坑拆干净——原文说得很直白：<strong>它是体检，不是抢救</strong>。</p>
+</div>
+
+<div class="card amber wide">
+<h3><code>/retro</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">会话复盘：改进 <strong>agent 的环境</strong>，不是改进代码。</p>
+<p class="why">六个方向：导航（指针）、自动检查（lint/类型/测试/文件系统）、编码标准、全局入口文件、工具开销（token 用得冤的调用）、信息可达性（把 dev server 日志接出来、只读访问三方服务）。<strong>最重要的一条分类纪律</strong>：编码标准违规先分类——<em>机械性</em>的（固定语法、被禁 API、import 形状、文件位置）一律做成<strong>确定性检查</strong>（linter 规则 / 提交前钩子 / CI），文档只留给真正需要判断的。而且：<strong>一个连护栏都没有的仓库本身就是一条发现</strong>。</p>
+<p class="how">在要复盘的那个会话里跑（清空之后再跑，就只剩日志了）。它先调 writing-for-agents 拿写法，再读一手材料，按严重度排序给你建议。</p>
+<p class="use">一个会话做歪了之后；或者你发现"同一个错犯了三次"。</p>
+<p class="skip">刚做完一个顺利的小改动——没有可提炼的环境问题。</p>
+<div style="margin-top:9px;padding:9px 12px;font-size:12.8px;color:#cfd6e6;background:rgba(82,213,197,.055);border:1px solid rgba(82,213,197,.22);border-left:3px solid var(--teal);border-radius:8px">
+<b style="color:var(--teal)">机械 vs 判断，怎么分、各自落到哪：</b>
+<ul style="margin:6px 0 4px">
+<li><b>机械型</b>（有固定形态、机器能判）→ 做成检查：eslint 规则 / 一致性测试 / 提交前钩子 / CI。判据很土但很好用：<b>能用一行正则或一段语法树判出来的，就是机械型</b>。</li>
+<li><b>判断型</b>（跨文件一致性、"跟周围风格一致"、命名品味）→ 才写进文档，交给 review 阶段的人和 agent 判断。</li>
+<li><b>为什么优先做成检查</b>：文档靠人记、检查靠机器跑；而 agent 每次开工都只能重新读文档，还会忘。</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<h3>6.2 工程 · 模型也能自己抓的（9 个）</h3>
+<div class="grid">
+
+<div class="card teal">
+<h3><code>/tdd</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">红→绿循环的参考手册：什么算好测试、测试放哪、三种反模式、循环的规矩。</p>
+<p class="why">它把"测试"从覆盖率改造成<strong>规格</strong>：好测试读起来像一条规格（"用户可以拿着有效购物车结账"），代码全改了它也不该改。<strong>seam</strong> 是你观察行为的公共边界，测试只住在这里，而且<strong>只写在事先说好的 seam 上</strong>——写任何测试之前，先把 seam 写下来跟你确认。三条反模式：跟实现绑死（mock 内部协作者 / 测私有方法 / 绕开接口查数据库，特征是"重构就红但行为没变"）、同义反复（期望值用跟实现一样的方式重算，构造上就不可能不一致）、横着切（先写完全部测试再写实现，你测的是想象出来的行为）。</p>
+<p class="how"><strong>先红后绿</strong>；一次一片（一个 seam、一个测试、一个最小实现）；<strong>重构不属于这个循环</strong>，它属于 review 阶段。形状不确定时调 <code>/codebase-design</code> 拿词（它是参考，不是要跑一遍的会话）。</p>
+<p class="use">所有"造行为"的活；修 bug 时也用它把回归锁住。</p>
+<p class="skip">纯样式、纯文案、纯配置搬家。</p>
+<div class="new">提 seam 的时候，每个 seam 要配一句"它抓得住什么、漏掉什么"，让你选 seam 不是靠猜。</div>
+</div>
+
+<div class="card rose">
+<h3><code>/code-review</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">对着一个固定点做<strong>两栏</strong> review：规范（符不符合仓库写下来的约定）+ 需求（是不是忠实实现了原始 issue/spec）。两个子任务各看一栏。</p>
+<p class="why">为什么必须分两栏、而且不许合并排序：一个改动可以过一栏挂另一栏——<em>完全合规但做错了事</em>，和<em>完全按要求做了但违反约定</em>。合并排序会让一栏掩盖另一栏。最后只给"每栏几条 + 每栏最严重的一条"，<strong>不许挑一个跨栏总冠军</strong>。</p>
+<p class="how">① 定住固定点（commit / 分支 / tag / 合并基点，没给就问）→ 用三点 diff，先确认 ref 能解析、diff 非空 → ② 找需求来源（提交里的 issue 号 → 你给的路径 → <code>docs/</code>、<code>specs/</code>、<code>.scratch/</code> 下匹配分支名的文件 → 都没有就问）→ ③ 找规范来源（<code>CODING_STANDARDS.md</code> / <code>CONTRIBUTING.md</code> 必须在列），再叠加十二条 Fowler 坏味道基线（<strong>仓库文档永远压过基线</strong>，坏味道永远只是"可能是"、不是硬违规，工具已经强制的跳过）→ ④ 同时发两个子任务（各限 400 词）→ ⑤ 原样分栏呈现。</p>
+<p class="use">分支 / PR / 收尾；<code>/implement</code> 和 <code>/implement-spec</code> 都会自动调它。</p>
+<p class="skip">只想瞥一眼"有没有明显 bug"——那就直接问，不用走这套。</p>
+<div class="new">它会在仓库里主动搜"该怎么写代码"的文件，<code>CODING_STANDARDS.md</code> / <code>CONTRIBUTING.md</code> 一律交给"规范"那栏；两个子任务改成<strong>前台</strong>跑、直接用它俩返回的报告（之前是后台）；tracker 通过配置好的说明文档解析，不再写死一条路径。</div>
+</div>
+
+<div class="card amber">
+<h3><code>/diagnosing-bugs</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">难 bug / 性能回退的六阶段诊断循环。</p>
+<p class="why"><strong>第一阶段就是全部。</strong>"如果你有一条在<em>这个</em> bug 上会变红的紧回路，你就会找到原因；二分、假设检验、插桩都只是在消费它。"所以第一阶段要花不成比例的力气，并且<strong>拒绝在没有回路时进第二阶段</strong>——"跳去猜假设，正是这个技能要防的失败"。完成判据四条可打勾：能抓住这个<strong>确切症状</strong>（不是"没报错"）、稳定、快（秒级）、不用人盯。</p>
+<p class="how">造回路的十种手段（失败测试 → curl → 命令行 fixture diff → 无头浏览器 → 回放抓包 → 最小 harness → 属性/fuzz → 二分 → 差分 → 最后才是人机脚本）。之后：复现并<strong>最小化</strong>（删到"去掉任何一个都变绿"）→ 生成 <strong>3-5 个可证伪的假设</strong>（每个都要说得出"如果 X 是原因，改 Y 会让它消失"），先给你看再测 → 一次只改一个变量，调试日志加统一前缀方便一次清干净 → 在<strong>正确的 seam</strong> 写回归测试 → 清理并复跑原回路。</p>
+<p class="use">一眼看不出原因的、间歇性的、两次已知状态之间溜进来的回归。</p>
+<p class="skip">明显拼写错误、日志里已经写明原因的错。</p>
+<div class="new">第五阶段多了一步保险：如果你是靠"故意把代码改坏"逼出红色的，要先跟没改过的副本 diff 一遍，确认那一改真的改到了东西，再相信这个红——有些改动静悄悄什么都没改，却让测试显示失败。</div>
+</div>
+
+<div class="card">
+<h3><code>/domain-modeling</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">主动去建、去磨项目的领域模型：挑用词的毛病、用边缘情况压它、就地更新词表和 ADR。</p>
+<p class="why">它是<strong>主动</strong>纪律，不是"读一眼词表"（那只是一行习惯，谁都能做）。五个动作：跟词表冲突时当场指出来、把模糊的词锻成规范的词、编一个具体场景逼你说清边界、跟代码对一遍、就地写词（不攒批）。词表里<strong>绝不含实现细节</strong>。</p>
+<p class="how">ADR 只在"很难反悔 + 没有背景的人会惊讶 + 确实是取舍"三条同时成立时才提，其余跳过。词表用到才建。</p>
+<p class="use">一句话里有三个意思（"账户"同时指客户、用户、账号），或者一个决定会让以后的人问"当初为什么这么干"。</p>
+<p class="skip">只是需要"用对词"——读一眼词表就够了，不用开这个技能。</p>
+</div>
+
+<div class="card">
+<h3><code>/codebase-design</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">设计<strong>深模块</strong>的共用词汇：大量行为藏在小小接口后面，放在干净的 seam 上，通过接口测试。</p>
+<p class="why">七个词要原样用，别换成 component / service / API / boundary：<em>module</em>（任何有接口和实现的东西，故意跟大小无关）、<em>interface</em>（调用者必须知道的一切：签名 + 不变式 + 顺序约束 + 出错方式 + 配置 + 性能特征）、<em>depth</em>（接口处能拿到多少）、<em>seam</em>（不改那里代码就能改变行为的地方）、<em>adapter</em>（填进 seam 的具体东西，说的是角色不是材质）、<em>leverage</em>（调用者得到的）、<em>locality</em>（维护者得到的：改动、知识、验证都集中在一处）。四条原则：<strong>深度是接口的属性</strong>、<strong>删除测试</strong>（想象删掉它：复杂度消失了=纯中转；复杂度在 N 个调用点重现=它在挣饭吃）、<strong>接口就是测试面</strong>、<strong>一个 adapter 是假设的 seam，两个才是真的</strong>。</p>
+<p class="how">两份配套参考：<code>DEEPENING.md</code>（按依赖类型给替换策略）和 <code>DESIGN-IT-TWICE.md</code>（并行 3 个以上子任务，各自一个激进不同的约束，最后按 depth / locality / seam 位置比较，并给出自己的推荐）。</p>
+<p class="use">要设计模块接口、找深化机会、决定 seam 放哪、让代码更好测也更好找路。</p>
+<p class="skip">只是要把一个函数写对——用不着这套词。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/prototype</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">一次性代码，只回答一个问题。先按问题选分支。</p>
+<p class="why"><strong>问题决定形态。</strong>问"这套逻辑/状态模型对不对"→ 单文件可分享 HTML（能点、能切场景）；问"这应该长什么样"→ 同一路由上放几个<strong>结构上真的不一样</strong>的变体，用参数切换。两个分支产物完全不同，选错就白做。六条通用规矩：第一天就标清是一次性的、启动要极简（一个命令或双击）、默认不存数据、跳过打磨、每一步都把状态露出来、<strong>结束时要收</strong>（验证过的决定折回真代码，原型本身作为一手资料留在一次性分支上，并从实现票指过去）。</p>
+<p class="how">UI 分支还有两条硬要求：<strong>优先改已有页面</strong>，别新建空路由（空路由会掩盖设计问题）；变体之间不许共享布局、不许只改颜色文案。</p>
+<p class="use">纸上说不清的设计问题；需要别人"按着看"的状态模型。</p>
+<p class="skip">已经知道要做什么，只是要写代码。</p>
+</div>
+
+<div class="card">
+<h3><code>/research</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">开一个<strong>后台 agent</strong> 去读一手资料，把结论写成带引用的 md 放进仓库。</p>
+<p class="why">它的价值是"你继续干活，它在读"。纪律只有一条但很硬：<strong>只能读一手资料</strong>（官方文档、源码、规范、一方 API），不许用别人对它们的转述；每个论断都要能回溯到源头。写在哪：跟仓库已有约定；没有就找个合理位置<strong>并说出来</strong>。</p>
+<p class="how">给一个问题就行。可以并行开多个（wayfinder 的研究票就是这么解的：结果落在一个一次性分支上，从票里指过去，<strong>不开 PR、永不合并</strong>）。</p>
+<p class="use">需要外部事实才能决策；或者"读文档"是那个会话的瓶颈。</p>
+<p class="skip">答案在本地代码里——那是探索，不是研究。</p>
+</div>
+
+<div class="card amber">
+<h3><code>/pr</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">PR 正文的形状：用最小的一张图讲清改动 + 前后证据 + 合并危险判断。</p>
+<p class="why">三段固定：<strong>摘要</strong>（挑最小的那个视图：伪代码 / 调用树 / 组件树 / 文件树 / 图 / diff）、<strong>证据</strong>（截图最好，执行证据次之，必须前后对比）、<strong>合并危险</strong>（<em>单向门还是双向门</em> + 影响范围一个词）。客套话全删，用词表里的词。</p>
+<p class="how">它不替你写代码，只管正文形状。图要贴着它支撑的那段短文放，只留回答"当前这个问题"需要的东西。</p>
+<p class="use">快开 PR；或者要让别人（还有三个月后的你）三分钟看懂这个改动。</p>
+<p class="skip">内部一次性提交。</p>
+</div>
+
+<div class="card teal">
+<h3><code>/wizard</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">生成一个<strong>交互式 bash 向导</strong>，一步一步领人走"只有人能走"的流程，边开网页边把值抓进 <code>.env</code> 和 CI secrets。</p>
+<p class="why">"让人做"和"让人被领着做"是两件事。它把重复解释给 AI 的过程固化成脚本：分阶段进度、每阶段清屏只显示当前一步、确认闸门、跨平台开链接、隐藏输入密钥、重复跑也不会写坏 <code>.env</code>、写 <code>gh secret</code>、结束给摘要。模板<strong>永远不许手改</strong>，你只写阶段。</p>
+<p class="how">① 定范围（读 <code>.env*</code>、README、docker-compose、CI 配置，里面每个 secret 都是一个必须产出的值）→ ② 每个阶段写清"哪个网址、做什么、值在哪、填哪个变量"（<strong>不知道就说不知道，不许编步骤</strong>）→ ③ 一阶段一个 → ④ <code>bash -n</code> + shellcheck + <code>chmod +x</code>，<strong>不要自己端到端跑</strong>，静态追每个值都落地。</p>
+<p class="use">开通基础设施、配凭据 / CI secret、陌生的三方控制台、一次性迁移切换。</p>
+<p class="skip">agent 自己能做的事——那就它自己去做，别做向导。</p>
+<div class="new">模板修了一批边角问题：回车保留当前值时不再把引号一起存进去；阶段跑在函数里，改脚本不会把正在跑的向导弄死；清屏失败有兜底；写 <code>.env</code> 时用单引号包值，空格、<code>#</code>、<code>$</code> 和引号都能活下来；软链接的 <code>.env</code> 也能写进去并保留原权限；输入遇到 EOF 会报错而不是死循环。</div>
+</div>
+
+</div>
+
+<h3>6.3 生产力（7 个，跟代码无关的那一半）</h3>
+<div class="grid">
+
+<div class="card">
+<h3><code>/grilling</code> <span class="badge model">模型可抓</span> <span class="badge core">原语</span></h3>
+<p class="oneline">把那套访谈纪律单独拿出来：决策树、这一轮、轮次、每题带建议。</p>
+<p class="why">它是唯一实现，其余十个都是包装、变体或者反向。见第五章。</p>
+<p class="how">直接丢一个想法给它。想要"连写文件一起"就用 grill-with-docs，别在这种场合用它。</p>
+<p class="use">你就想要访谈本身，不要任何附加物。</p>
+<p class="skip">在仓库里——用 <code>/grill-with-docs</code>，它严格更好。</p>
+<div class="new">每道题的措辞都调过，确保说"是"就是接受建议，不会出现"我同意"其实等于回答了"不"；一轮里的题之间加了分隔线，不再挤成一段。</div>
+</div>
+
+<div class="card">
+<h3><code>/grill-me</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">不留痕的追问入口。整个技能只有一行：转给 grilling。</p>
+<p class="why">它存在的唯一理由是"没有工作目录"这个场景。<strong>名字不是语气差别，是状态差别。</strong></p>
+<p class="how">直接丢计划 / 设计 / 文稿。</p>
+<p class="use">不在仓库里时（写方案、设计接口草案、构思一篇文章）。</p>
+<p class="skip">在仓库里——用 grill-with-docs。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/wait-what</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">上一句没落地时的纠正器。让它换一种讲法重讲。</p>
+<p class="why">见 5.4④。三要素：补一点上下文、说人话、用词表里的词。</p>
+<p class="how">就发一句"等，我没懂你到哪一步了，重讲"。可以夹在任何技能中间用。</p>
+<p class="use">它开始甩术语、或者跳过了你没跟上的推理。</p>
+<p class="skip">你只是想要更多细节——那不叫"没落地"。</p>
+</div>
+
+<div class="card">
+<h3><code>/handoff</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">把当前对话压成一份能带走的交接文档，给另一个 agent 接手。</p>
+<p class="why">它不是"总结"，是<strong>能搬走</strong>：写在系统临时目录（<strong>不是工作区</strong>），带一节"建议用哪些技能"，<strong>不重复已有产物</strong>（spec / 计划 / ADR / issue / 提交 / diff 用路径或链接指过去），必须脱敏。</p>
+<p class="how">可以带参数说明"下个会话要干什么"，文档会围绕它裁剪。</p>
+<p class="use">换工具（Claude → Codex）、换目录 / 仓库、交给同事、或者在一个阶段中途分叉一个副任务。</p>
+<p class="skip">同工具同目录同任务——那该继续，或者压缩。</p>
+<div class="new">明确写出了系统临时目录在哪（<code>$TMPDIR</code>，没有就 <code>/tmp</code>；Windows 是 <code>%TEMP%</code>），省得 agent 自己猜。</div>
+</div>
+
+<div class="card amber">
+<h3><code>/to-questionnaire</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">把"你一个人答不了的决策"变成一份给别人填的问卷。</p>
+<p class="why">见 5.4⑤。设计上最聪明的一点：<strong>问怎么发出去，不问主题</strong>。你能答上来的永远是"发给谁"和"要什么回来"。</p>
+<p class="how">三步（各一轮）：收件人是谁 / 擅长什么 / 跟你什么关系 → 你要拿回什么决定或事实 → 写文档。问题按重要性排，一题一个想法，下面留作答位，只在可能被误解时加一句"为什么这重要"，结尾放兜底问题。</p>
+<p class="use">答案在后端 / 运维 / 业务方脑子里。</p>
+<p class="skip">答案在代码里（那是研究或探索）。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/teach</code> <span class="badge user">你敲</span></h3>
+<p class="oneline">拿当前目录当<strong>有状态的学习工作区</strong>，跨多个会话教你一个东西。</p>
+<p class="why">状态文件设计得很讲究：<code>MISSION.md</code>（你为什么学）、<code>RESOURCES.md</code>（好资源）、学习记录（像 ADR 一样记下不显然的洞察）、<code>lessons/*.html</code>（主教学单元）、<code>reference/*.html</code>（可打印的速查）、<code>assets/*</code>（跨课复用）、<code>NOTES.md</code>（你的偏好）。核心区分：<strong>当场想得起来 ≠ 长期记得住</strong>，后者才是目标，所以要靠提取练习、间隔、交错去制造"合意的困难"。知识阶段难度是敌人（吃掉工作记忆），技能阶段难度是工具。</p>
+<p class="how">每课一个自包含 HTML、短、能快速做完、有一个具体的小胜利、给一手资料、提醒你可以继续追问。它会读学习记录，教"刚好够难"的那一件。测验选项等长，正确答案的位置随机。</p>
+<p class="use">你要真的学会一个东西，而不是"查一下"。</p>
+<p class="skip">你只是要一个答案。</p>
+<div class="new">工作区写在<strong>你运行它的那个目录</strong>，不是技能自己的文件夹；测验里正确答案的位置会变，不让你靠位置蒙。</div>
+</div>
+
+<div class="card teal">
+<h3><code>/writing-for-agents</code> <span class="badge model">模型可抓</span></h3>
+<p class="oneline">写"给 agent 看的文档"的参考：技能、入口文件、以及任何被一句话指到的文档。</p>
+<p class="why">第四章整章都是它。它是这套仓库的母技能，<strong>也是你改造自己 skill 的说明书</strong>。</p>
+<p class="how">写 / 改技能时同时读 <code>SKILL-MECHANICS.md</code>（frontmatter、调用方式怎么选、总入口怎么写）。</p>
+<p class="use">任何"写给人以外的东西读"的时刻。</p>
+<p class="skip">写给人的文章——那用写作三件套。</p>
+</div>
+
+</div>
+
+<h3>6.4 in-progress（8 个，beta；插件不给，要单独装）</h3>
+<div class="callout amberc">
+<strong>稳定性说清楚：</strong>这八个不进插件、没有文档页，随时可能变或者消失。单独装：<code>npx skills@latest add mattpocock/skills --skill=&lt;名字&gt;</code>。注意是 <code>--skill=</code> 单数形式。
+</div>
+<div class="grid">
+
+<div class="card rose">
+<h3><code>/loop-me</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">把追问的输出限定成<strong>流程说明</strong>：你生活里的一个"循环"。</p>
+<p class="why">词汇很有用：<em>触发</em>（事件还是定时，事件通常更省）、<em>检查点</em>、<em>往右推</em>（把检查点推到最晚，让人只在最后被问一次，而且那时一切都备好了）、<em>简报</em>（检查点给人看的是可以直接拍板的摘要，不是草稿）。<strong>不结构性强制任何东西</strong>：不需要 AI、不需要检查点、不需要排期，除非问下来证明需要。</p>
+<p class="how">产物在 <code>workflows/*.md</code>，笔记在 <code>NOTES.md</code>（你的世界、工具、渠道、你自己的叫法）。<strong>完成的标准：一个实现的 agent 能不问任何问题就把它建出来。</strong></p>
+<p class="use">你想把一个反复做的事交出去（周报、issue 分诊、发布检查单）。</p>
+<p class="skip">一次性的任务。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/setup-ts-deep-modules</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">把 dependency-cruiser 接进 TS 仓库，强制"每个包都是一个深模块"。</p>
+<p class="why">用<strong>确定性检查</strong>落地架构意图，而不是靠文档和自觉。四条 error 级规则：入口边界（包外只能 import 包的根文件）、包内自由、测试只能通过入口、不许循环依赖。<strong>入口点是"包的所有根文件"，不是一个 index.ts 桶文件</strong>——所以你可以暴露多个小入口。</p>
+<p class="how">装依赖 → 写 <code>.dependency-cruiser.cjs</code>（只改包根目录那一个常量）→ 接进总的检查命令 → 建一个示例包 → <strong>证明规则真的会咬</strong>（跑一次过 → 加一个深层 import 必须失败 → 撤回必须再过）→ 写 <code>packages/README.md</code> 并从入口文件加一行指针。</p>
+<p class="use">monorepo / 多包仓库，而且你受够了跨包深层 import。</p>
+<p class="skip">单包应用——直接照搬包边界会别扭；但"入口文件 vs 子目录私有"这个思路可以借。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/writing-fragments</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">探索阶段：用追问挖"碎片"，只追加，不搭结构。</p>
+<p class="why">碎片的标准是"这是不是一段好文字"，不是"能不能独立成篇"。最值钱的碎片是<strong>一个能挂住整篇的词</strong>：一个紧凑的比喻或造词，它会在成型阶段决定结构、过渡和标题。</p>
+<p class="how">从你第一句话就开始记；<code>---</code> 分隔；只有一个工作标题，没元数据没目录没日期；每次写之前<strong>从磁盘重读</strong>（你可能改过），只追加不覆盖；"删掉最后一条""这条写利一点"是一等指令。</p>
+<p class="use">有话想说但不知道写成什么。</p>
+<p class="skip">结构已经定了——直接用 writing-shape。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/writing-shape</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">成型阶段：把素材逐段塑造成文章，每一步都在争"这块该用什么形式"。</p>
+<p class="why">它是"被反转的追问"：问题从"你在注意什么"变成"这篇到底在论证什么、读者该按什么顺序听"。核心概念是<strong>接地</strong>：每个概念要么是读者自带的，要么在前面某一块交代过；引用了没交代的概念就丢读者。要争的形式：散文还是列表、写在正文里还是抽出来做提示框、表格还是重复结构、引用还是转述、代码块还是行内。</p>
+<p class="how">先定前提 → 给 2-3 个候选开头（各自隐含不同论点）逼你选 → 逐块生长、每块落地就写进文件 → 每次写前重读。<strong>素材文件只读</strong>；素材缺东西要明说"这里需要例子，素材里没有，你现在给或者我们砍掉这段"。</p>
+<p class="use">素材有了要收成文章。</p>
+<p class="skip">还没探索够——回去 fragments。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/writing-beats</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">成型的另一种走法：把文章当成一串<strong>节拍</strong>，让你选路。</p>
+<p class="why">跟 writing-shape 同一个目标，但组织单位不同：<em>节拍</em>是旅程里的一个动作（设一个场景、落一个点、提一个问题、插一句旁白、扭一个角度），做完就停，让下一拍能转向。一拍按需要定大小，一句话也算。"需要五段三个小标题的那不是一拍，是两拍粘在一起。"</p>
+<p class="how">先定前提 → 给 2-3 个候选<strong>起手拍</strong>（各自入口不同，并说明各自交代了什么、解锁了什么）→ 只写选中的那一个 → 重读文件 → 给 2-3 个候选<strong>下一拍</strong>（必须都能从已经交代过的东西走到）。</p>
+<p class="use">你希望文章有几个真正的转折点，想让读者参与选路。</p>
+<p class="skip">线性说服型文章——writing-shape 更顺。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/claude-handoff</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">handoff 的自动版：写完摘要，立刻用 <code>claude --bg</code> 起一个后台 agent 接着干。</p>
+<p class="why">它不是"写个总结给我看"，是"交棒并立刻开跑"。必须带 <code>--name</code>（显示名），摘要通过文件传进去（避免 shell 把 <code>$</code> 和反引号展开），脱敏要求比 handoff 更严——<strong>摘要会直接变成下个 agent 的 prompt</strong>。</p>
+<p class="how">依赖 Claude Code 的 <code>--bg</code> 能力。<code>claude agents</code> 管理这些任务。</p>
+<p class="use">Claude Code 用户想把活并行甩出去、自己继续对话。</p>
+<p class="skip">不是 Claude Code——用普通的 <code>/handoff</code>。</p>
+</div>
+
+<div class="card rose">
+<h3><code>/chief-of-staff</code> <span class="badge beta">beta</span></h3>
+<p class="oneline">在单个会话里长期追一个目标，靠协调子任务和计划往前推。</p>
+<p class="why">双轨思维：<em>战术</em>（怎么完成眼前这件事）+ <em>战略</em>（怎么改造环境，让<strong>下一件</strong>事更容易）。三条环境主张："成功之坑"（极度收敛的 API、强制正确性的 lint 规则、能让 reviewer 执行最佳实践的规范文件）、数据源（dev server 日志、测试库、必要时浏览器）、<strong>"不许绕路"</strong>（不搞绕过既有流程的一次性 hack，偏离约定要在功能开发之前主动修掉）。它还要求所有活都放子任务，保护自己的上下文，主要靠指针通信。</p>
+<p class="how">长期会话，你当负责人，它当幕僚长。</p>
+<p class="use">跨天 / 跨周的单目标长跑（比如"把这几十个页面一点点收尾"）。</p>
+<p class="skip">一次性的需求。</p>
+<div class="new">记忆改成一个小 wiki：一个 <code>index.md</code> 加每个主题一页，靠"吸收 / 查询 / 体检"三个动作维护。而且它写的是<strong>历史，不是现在</strong>——每条结论都带日期，涉及代码的要写明"在哪个提交上为真"，改了就不改写旧那条，而是加一条新的、把旧的标成已被取代。</div>
+</div>
+
+<div class="card rose">
+<h3><code>/software-factory</code> <span class="badge beta">beta</span> <span class="badge newb">新加的</span></h3>
+<p class="oneline">给"软件工厂"这件事定一套共用词：它跑哪些任务、插哪些服务。</p>
+<p class="why">所谓软件工厂，就是"一堆 agent 把工单、PR、定时任务变成已合并的代码"，跑在你选定的远程机器上。这个技能只做一件事：把讨论它时该用的词定下来——<em>任务</em>（一种活，定义一次跑很多次）、<em>触发</em>（什么事件开始一次运行）、<em>一次运行</em>（一个任务在一个运行机上从触发到结束，当黑盒看）、<em>运行机</em>（一次性的机器，跑完什么都不留）、<em>工单系统</em>（人跟工厂的接口）、<em>工单来源</em>（反馈按钮、监控、报错平台）、<em>代码托管</em>、<em>调度器</em>、<em>可观测平台</em>。它会拦你用 job/workflow/session/server 这些词。</p>
+<p class="how">设计分两半：<strong>服务</strong>（每个位置填一个产品）和<strong>任务</strong>（这些运行怎么把活往前推）。它反复强调的三条刹车：自动检查、自动评审、人工评审；<strong>一次只加一个自动触发</strong>，先掐着量跑，人工评审每一单，等刹车可信了再放开。每个任务要答五个问题：什么触发它、它读写哪些服务、它接下来触发谁、人从哪重新进场、什么防止两次运行干同一件事。设计算完成的标准：每个位置都点了名（可观测平台可以明确说"不要"），每个任务和工单来源都答完了这几问。</p>
+<p class="use">你在琢磨"让 agent 自动处理工单 / 自动评审 PR"这种系统，需要跟人把它讲清楚。</p>
+<p class="skip">你只是想让 agent 帮你做一次活——那是 implement 的事，不是建工厂。</p>
+</div>
+
+</div>
+
+<h3>6.5 misc（4 个，全部冻结：issue 已关，不再维护）</h3>
+<div class="grid">
+
+<div class="card blue">
+<h3><code>/git-guardrails-claude-code</code> <span class="badge frozen">冻结</span></h3>
+<p class="oneline">给 Claude Code 装一个执行前拦截，危险 git 命令<strong>还没跑</strong>就被拦掉。</p>
+<p class="why">把"规矩"从文档变成<strong>执行层强制</strong>：<code>git push</code>（含 --force）、<code>reset --hard</code>、<code>clean -f</code>、<code>branch -D</code>、<code>checkout .</code> / <code>restore .</code> 一律退出码 2。被拦时 agent 收到的消息是"你没有权限用这些命令"。</p>
+<p class="how">选项目级还是全局 → 拷脚本 + <code>chmod +x</code> → 合并进钩子配置（不要覆盖别的设置）→ 可以增删模式 → 用一行 echo 喂个假命令验证退出码是 2。</p>
+<p class="use">agent 会大量碰 git、而且真的手滑过的仓库；或者多人共用一台机器。</p>
+<p class="skip">没出过事、也不想再往仓库里加东西——那就维持"文字规则 + 自觉"，等真出一次事故再说。</p>
+</div>
+
+<div class="card blue">
+<h3><code>/setup-pre-commit</code> <span class="badge frozen">冻结</span></h3>
+<p class="oneline">装 Husky + lint-staged（+ Prettier）+ 类型检查 + 测试的提交前钩子。</p>
+<p class="why">"一个连护栏都没有的仓库本身就是一条发现"的具体落地。顺序被优化过：先 lint-staged（快、只看暂存的文件），再全量类型检查和测试。</p>
+<p class="how">探包管理器 → 装依赖 → 初始化 husky → 写提交前脚本（没有对应脚本就省掉并告诉你）→ 配 lint-staged → 缺配置就补 → 验证 → 用它自己提交一次当烟测。</p>
+<p class="use">仓库还没有任何提交前护栏。</p>
+<p class="skip">已经有 CI 在跑 lint / 类型 / 测试——别再叠一层慢的本地闸。</p>
+</div>
+
+<div class="card blue">
+<h3><code>/migrate-to-shoehorn</code> <span class="badge frozen">冻结</span></h3>
+<p class="oneline">把测试里的 <code>as</code> 断言换成 <code>@total-typescript/shoehorn</code> 的 <code>fromPartial()</code> / <code>fromAny()</code>。</p>
+<p class="why">只针对<strong>测试代码</strong>（生产代码永远别用）。它解决两个具体的烦：一个巨大类型（一个有二十个字段的请求）里你只用到一个字段，却被迫造假二十个；以及故意传错数据时要写 <code>as unknown as T</code> 这种双重断言。</p>
+<p class="how">装包 → 搜测试文件里的 <code>as</code> → 普通断言换 <code>fromPartial()</code>，双重断言换 <code>fromAny()</code> → 跑类型检查。</p>
+<p class="use">TS 测试里 <code>as</code> 泛滥。</p>
+<p class="skip">团队不接受新增依赖，或者本来就没几个 <code>as</code>。</p>
+</div>
+
+<div class="card blue">
+<h3><code>/scaffold-exercises</code> <span class="badge frozen">冻结</span></h3>
+<p class="oneline">给课程仓库批量生成练习目录（题目 / 答案 / 讲解 + readme）。</p>
+<p class="why">纯粹服务作者自己的课程仓库（依赖他那套 CLI），带一套检查规则（readme 不能空、不能有坏链、不能留 .gitkeep、重命名用 <code>git mv</code> 保历史）。</p>
+<p class="use">你在做课程 / 教学材料，而且用他那套 CLI。</p>
+<p class="skip">业务代码仓库没有"练习目录"这个概念，直接跳过。</p>
+</div>
+
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a7" class="teal-b">七、四个典型场景，从头走一遍</h2>
+
+<p class="kbd-note">场景里的目录名、文件名都是示意，重点是"产物落在哪、第几步别切会话"。这套方法一半的价值在产物位置。</p>
+
+<h3>场景 0：接口字段还没确定</h3>
+<p><strong>要做的事：</strong>某个接口的字段、必填、取值、后端到底怎么算的，现在全靠猜。</p>
+<p>先看清一件事：<strong>这不是一个技能能解决的，而是三种"事实"走三条路</strong>。</p>
+
+<table>
+<tr><th style="width:30%">你要确认的东西</th><th style="width:22%">事实在哪</th><th style="width:22%">用什么</th><th>拿到什么</th></tr>
+<tr><td>第三方产品的官方行为（某个 API 怎么锁、参数怎么穿）</td><td>官方文档 / 上游源码</td><td><code>/research</code></td><td>带引用的笔记</td></tr>
+<tr><td>自家后端的字段名、类型、必填、取值、调用链、谁在写这个值</td><td>后端代码</td><td><strong>派子任务取证</strong>：查调用链 + 在沙箱里搜，只回一张表</td><td>字段证据表：字段 / 类型 / 必填 / 取值 / 出处（文件 + 符号）</td></tr>
+<tr><td>代码看不出来的：为什么这么设计、历史包袱、契约还会不会变、什么时候上线</td><td>后端的人</td><td><code>/to-questionnaire</code></td><td>一份问卷（把已经查到的证据放进背景，只问代码答不出的部分）</td></tr>
+</table>
+
+<h4>顺序：别把三条路并行乱走</h4>
+<ol class="steps">
+<li><strong>先读仓库自己的约束</strong>：接口相关的约定、以及词表里这批业务词。这一步决定了后面所有命名。</li>
+<li><strong>再查代码</strong>：派一个子任务去后端仓库找证据，只回一张表。它要回答：这个字段在后端叫什么、什么类型、必填与否、取值从哪来、哪个接口返回、有没有被二次加工。<strong>原文不要进主上下文</strong>——真要看大段代码，就在沙箱里算完只打印结论。</li>
+<li><strong>只剩"代码答不出的"才去问人</strong>：把第二步的证据放进问卷背景，问题只问"为什么这么设计 / 会不会变 / 有没有坑"。<strong>别问"这个字段是什么"</strong>——那是能自己查的，问人就是浪费对方时间。</li>
+<li><strong>喂回追问</strong>：证据和问卷答案一起进 <code>/grill-with-docs</code>，让决定建立在事实上，而不是假设上。</li>
+<li><strong>落进 spec</strong>：<code>/to-spec</code> 的"实现决定"里写接口契约（字段含义、必填、取值），<strong>但不要写文件路径和代码片段</strong>——那些过期得最快。</li>
+</ol>
+
+<div class="callout rosec">
+<strong>取证时最容易踩的三条：</strong><br>
+① <strong>字段名照后端原样用</strong>——它叫 <code>file_name</code> 就写 <code>file_name</code>，别搞 <code>file_name ?? fileName ?? name</code> 这种猜测式兼容；<br>
+② <strong>不要用假数据兜底</strong>——真接口接上之后，业务代码里不该留"失败就走假数据"的分支；<br>
+③ <strong>结论要能复核</strong>——必须指得到"哪个文件、哪个符号、哪一行逻辑"，抽查式的结论算无效。
+</div>
+
+<h3>场景 A：一次跨模块搬迁（主线全走一遍）</h3>
+<p><strong>要做的事：</strong>把几条业务线从老模块搬到新模块，牵涉接口、页面、菜单、权限。</p>
+
+<ol class="steps">
+<li><strong><code>/grill-with-docs</code></strong>　把"搬过去"这个模糊动词问成五六个已经拍板的决定（5.6 那一轮就是它的真实形态）。
+<div class="kbd-note">产物：词表里新增或收紧的词；如果"模块归属"这条决定满足那三个条件，会提一条 ADR。</div></li>
+
+<li><strong><code>/to-spec</code></strong>　不再问你，把上一轮合成 spec。它只会问你一件事：<strong>seam 放哪</strong>。
+<div class="kbd-note">正确回答：放在"取数入口的形状"和"节点来源"两处，而不是"每个页面各测一遍"。产物：<code>.scratch/&lt;特性&gt;/spec.md</code>，状态可开工。</div></li>
+
+<li><strong><code>/to-tickets</code></strong>　切成竖片并标依赖。
+<div class="kbd-note">产物：<code>issues/01-*.md</code>（无依赖）、<code>02-*.md</code>（无依赖）、<code>03-核对.md</code>（被前两张卡着）。注意：如果"路由注册"这一改会同时炸到几十个页面，它就不是竖片，按"先加新的 → 分批搬 → 最后删旧的"拆。</div></li>
+
+<li><strong><code>/implement</code> 01</strong>　它先报出票标题，然后在说好的 seam 上跑 tdd。
+<div class="kbd-note">每轮：先写红测试 → 最小实现 → 类型检查 → 跑单个测试文件。<strong>别</strong>每轮都跑构建或全量检查。</div></li>
+
+<li><strong><code>/code-review since main</code></strong>　两栏 review。规范那栏会读你的入口文件和规范文档；需求那栏会读刚才那份 spec。
+<div class="kbd-note">预期会命中的坏味道：Middle Man（为了搬迁新增的中转层）、Duplicated Code（三个页面又各写一份取数）。</div></li>
+
+<li><strong><code>/pr</code></strong>　摘要用文件树 diff + 路由对照表；证据放<strong>迁移前后的菜单 / 权限截图</strong>；合并危险判"双向门 + 影响范围=路由/菜单"。</li>
+
+<li><strong><code>/retro</code></strong>　在同一个会话里跑。正确的产出不是再写一篇文档，而是<strong>一条确定性检查</strong>：比如给"新增一级路由必须三处同步"写一个一致性测试。</li>
+</ol>
+
+<div class="callout tealc">
+<strong>关键判断：</strong>第 2 步之前<strong>别开新会话</strong>。追问 → spec → 拆票是一条思路，中间清掉，等于让 agent 拿着二手摘要重新推理。第 4 步起，每张票都可以开干净会话。
+</div>
+
+<h3>场景 B：一个难 bug（六阶段）</h3>
+<p><strong>要做的事：</strong>切单据时有个监听没清掉，来回切几次就泄漏，但只在特定操作顺序下复现。</p>
+
+<table>
+<tr><th style="width:14%">阶段</th><th style="width:44%">做什么</th><th>具体长什么样</th></tr>
+<tr><td>第一阶段<br>造回路</td><td>造一条<strong>会红</strong>的紧回路。原文：这一步就是全部，没有它不许进第二阶段。</td><td>一个单元测试：挂载 → 切换单据 → 断言监听数量回落到初始值。名字写成用户症状（"切换单据后不再监听旧单据"），不是"监听被正确清理"。要求：秒级、稳定、不用人盯。</td></tr>
+<tr><td>第二阶段<br>复现+最小化</td><td>先确认红的是<strong>用户描述的那个</strong>失败；再逐个删输入、调用、配置，直到"去掉任何一个都变绿"。</td><td>最小化到"只有连切两次才泄漏"这种程度——它能把第三阶段的假设空间从"整个模块"缩到"两次切换之间的清理时机"。</td></tr>
+<tr><td>第三阶段<br>假设</td><td>先写 <strong>3-5 个可证伪的假设</strong>，每个都要说得出"如果 X 是原因，改 Y 会让它消失"，然后<strong>先给你看</strong>。</td><td>你往往能立刻重排（"上周刚改过缓存返回那一块"）。</td></tr>
+<tr><td>第四阶段<br>插桩</td><td>一次只改一个变量；调试日志加统一前缀；性能问题走另一条分支（先建基线再二分，不靠日志）。</td><td>有调试器就用调试器，一个断点顶十条日志。</td></tr>
+<tr><td>第五阶段<br>修 + 回归</td><td>在<strong>正确的 seam</strong> 写回归测试（能复现调用点上的真实模式）。<strong>没有正确 seam 本身就是发现</strong>：说明架构在阻止你把 bug 锁死。</td><td>如果只能在最内层单测，而真实 bug 发生在"多个调用者串联"上，那是 seam 太浅，别硬写一个给你假信心的测试。</td></tr>
+<tr><td>第六阶段<br>清理</td><td>原路径不再复现、回归测试过、调试日志清空、临时文件删掉、把"正确的那个假设"写进提交说明。</td><td>然后<strong>同一个会话</strong>跑 <code>/retro</code>：问"什么环境能防住它"——大概率答案是缺一个一致性测试。</td></tr>
+</table>
+
+<h3>场景 C：架构体检 → 深挖一个模块（不是"重构全库"）</h3>
+<p><strong>要做的事：</strong>几十个列表页长得几乎一样，改起来越来越绕。</p>
+
+<ol class="steps">
+<li><strong><code>/improve-codebase-architecture</code></strong>　先定范围：看提交历史找最近改得多的区域，再派子任务自己去逛。用<strong>删除测试</strong>判断哪些是空壳。</li>
+<li><strong>读报告</strong>（写在临时目录，不进仓库）。每个候选看四件事：涉及文件 / 问题 / 方案 / 强度。它会告诉你"我先做哪个"。</li>
+<li><strong>选中一个 → 进追问</strong>：约束、依赖、收拢之后长什么样、seam 后面放什么、哪些测试能活下来。</li>
+<li><strong>想比较几种接口 → <code>/codebase-design</code> 的"设计两次"</strong>：并行 3 个以上子任务，各自一个激进不同的约束（入口最少 / 最灵活 / 最常见调用者最省事），最后按深度、改动集中度、seam 位置比较，<strong>并给出自己的推荐</strong>（别只摆菜单）。</li>
+<li><strong>落成方案 → <code>/to-spec</code> → <code>/to-tickets</code></strong>。这类工作经常不是竖片，而是"先并存、再分批搬、最后删旧的"。</li>
+</ol>
+
+<div class="callout amberc">
+<strong>别做的事：</strong>不要指望它帮你"抢救"一个陈年老坑。原文说得很直接：它是体检，不是抢救。老代码库上它会找出真实候选，但不会替你把泥巴理顺。
+</div>
+
+<h4>报告里出现十几张卡之后：先别急着追问</h4>
+<p>十几张卡很常见，但<strong>一次只该挑一个</strong>——原文就是问"你想深入哪一个"，选中之后才进追问。对十张卡各跑一次完整追问，意味着你要回答五到一百个问题，而且每张卡的决策树活在不同会话里，切回去就断。</p>
+<table>
+<tr><th style="width:8%">阶段</th><th style="width:26%">做什么</th><th style="width:22%">跑什么</th><th>产物 / 提醒</th></tr>
+<tr><td>0</td><td>把报告存下来</td><td>—</td><td>临时目录会被清理；先复制到仓库里一个被忽略的目录（比如 <code>.scratch/architecture-review/日期.html</code>）</td></tr>
+<tr><td>1</td><td><strong>归类 + 分三档</strong>：按根因合并（十张卡通常只有三四个根因），分成"现在做 / 以后做 / 不做"</td><td>一个会话，<strong>不调追问</strong></td><td>"不做"的必须留一条理由，否则下次体检它还会冒出来</td></tr>
+<tr><td>2</td><td>只挑 <strong>1 张</strong>，优先挑<strong>位置最靠上游</strong>的那张（做完它，其他几张会变轻）</td><td><code>/grill-with-docs</code> → <code>/to-spec</code> → <code>/to-tickets</code>，<strong>一张卡一个会话</strong></td><td>spec 加票就是交接物，下个会话不需要记得这次聊了什么</td></tr>
+<tr><td>3</td><td>逐票实现</td><td><code>/implement &lt;票&gt;</code>（每票一个新会话）</td><td>内部会跑 tdd 和 code-review</td></tr>
+<tr><td>4</td><td>回到阶段 1 选下一张；做完的回填一行结论</td><td>—</td><td>全部做完后重跑一次体检</td></tr>
+</table>
+
+<div class="callout tealc">
+<strong>唯一的例外：</strong>当这些卡<strong>互相依赖</strong>，或者"先做哪张"取决于"做完上一张才知道什么"——这时"路线"本身就是未知的，该跑 <code>/wayfinder</code>，地图清楚之后再接 <code>/to-spec</code>。<br>
+一句话判据：<strong>卡与卡互不依赖 → 逐张追问；卡之间得先排路线 → wayfinder。</strong>
+</div>
+
+<h4>深模块 / 浅模块，五问就能判</h4>
+<p>别用行数判断。下面五问，<strong>任一条答得别扭，就是浅模块或者假抽象</strong>。</p>
+<table>
+<tr><th style="width:6%">#</th><th style="width:26%">问自己</th><th style="width:34%">深的模样</th><th>浅的模样</th></tr>
+<tr><td>1</td><td><strong>删除测试</strong>：删掉这块，复杂度是消失还是散开？</td><td>散回 N 个调用点 → 它在挣饭吃</td><td>复杂度直接消失 → 它是纯中转</td></tr>
+<tr><td>2</td><td><strong>调用者要学多少</strong>：用对它要读几个文件、知道几件事？</td><td>一个入口 + 少量参数 + 明确的出错方式</td><td>要读三四个文件，还得知道"先调 A 再调 B"</td></tr>
+<tr><td>3</td><td><strong>改动集中吗</strong>：改一条业务规则要动几处？</td><td>一处，改完全局生效</td><td>散在页面里，改三十处</td></tr>
+<tr><td>4</td><td><strong>能不能只通过接口测</strong>？</td><td>只断言接口行为</td><td>必须 mock 内部，或者必须查库旁证</td></tr>
+<tr><td>5</td><td><strong>能不能用领域词命名</strong>（词表里有词吗）？</td><td>能，比如"对账单""结算规则"</td><td>只能叫 <code>useXxxPage</code>，说明抽象错位了</td></tr>
+</table>
+
+<p><strong>两个反直觉的结论：</strong>①<strong>大不等于深</strong>——两千行的巨型文件只是大；深是小接口 + 大行为 + 干净的 seam。②<strong>"多一层"不等于深</strong>——把一行赋值包进函数、再包进 hook、再包进组合式函数，删除测试会说"复杂度消失了"，这是假深化。</p>
+
+<div class="callout rosec">
+<strong>"AI 会自己遵循深模块吗？默认不会。"</strong>代码生成是局部最优，深模块是全局约束。四个把手按有效程度排：<br>
+① <strong>seam 写进 spec</strong>（<code>/to-spec</code> 会强制你确认，这是唯一卡在流程里的点）；② <strong>review 的规范那栏</strong>（把"禁止没依据的兜底 / 禁止纯中转"作为标准喂给它）；③ <strong>确定性检查</strong>（一致性测试 / lint / 依赖规则）；④ <strong>词表</strong>（先有能命名的词，才可能有对应的模块）。<br>
+结论：<strong>别指望它理解深模块，要让它没机会写浅模块。</strong>
+</div>
+
+<h3>场景 D：雾很大的活（wayfinder）</h3>
+<p><strong>要做的事：</strong>路由注册、权限推导、左侧菜单数据源要统一，跨三个入口，牵一发动全身。</p>
+<ul>
+<li><strong>画地图：</strong>先追问给<strong>目的地</strong>起名（"让新增一个一级页面只改一处，且不再出现权限有、菜单没有"）；然后<strong>横着</strong>再问一轮，扫出还开着的决定。</li>
+<li><strong>建地图：</strong><code>.scratch/&lt;这摊活&gt;/map.md</code>，五节：目的地 / 备注 / 已定的事 / 还没说清 / 范围外。如果仓库里已经有一份执行看板，地图里<strong>用一句话指向它，不要复制一份</strong>。</li>
+<li><strong>建票：</strong><code>issues/01-*.md</code>、<code>02-*.md</code>…，每张写清类型（研究 / 试验 / 追问 / 事务）和被谁卡着。能说精确的才建票，说不精确的放进"还没说清"。</li>
+<li><strong>走地图：</strong>一次只解一张，先认领再动手；解完写结论、关票、往"已定的事"追加一行。研究票可以并行，派子任务去读官方行为。</li>
+<li><strong>交棒：</strong>雾散之后<strong>接 <code>/to-spec</code>，不要直接 implement</strong>——地图里链接起来的细节会被丢掉。</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="a8" class="rose-b">八、上下文该清、该接、还是该派出去</h2>
+
+<p><strong>阶段</strong>是会话里的一段工作（追问、实现、验收）。边界只在"行，这块结束了"的那一刻存在。<strong>别在阶段中间做这个决定</strong>——中期只有两个选择：继续，或者把剩下的活切成子任务。中期压缩会让 agent 丢掉线索。</p>
+
+<table>
+<tr><th style="width:12%">选项</th><th style="width:26%">它做什么</th><th style="width:22%">代价</th><th>什么时候</th></tr>
+<tr><td><strong>继续</strong></td><td>什么都不换。下一段需要这一段当<strong>一手材料</strong>，或者你还有足够的余量（大约 150k）。</td><td>窗口更满</td><td>追问 → 实现是标准答案：实现要的是你<em>推理的原话</em>，不是它的摘要。这条要<strong>第一个排除</strong>。</td></tr>
+<tr><td><strong>清空</strong></td><td>窗口清零，从头开始。</td><td>不可逆地丢掉"为什么"</td><td>前面全是探索、死路、可以丢的上下文。它最便宜，而且旧会话还能恢复。</td></tr>
+<tr><td><strong><code>/handoff</code></strong></td><td>写一份能带走的 md，在任何地方种下新会话。</td><td>有损；多一个文件</td><td>只有四种情况：换工具、换目录 / 仓库、交给同事、在阶段中途分叉副任务。<strong>买的是"能搬走"</strong>；没东西要搬，就不需要它。</td></tr>
+<tr><td><strong>派子任务</strong></td><td>把活放进它自己的窗口，拿回一份报告。</td><td>你要等报告</td><td>这件事能<strong>不用人盯</strong>地做完（自动 review 是标准案例）。</td></tr>
+<tr><td><strong>压缩</strong></td><td>把这一段压掉，种下新会话。</td><td>摘要会抹平决定</td><td><strong>默认项，但不是首选</strong>：相关、同工具、同目录、而且你必须留在环里。给一句指令（"压缩，接下来我们要做验收"）让摘要保住下一段要的东西。</td></tr>
+</table>
+
+<p><strong>顺序（第一个"是"就赢）：</strong>① 能继续吗（需要它当一手材料 / 还有余量）→ ② 上下文跟下一段无关吗（清空）→ ③ 需要交接吗（handoff）→ ④ 能不用人盯地做完吗（派子任务）→ ⑤ 否则压缩。</p>
+
+<div class="callout">
+<strong>核心取舍：</strong>除了"继续"，每个动作都在把<strong>一手材料</strong>换成<strong>二手材料</strong>——原始会话被它的摘要替代。一手信息全、噪音多、腾挪空间小；二手有损、噪音少、腾挪空间大。所以第一个问题永远先问"能不能继续"：只有留下来的成本高于换掉时，才付这份有损的代价。
+</div>
+
+<h4>落到日常的建议</h4>
+<table>
+<tr><th style="width:34%">场景</th><th>建议</th></tr>
+<tr><td>追问 → spec → 拆票</td><td>同一个窗口，<strong>不要清</strong>。</td></tr>
+<tr><td>票与票之间</td><td><strong>清空</strong>。每张票是自包含的，上一张的上下文是垃圾。</td></tr>
+<tr><td>写代码 → 验收测试</td><td>同一个窗口继续，或者压缩（"接下来做验收"）——验收需要知道"为什么这么实现"。</td></tr>
+<tr><td>改到一半被叫去查线上问题</td><td>派<strong>子任务</strong>去诊断，或者 handoff 分叉，主线不动。</td></tr>
+<tr><td>要换到另一个工具继续</td><td><code>/handoff</code>。这是它唯一不可替代的场景。</td></tr>
+</table>
+
+<div class="callout tealc">
+<strong>1.3.2 补的一条细节：</strong>凡是会派子任务的技能，现在都明确要求"<strong>给每个子任务开一个新的干净窗口</strong>"，不要从当前对话 fork 出去。因为有些客户端（比如 Codex）默认就是 fork，而 fork 恰好把它本来该有的干净上下文扔掉了——子任务存在的意义就是"不带你的包袱去看"。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a9">九、跟你仓库里已有的规矩撞了怎么办</h2>
+
+<p>这套东西默认只带"做法"，你仓库里的入口文件带的是"边界"。真撞上了，边界赢——但你必须<strong>写清楚谁覆盖谁</strong>，否则 agent 会照着技能的原文执行。下面几条是最常见的撞法。</p>
+
+<table>
+<tr><th style="width:20%">看着像冲突</th><th style="width:34%">怎么撞的</th><th>结论 / 怎么合</th></tr>
+<tr>
+<td><strong>深模块 vs 反过度封装</strong></td>
+<td><code>/codebase-design</code> 鼓励"把大量行为藏到小接口后面"，你的规矩禁止"没意义的中转函数、多层封装"。</td>
+<td><strong>不冲突，是同一把尺子。</strong>原文明说：深度是<strong>接口的属性</strong>，不是实现的行数；并给了<strong>删除测试</strong>——删掉它，复杂度消失=纯中转（该删），复杂度在 N 个调用点重现=它在挣饭吃（该留）。你禁止的正是"删除测试为负"的那类。<strong>把删除测试写进你的约束文档</strong>，两边就统一了。</td>
+</tr>
+<tr>
+<td><strong>tdd 收尾跑全量 vs 禁全量</strong></td>
+<td><code>/implement</code> 说"最后跑一次全量测试"，你的规矩说"别默认跑全量检查"。</td>
+<td>按场景收窄：<strong>开发期</strong>每轮类型检查 + 单个测试文件；<strong>收尾</strong>只跑受影响的目录，不做完整构建，除非你明确要求。把这条写进技能的调用说明里就行。</td>
+</tr>
+<tr>
+<td><strong>坏味道基线 vs 项目文档</strong></td>
+<td>基线里有"为不存在的需求预留抽象"，而你的项目有时确实要为已知需求留位置。</td>
+<td>原文已经给了优先级：<strong>仓库文档永远压过基线</strong>，坏味道永远只是"可能是"、不是硬违规，工具已经强制的直接跳过。所以命令是：<code>/code-review since main</code>，规范那栏额外指定你的入口文件和治理文档。</td>
+</tr>
+<tr>
+<td><strong>它会顺手改词表</strong></td>
+<td>你担心它把你的词改坏。</td>
+<td>这正是它该做的事，前提是你的词表本身合规（只收领域词、写明哪些词要避免、不写实现细节）。唯一要守死的一条：<strong>词表里绝不写实现</strong>。要写实现，那是提 ADR 或写 spec。</td>
+</tr>
+<tr>
+<td><strong>和你已有的开发技能功能重叠</strong></td>
+<td>你的技能里可能已经内置了追问 + tdd，两边都跑就是双重拷问。</td>
+<td>按<strong>触发条件</strong>分工：你<strong>指名</strong>"按架构规范开发"就走你自己那个；普通业务需求走 <code>/grill-with-docs</code>。<strong>不要串着跑</strong>两次追问。可以做的改造：让你那个技能内部<strong>调用</strong> grilling / tdd，而不是各写一份纪律。</td>
+</tr>
+<tr>
+<td><strong>技能里的 shell 命令 vs 你的工具规矩</strong></td>
+<td>技能里用 <code>git diff</code>、grep、<code>git log</code>，你要求所有大输出走沙箱或者加前缀。</td>
+<td><strong>冲突范围比看上去小得多。</strong>真正会踩线的只有一种情况：<em>大段文本被灌进主上下文</em>。技能里的命令本身很窄（<code>git log --oneline</code>、<code>git diff --stat</code>），<code>/code-review</code> 更是把整段 diff 交给<strong>子任务</strong>去读——子任务的窗口是一次性的，压不压缩无所谓。所以只需要守一条行为：<strong>重文本不进主上下文</strong>。</td>
+</tr>
+<tr>
+<td><strong>retro 建议新建一份标准文件</strong></td>
+<td>你已经有自己的规则文档，不想再多一份。</td>
+<td>不新建。<strong>把它当"是不是有好几份真相"的检查</strong>：如果发现同一条规则散在三处，合并进现有文档；机械性的违规一律做成 lint 或测试，而不是再加一篇 md。</td>
+</tr>
+<tr>
+<td><strong>triage 会写"范围外"记录</strong></td>
+<td>你仓库里没这个目录。</td>
+<td>只在<strong>真的否掉一个需求</strong>时才建（用到才建）。bug 的拒绝不写；"已经实现了"的拒绝<strong>更不能</strong>写（会污染去重）。</td>
+</tr>
+<tr>
+<td><strong>tdd 和验收测试的分工</strong></td>
+<td>两个都在谈测试。</td>
+<td>阶段不同：<code>/tdd</code> 是<strong>开发期</strong>在 seam 上锁行为；验收测试是<strong>交付前</strong>那一层（代码级 / 接口冒烟 / 浏览器巡检 / 人眼清单）。顺序：tdd → code-review → 验收。</td>
+</tr>
+<tr>
+<td><strong>技能建议开 PR / 提交</strong></td>
+<td>你仓库里没有 PR 流程，也不允许随手提交。</td>
+<td>按项目覆盖：<code>/implement</code> 最后那步"提交"仍然要你明确要求；<code>/pr</code> 只在真要开 PR 时用，平时跳过。这些覆盖要写进入口文件，别靠记。</td>
+</tr>
+</table>
+
+<div class="callout rosec">
+<strong>一句话原则：</strong>技能提供的是<strong>做法</strong>，你的入口文件提供的是<strong>这个仓库的边界</strong>。冲突时边界赢——但必须<strong>显式写出覆盖</strong>，否则 agent 默认照技能原文执行。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a10" class="blue-b">十、怎么装、1.3.2 改了什么、速查</h2>
+
+<h3>10.1 先装，再跑一次 setup</h3>
+<table>
+<tr><th style="width:22%">你用的工具</th><th style="width:44%">怎么装</th><th>怎么更新</th></tr>
+<tr><td>Claude Code</td><td><code>claude plugin install mattpocock-skills@claude-plugins-official</code></td><td>自动</td></tr>
+<tr><td>Codex</td><td><code>codex plugin marketplace add mattpocock/skills</code><br><code>codex plugin add mattpocock-skills@mattpocock</code></td><td>启动时自动</td></tr>
+<tr><td>GitHub Copilot</td><td><code>copilot plugin marketplace add mattpocock/skills</code><br><code>copilot plugin install mattpocock-skills@mattpocock</code></td><td>每天自动</td></tr>
+<tr><td>Gemini CLI</td><td><code>gemini skills install https://github.com/mattpocock/skills.git --path skills/engineering</code><br>生产力那组再来一次，<code>--path skills/productivity</code></td><td>手动重跑</td></tr>
+<tr><td>其他工具，或者想自己改文件</td><td><code>npx skills@latest add mattpocock/skills -a &lt;你的工具&gt;</code><br>问你要哪些时，别忘了勾 <code>setup-matt-pocock-skills</code></td><td><code>npx skills@latest update</code></td></tr>
+</table>
+<p class="kbd-note">一个工具只装一种方式。插件和 <code>skills</code> 都装，你会得到两份同名技能，互相打架。</p>
+
+<h3>10.2 1.3.2 改了什么</h3>
+<p>这一版动的都是细节和边角，主线的形状没变。但有几条会直接影响你每天怎么用。</p>
+<table>
+<tr><th style="width:26%">改动</th><th>影响</th></tr>
+<tr><td><strong>技能数变成 39 个</strong></td><td>in-progress 里多了一个 <code>software-factory</code>（1.3.1 之后加的，给"软件工厂"定共用词）。<code>deprecated</code> 是一个<strong>空桶</strong>：退役的技能直接删掉，删它的那条更新记录会写清谁替代了它。</td></tr>
+<tr><td><code>ask-matt</code> 先读再答</td><td>它讲某个技能做什么、或建议跳过某一步之前，必须<strong>先去读那个技能的 SKILL.md</strong>，不能凭自己的一句话摘要下判断。以前它偶尔会给出过时的建议。</td></tr>
+<tr><td><code>code-review</code> 三处</td><td>① 主动在仓库里搜"该怎么写代码"的文件，<code>CODING_STANDARDS.md</code> / <code>CONTRIBUTING.md</code> 一律交给"规范"那栏；② 两个子任务改成<strong>前台</strong>跑、直接用它俩返回的报告；③ tracker 通过配置好的说明文档解析，不再写死路径。</td></tr>
+<tr><td><code>tdd</code> 提 seam 要带说明</td><td>每个建议的 seam 附一句"它抓得住什么、漏掉什么"，选 seam 不用靠猜。</td></tr>
+<tr><td><code>grilling</code> 措辞</td><td>每道题的措辞都调过：说"是"就是接受建议，不会出现"我同意"其实是回答了"不"；一轮里的题之间加分隔线。</td></tr>
+<tr><td><code>diagnosing-bugs</code> 多一道保险</td><td>第五阶段：如果你是靠<strong>故意把代码改坏</strong>逼出红色的，要先跟没改过的副本 diff，确认那一改真改到了东西，再相信这个红。</td></tr>
+<tr><td><code>implement</code> 两处</td><td>传进来票引用，先去 tracker 取回、开工前念一遍标题；调 tdd / code-review 改成"调用 Skill 工具"的写法。</td></tr>
+<tr><td><code>to-tickets</code> 子 issue</td><td>来源是已有 issue 时，每张票做成它的子 issue；用原生阻塞关系时不再写"Blocked by"那一节。</td></tr>
+<tr><td><code>wayfinder</code> 四项</td><td>地图和票不再打"可开工"这类分诊标签；交叉引用只用真实 issue 号；研究分支只推不合并、不开 PR；解票时按标签写的类型来解。</td></tr>
+<tr><td><code>setup-matt-pocock-skills</code> 两批</td><td>写 tracker 前先确认远程仓库能连上；旧的 <code>CONTEXT.md</code> 会提议改名成 <code>GLOSSARY.md</code>；缺的分诊标签会帮你建；GitHub 那套改成先读 PR 正文再看评论、用原生参数表达阻塞、给出"数一数还有几个没解"的命令；GitLab 那套列 MR 用 <code>-O json</code>。<strong>跑完升级要重跑一次</strong>刷新 <code>docs/agents/</code>。</td></tr>
+<tr><td>派子任务的技能统一要求"干净窗口"</td><td><code>implement-spec</code>、<code>code-review</code>、<code>codebase-design</code>、<code>improve-codebase-architecture</code>、<code>wayfinder</code>、<code>research</code>、<code>grilling</code>、<code>chief-of-staff</code> 都写明：给每个子任务<strong>开新的上下文窗口</strong>，不要 fork 当前对话。</td></tr>
+<tr><td><code>chief-of-staff</code> 记忆改造</td><td>记忆改成一个小 wiki（一个索引 + 每个主题一页，靠吸收 / 查询 / 体检维护），而且写的是<strong>历史</strong>：每条结论带日期，涉及代码的注明"在哪个提交上为真"，旧的被取代时不改写、只标注。</td></tr>
+<tr><td><code>teach</code> 两处</td><td>工作区写在<strong>你运行它的目录</strong>（不是技能自己的文件夹）；测验里正确答案的位置会变。</td></tr>
+<tr><td><code>handoff</code> 写明临时目录</td><td>明确写 <code>$TMPDIR</code>，没有就 <code>/tmp</code>，Windows 是 <code>%TEMP%</code>。</td></tr>
+<tr><td><code>wizard</code> 模板修两批</td><td>回车保留旧值不再带引号；阶段跑在函数里，改脚本不会弄死运行中的向导；清屏失败有兜底；写 <code>.env</code> 用单引号包值（空格、<code>#</code>、<code>$</code>、引号都能活）；软链接的 <code>.env</code> 也能写；输入遇 EOF 会报错而不是死循环；方向键能正常移动光标。</td></tr>
+<tr><td>GitHub tracker 模板两处</td><td>外部 PR 列表不再因为 <code>authorAssociation</code> 报错；并且明确告诉 agent：issue 只能提到<strong>你自己的仓库</strong>，绝不许提到 <code>mattpocock/skills</code>（之前真有人把 spec 提到上游去了）。</td></tr>
+<tr><td>顺带说 1.3.1 那条</td><td><code>ask-matt</code> 不再说 <code>diagnosing-bugs</code> 修完要交接给 <code>improve-codebase-architecture</code>（那一步被删了）。现在修完之后指你去 <code>/retro</code> 问"什么能防住它"，只有结论是"缺 seam"时才指去 <code>/improve-codebase-architecture</code>。</td></tr>
+</table>
+
+<h3>10.3 速查表：场景 → 敲什么</h3>
+<table>
+<tr><th style="width:40%">我现在……</th><th style="width:26%">敲</th><th>产物 / 提醒</th></tr>
+<tr><td>有个模糊需求，想先问清楚</td><td><code>/grill-with-docs</code></td><td>词表 + ADR；一轮一轮答</td></tr>
+<tr><td>需求清楚了，要拆活</td><td><code>/to-spec</code> → <code>/to-tickets</code></td><td>spec 一份 + 票若干</td></tr>
+<tr><td>做其中一张票</td><td><code>/implement &lt;票&gt;</code></td><td>tdd → code-review → 提交</td></tr>
+<tr><td>整份 spec 想并行推</td><td><code>/implement-spec</code></td><td>依赖图 + worktree + 集成分支</td></tr>
+<tr><td>别人提的 bug 堆着</td><td><code>/triage</code></td><td>状态机；产出能开工的说明</td></tr>
+<tr><td>难 bug / 偶发失败</td><td><code>/diagnosing-bugs</code></td><td>先造会红的回路，没回路不许猜</td></tr>
+<tr><td>写完了要 review</td><td><code>/code-review since &lt;点&gt;</code></td><td>规范 ∥ 需求，两栏不合并</td></tr>
+<tr><td>要交 PR</td><td><code>/pr</code></td><td>一张图 + 前后证据 + 单向/双向门</td></tr>
+<tr><td>感觉代码越改越绕</td><td><code>/improve-codebase-architecture</code></td><td>临时目录里的报告；隔几天一次</td></tr>
+<tr><td>大到一个会话装不下</td><td><code>/wayfinder</code></td><td>地图 + 决策票；清了接 spec</td></tr>
+<tr><td>一个会话做砸了</td><td><code>/retro</code></td><td>改环境：确定性检查 &gt; 新文档</td></tr>
+<tr><td>上一句没听懂</td><td><code>/wait-what</code></td><td>换讲法 + 项目词表</td></tr>
+<tr><td>答案在别人脑子里</td><td><code>/to-questionnaire</code></td><td>问卷 md，按重要性排</td></tr>
+<tr><td>要换工具 / 换目录</td><td><code>/handoff</code></td><td>临时目录、脱敏、带"建议技能"</td></tr>
+<tr><td>只有人能做的步骤</td><td><code>/wizard</code></td><td>交互 bash，抓值写 <code>.env</code> / secrets</td></tr>
+<tr><td>不知道该用哪个</td><td><code>/ask-matt</code></td><td>它先读 SKILL.md 再回答</td></tr>
+</table>
+
+<h3>10.4 一句话决策树</h3>
+<ol>
+<li>答案在别人脑子里 → <code>/to-questionnaire</code>；否则往下 ↓</li>
+<li>没有工作目录 → <code>/grill-me</code>；有仓库 → <code>/grill-with-docs</code>；↓</li>
+<li>一个会话装不下 / 路看不清 → <code>/wayfinder</code>，地图清了接 <code>/to-spec</code>；↓</li>
+<li>是别人提的 issue → <code>/triage</code> → <code>/implement</code>；↓</li>
+<li>是多会话的活 → <code>/to-spec</code> → <code>/to-tickets</code> → <code>/implement</code>（或 <code>/implement-spec</code>）；↓</li>
+<li>是一张票 → <code>/implement</code>（内部跑 tdd + code-review）；↓</li>
+<li>只是要造一个行为 → <code>/tdd</code>，单独用；↓</li>
+<li>代码不 work 且原因不明 → <code>/diagnosing-bugs</code>；↓</li>
+<li>代码越改越绕 → <code>/improve-codebase-architecture</code> → <code>/codebase-design</code>；↓</li>
+<li>做完了 → <code>/code-review</code> → <code>/pr</code> → <code>/retro</code>；↓</li>
+<li>听不懂了 → <code>/wait-what</code>。</li>
+</ol>
+
+<h3>10.5 如果只做三件事</h3>
+<div class="grid">
+<div class="card teal">
+<h3>① 把 <code>/grill-with-docs</code> 变成默认起手式</h3>
+<p>任何不琐碎的需求，第一句就是它。它同时治"它没做我要的"和"它话太多"这两个毛病，而且是唯一一个顺手把词表建起来的入口。回报最高，成本几乎为零。</p>
+</div>
+<div class="card amber">
+<h3>② 把 <code>/retro</code> 的产物变成检查，不是文档</h3>
+<p>再写一篇规范的边际收益很低。真正的收益在把"同一类错第三次发生"变成一条 lint 规则、一个一致性测试、一个 CI 任务。文档只留给需要判断的事。</p>
+</div>
+<div class="card rose">
+<h3>③ 只守一条：大段文本不进主上下文</h3>
+<p>不用改入口文件，也不用逼 agent 每条命令都加前缀。真正要守的只有一件事：<strong>大段 diff、日志、后端代码不要灌进主上下文</strong>——交给子任务，或者在沙箱里算完只打印结论。这一条同时解决了"技能里命令怎么写"和"上下文被撑爆"两个问题。</p>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="a11" class="teal-b">十一、一页纸执行手册</h2>
+
+<p>这一章把前面十节压成四样东西：会话在哪儿切、开口第一句怎么写、哪些动作明显不该做、以及这些词到底什么意思。</p>
+
+<h3>11.1 一次需求的会话时间线</h3>
+
+<div class="svgbox">
+<svg viewBox="0 0 1180 474" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="t1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa3b8"/>
+    </marker>
+  </defs>
+  <rect x="12" y="10" width="1156" height="454" rx="14" fill="#1a1d26" stroke="#31374a"/>
+  <text x="34" y="38" fill="#9aa3b8" font-size="13" font-weight="700">一次需求的会话时间线：紫=不切窗口，青=每票一个，琥珀=收尾</text>
+
+  <rect x="30" y="60" width="330" height="180" rx="10" fill="#2a2340" stroke="#b195f5"/>
+  <text x="46" y="86" fill="#b195f5" font-size="12.5" font-weight="700">会话 1 · 一个窗口，不清</text>
+  <text x="46" y="114" fill="#c8cedd" font-size="11.5">派子任务取证（字段/必填/取值/出处）</text>
+  <text x="46" y="138" fill="#c8cedd" font-size="11.5">/grill-with-docs　把设计问穿</text>
+  <text x="46" y="162" fill="#c8cedd" font-size="11.5">/to-spec　合成 spec（不再访谈）</text>
+  <text x="46" y="186" fill="#c8cedd" font-size="11.5">/to-tickets　切竖片 + 标依赖</text>
+  <text x="46" y="216" fill="#8a93ab" font-size="10.5">产物：spec 一份 + 票若干</text>
+
+  <rect x="440" y="60" width="300" height="180" rx="10" fill="#14312d" stroke="#52d5c5"/>
+  <text x="456" y="86" fill="#52d5c5" font-size="12.5" font-weight="700">会话 2..N · 每票一个</text>
+  <text x="456" y="114" fill="#c8cedd" font-size="11.5">/implement &lt;票&gt;</text>
+  <text x="456" y="138" fill="#c8cedd" font-size="11.5">　内部 /tdd（在说好的 seam 上）</text>
+  <text x="456" y="162" fill="#c8cedd" font-size="11.5">　末 /code-review</text>
+  <text x="456" y="186" fill="#c8cedd" font-size="11.5">票之间可以清空</text>
+  <text x="456" y="216" fill="#8a93ab" font-size="10.5">产物：一票一提交；票的状态改掉</text>
+
+  <rect x="820" y="60" width="330" height="180" rx="10" fill="#2b2419" stroke="#f2c069"/>
+  <text x="836" y="86" fill="#f2c069" font-size="12.5" font-weight="700">会话 N+1 · 收尾</text>
+  <text x="836" y="114" fill="#c8cedd" font-size="11.5">/code-review since main（两栏）</text>
+  <text x="836" y="138" fill="#c8cedd" font-size="11.5">验收（Tier 0-3）</text>
+  <text x="836" y="162" fill="#c8cedd" font-size="11.5">/pr　一张图 + 前后证据</text>
+  <text x="836" y="186" fill="#c8cedd" font-size="11.5">/retro　改环境，不改代码</text>
+  <text x="836" y="216" fill="#8a93ab" font-size="10.5">产物：PR 正文 · 验收记录 · 环境改进项</text>
+
+  <line x1="362" y1="150" x2="436" y2="150" stroke="#9aa3b8" stroke-width="1.4" marker-end="url(#t1)"/>
+  <text x="399" y="140" fill="#52d5c5" font-size="10.5" text-anchor="middle">清空</text>
+  <line x1="742" y1="150" x2="816" y2="150" stroke="#9aa3b8" stroke-width="1.4" marker-end="url(#t1)"/>
+  <text x="779" y="140" fill="#f2c069" font-size="10.5" text-anchor="middle">清空</text>
+
+  <text x="34" y="272" fill="#9aa3b8" font-size="11.5" font-weight="700">边界怎么选（第一个"是"就赢）</text>
+  <text x="34" y="296" fill="#c8cedd" font-size="11">① 下一步需要这一段当一手材料（追问→实现最典型）→ 继续　② 上下文跟下一步无关 → 清空</text>
+  <text x="34" y="318" fill="#c8cedd" font-size="11">③ 换工具 / 换目录 / 交给别人 → /handoff　④ 能不用人盯做完 → 派子任务　⑤ 否则压缩，且只在阶段边界</text>
+
+  <text x="34" y="352" fill="#f28b94" font-size="11.5" font-weight="700">不要做的事</text>
+  <text x="34" y="374" fill="#c8cedd" font-size="11">一个窗口里连着追问两个候选 · 在阶段中间压缩 · 把十张卡的追问挤进一个会话 · 把后端代码原文倒进主上下文</text>
+  <text x="34" y="404" fill="#c8cedd" font-size="11">在会话 1 里就把 spec 和票打磨到完美（它们是给下个会话看的，够用就行） · 在票之间保留上一票的对话</text>
+
+  <text x="34" y="438" fill="#6f778c" font-size="10.5">预算：大约 150k token 就该切。别在变笨之后硬推，那比清空一次贵得多。</text>
+</svg>
+</div>
+
+<h3>11.2 十条开口模板（直接抄）</h3>
+
+<ol class="steps">
+<li><code>/grill-with-docs 我要做的是「…」。先别写代码，把设计问穿，事实你自己去查。</code></li>
+<li><code>/to-spec 按上面这轮的结论出 spec；seam 放在「取数入口」和「节点来源」两处。</code></li>
+<li><code>/to-tickets 切成竖片，标依赖；先给我看拆法，别直接落文件。</code></li>
+<li><code>/implement &lt;票的路径或编号&gt;</code>（一票一个会话）</li>
+<li><code>/code-review since main</code>（规范那栏记得读入口文件和治理文档）</li>
+<li><code>派一个子任务去后端仓库取证：字段名 / 类型 / 必填 / 取值 / 出处（文件+符号），只回一张表，不要把原文贴进上下文。</code></li>
+<li><code>/diagnosing-bugs 现象是「…」。先造一条会红的紧回路，没有回路不许猜原因。</code></li>
+<li><code>/improve-codebase-architecture 先看最近改动多的那几个目录；报告存到 .scratch/architecture-review/。</code></li>
+<li><code>/retro 这次反复试错的原因是「…」。看哪条能做成确定性检查，别写新文档。</code></li>
+<li><code>/wait-what</code>（上一句没听懂时，就发这两个字）</li>
+</ol>
+
+<h3>11.3 反模式总表</h3>
+<table>
+<tr><th style="width:34%">这个动作</th><th>为什么错 / 改成什么</th></tr>
+<tr><td>在仓库里用 <code>/grill-me</code></td><td>什么都不写下来，下个会话从零开始 → 一律 <code>/grill-with-docs</code></td></tr>
+<tr><td>一轮抛 15 个问题</td><td>一半问题依赖另一半的答案 → 一轮只问当下能问的</td></tr>
+<tr><td>让 agent 问你查得到的事实</td><td>事实是它的活（派子任务）；决定才是你的</td></tr>
+<tr><td>追问完直接 implement</td><td>跳过 <code>/to-spec</code> 的收尾；wayfinder 场景尤其致命</td></tr>
+<tr><td>拿 triage 处理自己刚拆的票</td><td>那些票本来就该开工，再分诊只会被改成"缺信息"</td></tr>
+<tr><td>把 <code>/wait-what</code> 当"说详细点"</td><td>它要的是换讲法（补上下文 + 说人话 + 用词表）</td></tr>
+<tr><td>用 wayfinder 处理中等需求</td><td>它又慢又密；一个会话装得下就别用</td></tr>
+<tr><td>地图清了直接 implement</td><td>要先 <code>/to-spec</code> 收尾，否则链起来的细节全丢</td></tr>
+<tr><td>对十张卡逐张跑完整追问</td><td>成本爆炸、决策树跨会话断裂 → 归类 + 分三档 + 一次一张</td></tr>
+<tr><td>给串行小卡上 <code>/implement-spec</code></td><td>白搭 worktree 和合并开销；串行票逐张 implement</td></tr>
+<tr><td>在阶段中间压缩上下文</td><td>会让 agent 丢线索；决定只在边界做</td></tr>
+<tr><td>把后端代码 / 大段 diff 倒进主上下文</td><td>走子任务或沙箱，只让结论进来</td></tr>
+<tr><td>指望 retro 写文档解决问题</td><td>机械型违规一律做成检查；文档只留给判断题</td></tr>
+</table>
+
+<h3>11.4 这些词到底什么意思</h3>
+<p>这套东西一半的力气在词上。下面这些词全文统一成这个意思，不再混用同义词。</p>
+<table>
+<tr><th style="width:20%">原文用词</th><th style="width:18%">这里怎么叫</th><th>一句话</th></tr>
+<tr><td>spec</td><td>需求说明</td><td>一份写清"要做什么、怎么算做完"的文档，给后面所有步骤当依据</td></tr>
+<tr><td>ADR</td><td>决定记录</td><td>一条短记录，只说"当初为什么这么定"，不给实现细节</td></tr>
+<tr><td>grilling / the grill</td><td>追问、问穿</td><td>按决策树一层层问，问到没有默认假设</td></tr>
+<tr><td>design tree</td><td>决策树</td><td>每个决定分叉出依赖它的下级决定</td></tr>
+<tr><td>frontier</td><td>这一轮能问的</td><td>前置都已经落定、现在问不会瞎猜的那批问题</td></tr>
+<tr><td>seam</td><td>接缝 / seam</td><td>不改那里代码就能改变行为的位置；也是测试面</td></tr>
+<tr><td>deep / shallow module</td><td>深 / 浅模块</td><td>小接口包大行为 vs 接口和实现一样复杂</td></tr>
+<tr><td>deletion test</td><td>删除测试</td><td>删掉它，复杂度消失=中转，散开=在挣饭吃</td></tr>
+<tr><td>leverage / locality</td><td>调用者省事 / 改动集中</td><td>一个说的是用的人拿到多少，一个说的是改的人省多少</td></tr>
+<tr><td>tracer bullet</td><td>竖着切一小片</td><td>切穿所有层、做完就能看见的一小片</td></tr>
+<tr><td>blocking edge</td><td>依赖 / 被谁卡着</td><td>票与票之间"必须先完成"的关系</td></tr>
+<tr><td>expand–contract</td><td>先加新的、分批搬、最后删旧的</td><td>影响全库的机械改动只能这么走</td></tr>
+<tr><td>fog of war</td><td>战争迷雾</td><td>在范围内但还说不精确的问题（先不建票）</td></tr>
+<tr><td>destination</td><td>目的地</td><td>地图要通向的那个东西</td></tr>
+<tr><td>tight feedback loop</td><td>紧回路</td><td>快、稳定、能在这个 bug 上变红的那条命令</td></tr>
+<tr><td>red-capable</td><td>会红</td><td>能抓住这个具体 bug，而不是"能跑通"</td></tr>
+<tr><td>grounding</td><td>接地</td><td>读者要么自带这个概念，要么前面某块讲过</td></tr>
+<tr><td>context pointer</td><td>指路的一句话</td><td>上下文里的一句引用 + 什么时候该去看</td></tr>
+<tr><td>leading word</td><td>关键词</td><td>一个词锚住一整片行为</td></tr>
+<tr><td>two loads</td><td>两种成本</td><td>占上下文（每轮都花钱）vs 占记性（你要记住）</td></tr>
+</table>
+
+<h3>11.5 这一页以后怎么维护</h3>
+<ul>
+<li>它只负责"是什么、怎么用、为什么"，改动必须回上游原文核对，不能凭印象改。</li>
+<li>上游发版时：读 <code>CHANGELOG.md</code> → 只改受影响的卡片 → 在这一页顶部更新版本号。</li>
+<li>技能数量、分类、调用方式（你敲 / 模型可抓）都以仓库当时的实际文件为准，别拿旧笔记当依据。</li>
+<li>想拿它当自己的落地清单用，就另开一份"我定了什么、接下来做什么"，别把两件事混在同一页里——一页讲原理，一页讲进度，改起来才不会互相拖。</li>
+</ul>
+
+<div class="panel" style="margin-top:26px">
+<h4>参考</h4>
+<ul style="margin-bottom:0">
+<li>仓库：<a href="https://github.com/mattpocock/skills">github.com/mattpocock/skills</a>（MIT，本文对应 1.3.2，共 39 个 SKILL.md）</li>
+<li>关键依据：<code>README.md</code>（四个失败模式、技能清单与调用方式）、<code>CHANGELOG.md</code>（1.3.2 的 20 条修订）、<code>.agents/invocation.md</code>（你敲 / 模型可抓的划分）、<code>.agents/writing-docs.md</code>（文档页模板）、各技能目录下的 <code>SKILL.md</code></li>
+<li>想自己写技能：先读 <code>/writing-for-agents</code> 和 <code>SKILL-MECHANICS.md</code>，再照第四章那把尺子量一遍。</li>
+</ul>
+</div>
+
+<p class="kbd-note" style="margin-top:22px">本文是通读后重写的导读，不是官方文档。有出入以仓库原文为准。</p>
+
+</div>
+</body>
+</html>
+
