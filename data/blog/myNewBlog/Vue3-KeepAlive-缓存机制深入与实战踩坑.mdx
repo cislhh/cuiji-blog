@@ -1,0 +1,137 @@
+---
+slug: vue3-keepalive-cache-deep-dive
+title: Vue 3 KeepAlive 缓存机制深入：从"只认组件"到布局级缓存实战
+date: 2026-08-25
+authors: [cuiji]
+tags: [vue, typescript, keep-alive, frontend]
+keywords:
+  [Vue 3, KeepAlive, 组件缓存, 路由缓存, onActivated, 叶子路由, include/exclude]
+description: '从一次真实需求（列表页跳详情再返回不刷新）出发，讲清 KeepAlive 缓存什么、为什么只认组件、页面内缓存与布局级缓存的分野、onActivated 生命周期，以及缓存清理的真相。'
+---
+
+需求很朴素：列表页点项目名称跳到详情页，办完事点返回，**筛选条件、分页页码、当前 tab 全部保留**，不要重新加载一遍。看起来 KeepAlive 一包了事，但真正落地时踩了一个反直觉的坑——"直接包裹"根本不生效。这篇记录我从踩坑到想通的完整过程。
+
+---
+
+## 一、KeepAlive 缓存的是什么：组件实例，不是内容
+
+这是整个机制的地基。官方文档第一句：
+
+> `<KeepAlive>` 是一个内置组件，它的功能是在多个组件间动态切换时**缓存被移除的组件实例**。
+
+注意"组件实例"四个字——缓存粒度是**实例**，不是一段 DOM、不是一个 div、不是一段模板。
+
+这带来一个推论：KeepAlive 期望的直接子节点**必须是一个组件**。你在模板里写：
+
+```vue
+<!-- ✅ 有效：<component :is> 渲染的是组件 -->
+<KeepAlive>
+  <component :is="activeComponent" />
+</KeepAlive>
+
+<!-- ❌ 无效：包一段 div / 多个元素，Vue 视为 fragment，直接透传渲染，等于没包 -->
+<KeepAlive>
+  <div class="content">
+    <QuerySearchCard />
+    <NDataTable />
+  </div>
+</KeepAlive>
+```
+
+为什么包 div 无效？KeepAlive 内部需要拿到子节点的**组件 vnode**（type 是组件选项对象），才能按 type 做缓存 key、把实例摘到内存缓存树里。普通元素 vnode 和 fragment 没有"实例"可缓存，KeepAlive 对它们直接透传。组件还不能缓存自己——你没法在 `list/index.vue` 里用 KeepAlive 包住自己的模板，因为"自己"不是一个独立的子组件。
+
+> 文档佐证：`<KeepAlive>` **默认会缓存内部的所有组件实例**，`include`/`exclude` 按组件的 `name` 选项匹配——白名单匹配的粒度也是"组件"，再一次印证缓存对象是组件实例。
+
+## 二、"直接包裹"的三种结局
+
+我把 KeepAlive 放在三个位置试了个遍，结果完全不同：
+
+| 放哪 | 效果 | 原因 |
+| --- | --- | --- |
+| 页面内部包自己的 div | **无效** | 包 fragment / 普通元素，KeepAlive 不认 |
+| 页面内部包子组件 | **看情况** | 只有"路由父容器"场景有效（见下） |
+| 布局层包 `<RouterView />` | **有效，但要 include 白名单** | 缓存的是路由组件实例本身 |
+
+## 三、最大的坑：页面内缓存只对"路由父容器"生效
+
+网上大量教程都是这种写法：
+
+```vue
+<!-- 路由父级 index.vue -->
+<KeepAlive>
+  <EquipmentQueryPage v-if="!isDetailChildRouteActive" />
+</KeepAlive>
+<RouterView v-if="isDetailChildRouteActive" />
+```
+
+看起来是"页面内 KeepAlive"的成功案例（我项目里 30+ 个查询列表页都是这么写的），但它能生效有一个**隐藏前提**：这个 index.vue 是**路由父容器**，详情页是它的**子路由**。从列表切到详情时，父组件 index.vue 从来没被卸载——KeepAlive 一直在，缓存就一直有效。
+
+而我的列表页是**叶子路由**：跳详情是跳到**另一个模块**的路由，`list/index.vue` 整个被顶层 `<RouterView />` 卸载。卸载时挂在它内部的 KeepAlive 随之销毁，缓存的子组件实例也被卸载——back 回来照样重新挂载，状态全丢。**缓存的生命周期绑定在 KeepAlive 组件自身，父组件卸载即销毁。**
+
+这就是"页面内包子组件"方案的适用边界：
+
+| 路由结构 | 页面内 KeepAlive | 布局级 KeepAlive |
+| --- | --- | --- |
+| 父容器 + 详情子路由（searches 先例） | ✅ 有效 | 没必要 |
+| **叶子路由**（personal-center 列表） | ❌ 父组件卸载缓存销毁 | ✅ 正解 |
+
+## 四、正解：布局级 `<KeepAlive :include>` 包 RouterView
+
+叶子路由要在**布局层**缓存——布局组件常驻不卸载，缓存的是路由组件实例本身：
+
+```vue
+<!-- DefaultLayout.vue -->
+<KeepAlive :include="KEEP_ALIVE_INCLUDE">
+  <RouterView />
+</KeepAlive>
+```
+
+```ts
+// 白名单：只缓存需要"返回不刷新"的页面
+const KEEP_ALIVE_INCLUDE = ['PersonalCenterDashboard', 'PersonalCenterList'];
+```
+
+两个配套细节，缺一不可：
+
+**1. 组件必须显式声明 name。** `include` 按组件 `name` 匹配，而 `<script setup>` 的自动 name 是文件名——所有 `index.vue` 自动 name 全是 `"index"`，include 根本匹配不上，还会互相冲突。必须：
+
+```vue
+<script setup lang="ts">
+defineOptions({ name: 'PersonalCenterList' });
+</script>
+```
+
+**2. 数据刷新交给 `onActivated`。** 缓存后组件不销毁，`onMounted` 只触发一次，从详情返回时数据可能过期（比如在详情页审批通过了一条待办）。`onActivated` 官方语义是"**首次挂载以及每次从缓存中被重新插入时**"调用——一次注册，两种时机全覆盖：
+
+```ts
+import { onActivated } from 'vue';
+
+onActivated(() => {
+  // 首次进入 + 从详情返回，都刷新数据
+  void refresh();
+});
+```
+
+刷新是"带着当前筛选和当前页码重新请求"——筛选/分页状态在实例里原样保留，不是回到第一页重新翻。
+
+## 五、缓存清理的真相：登出不需要手动清
+
+之前担心"KeepAlive 缓存不随退出登录清空，会串账号数据"，查完代码发现是虚惊：项目里根本没有手动清理机制（`flushCache`/`deleteCache`/`onDeactivated` 全局零命中），但**登出跳登录页时，布局组件被卸载，挂在它内部的 KeepAlive 缓存随组件树一起销毁**，重新登录天然是干净的。
+
+真正会保留缓存的只有"切换账号但布局不卸载"的场景（如切换授权人）：缓存实例还在，但 `onActivated` 会重新拉数据，所以数据是新的，只是筛选/分页状态可能残留上一个账号的——这是可接受的行为，无需特殊处理。
+
+## 六、实践结论
+
+| 问题 | 答案 |
+| --- | --- |
+| KeepAlive 缓存什么 | 被它直接包裹的**组件实例**，不是内容 |
+| 为什么包 div 没用 | fragment / 普通元素没有实例可缓存，直接透传 |
+| 页面内缓存什么时候有效 | 路由父容器 + 详情子路由（父组件不卸载） |
+| 叶子路由怎么缓存 | 布局层 `<KeepAlive :include>` 包 `<RouterView />` |
+| include 匹配什么 | 组件 `name`（`<script setup>` 必须 `defineOptions` 显式声明） |
+| 返回时怎么刷新数据 | `onActivated`（首次挂载 + 重新插入都触发） |
+| 缓存什么时候自动清 | 布局组件卸载时（登出跳登录页即满足） |
+
+---
+
+KeepAlive 不难，难的是想清楚"缓存在哪一层、生命周期跟着谁走"。这次的经验是：**先问路由结构（父容器还是叶子），再决定缓存挂在哪一层**——比上来就套 `<KeepAlive>` 标签靠谱得多。
